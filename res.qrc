@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/icon">
+        <file alias="icon.ico">resources/images/icon.ico</file>
+    </qresource>
+    <qresource prefix="/stl">
+        <file alias="base_link.STL">resources/stl_files/base_link.STL</file>
+        <file alias="link_1.STL">resources/stl_files/link_1.STL</file>
+        <file alias="link_2.STL">resources/stl_files/link_2.STL</file>
+        <file alias="link_3.STL">resources/stl_files/link_3.stl</file>
+        <file alias="link_4.STL">resources/stl_files/link_4.STL</file>
+        <file alias="link_5.STL">resources/stl_files/link_5.STL</file>
+        <file alias="link_6.STL">resources/stl_files/link_6.STL</file>
+        <file alias="desk.STL">resources/stl_files/desk.stl</file>
+    </qresource>
+</RCC>
