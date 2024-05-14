@@ -1,5 +1,5 @@
 <h1 align="center">
-  RobotSimulation 
+  RobotSimulation 🦾
 </h1>
 
 <p align="center">
