@@ -7,7 +7,7 @@
 </p>
 
 <div align=center>
-  <img src="docs/shot.jpg">
+  <img src="docs/shot.jpg" width="70%" height="70%">
 </div>
 
 ## Requirements
@@ -32,3 +32,7 @@
   > 1.Open CMakeLists.txt with Qt Creator/ Clion.
   >
   >2.build & run it!
+
+## TodoList
++ [ ] Setting
++ [ ] IK

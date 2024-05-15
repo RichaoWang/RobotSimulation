@@ -62,12 +62,17 @@ void MainWindow::connectSigSlots() {
             ddr6RobotWidget->mGlobalConfig.isDrawGrid = arg;
         } else if (key == "baseCoord") {
             ddr6RobotWidget->mGlobalConfig.isDrawWorldCoord = arg;
-        } else if (key == "jCoord") {
+        } else if (key == "j1") {
             ddr6RobotWidget->mGlobalConfig.isDrawJoint1Coord = arg;
+        } else if (key == "j2") {
             ddr6RobotWidget->mGlobalConfig.isDrawJoint2Coord = arg;
+        } else if (key == "j3") {
             ddr6RobotWidget->mGlobalConfig.isDrawJoint3Coord = arg;
+        } else if (key == "j4") {
             ddr6RobotWidget->mGlobalConfig.isDrawJoint4Coord = arg;
+        } else if (key == "j5") {
             ddr6RobotWidget->mGlobalConfig.isDrawJoint5Coord = arg;
+        } else if (key == "j6") {
             ddr6RobotWidget->mGlobalConfig.isDrawJoint6Coord = arg;
         } else if (key == "desk") {
             ddr6RobotWidget->mGlobalConfig.isDrawDesk = arg;
