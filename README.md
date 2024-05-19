@@ -7,8 +7,14 @@ The robot arm control software is implemented based on Qt Widget. This project i
 </p>
 
 <div align=center>
-  <img src="docs/shot.jpg" width="70%" height="70%">
+  <img src="docs/shot.jpg" width="90%" height="90%">
 </div>
+<p align="center">
+<a ><img src="https://img.shields.io/badge/Windows-pass-flygreen"></a>
+<a ><img src="https://img.shields.io/badge/Ubuntu-pass-flygreen"></a>
+<a href="https://en.wikipedia.org/wiki/C%2B%2B"><img src="https://img.shields.io/badge/Language-c++-blue"></a>
+<a href="https://en.wikipedia.org/wiki/MIT_License"><img src="https://img.shields.io/badge/License-MIT-lightgreen"></a>
+</p>
 
 ## Requirements
 
