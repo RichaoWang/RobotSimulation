@@ -8,6 +8,7 @@
 #include <QObject>
 #include <QTimer>
 #include <QElapsedTimer>
+#include <cmath>
 
 class FPSGetter : public QObject {
 Q_OBJECT

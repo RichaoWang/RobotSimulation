@@ -3,13 +3,31 @@
         <file alias="icon.ico">resources/images/icon.ico</file>
     </qresource>
     <qresource prefix="/stl">
-        <file alias="base_link.STL">resources/stl_files/base_link.STL</file>
-        <file alias="link_1.STL">resources/stl_files/link_1.STL</file>
-        <file alias="link_2.STL">resources/stl_files/link_2.STL</file>
-        <file alias="link_3.STL">resources/stl_files/link_3.stl</file>
-        <file alias="link_4.STL">resources/stl_files/link_4.STL</file>
-        <file alias="link_5.STL">resources/stl_files/link_5.STL</file>
-        <file alias="link_6.STL">resources/stl_files/link_6.STL</file>
+        <file alias="base_link.STL">resources/stl_files/unknown/base_link.STL</file>
+        <file alias="link_1.STL">resources/stl_files/unknown/link_1.STL</file>
+        <file alias="link_2.STL">resources/stl_files/unknown/link_2.STL</file>
+        <file alias="link_3.STL">resources/stl_files/unknown/link_3.stl</file>
+        <file alias="link_4.STL">resources/stl_files/unknown/link_4.STL</file>
+        <file alias="link_5.STL">resources/stl_files/unknown/link_5.STL</file>
+        <file alias="link_6.STL">resources/stl_files/unknown/link_6.STL</file>
+
         <file alias="desk.STL">resources/stl_files/desk.stl</file>
+
+        <file alias="us10base.STL">resources/stl_files/ur10/base.stl</file>
+        <file alias="us10forearm.STL">resources/stl_files/ur10/forearm.stl</file>
+        <file alias="us10shoulder.STL">resources/stl_files/ur10/shoulder.stl</file>
+        <file alias="us10upperarm.STL">resources/stl_files/ur10/upperarm.stl</file>
+        <file alias="us10wrist1.STL">resources/stl_files/ur10/wrist1.stl</file>
+        <file alias="us10wrist2.STL">resources/stl_files/ur10/wrist2.stl</file>
+        <file alias="us10wrist3.STL">resources/stl_files/ur10/wrist3.stl</file>
+
+        <file alias="abi5base_link.STL">resources/stl_files/auboi5/base_link.STL</file>
+        <file alias="abi5foreArm_Link.STL">resources/stl_files/auboi5/foreArm_Link.STL</file>
+        <file alias="abi5pedestal.STL">resources/stl_files/auboi5/pedestal.STL</file>
+        <file alias="abi5shoulder_Link.STL">resources/stl_files/auboi5/shoulder_Link.STL</file>
+        <file alias="abi5upperArm_Link.STL">resources/stl_files/auboi5/upperArm_Link.STL</file>
+        <file alias="abi5wrist1_Link.STL">resources/stl_files/auboi5/wrist1_Link.STL</file>
+        <file alias="abi5wrist2_Link.STL">resources/stl_files/auboi5/wrist2_Link.STL</file>
+        <file alias="abi5wrist3_Link.STL">resources/stl_files/auboi5/wrist3_Link.STL</file>
     </qresource>
 </RCC>

@@ -5,6 +5,7 @@
 #include <QDesktopWidget>
 #include <QMessageBox>
 #include <QLabel>
+#include <QtConcurrent/QtConcurrent>
 #include "robotcontrolwidget.h"
 #include "ddr6robotwidget.h"
 #include "fpsgetter.h"
@@ -34,7 +35,8 @@ private:
 private slots:
 
 //    void on_actionHide_Control_toggled(bool arg);
-
+signals:
+    void updateControlSlider(QVector<float>);
 private:
     Ui::MainWindow *ui;
     RobotControlWidget *controlWidget;

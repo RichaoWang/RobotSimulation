@@ -6,7 +6,9 @@
 #define ROBOTSIMULATION_ROBOTCONTROLWIDGET_H
 
 #include <QWidget>
-
+#include <QDoubleValidator>
+#include <QMessageBox>
+#include "robotkinematics.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class RobotControlWidget; }
@@ -29,14 +31,24 @@ public slots:
 
     void slotUpdateCheckOpt(bool arg);
 
+    void slotRobotIKSolution(bool arg);
+
+    void slotUpdateSlider(QVector<float>);
+
 signals:
 
     void sigJoinValueChanged(int, int);
 
     void sigCheckOptChanged(QString, bool);
 
+    void sigUpdateRobotPose(std::vector<double>);
+
+
+
 private:
     Ui::RobotControlWidget *ui;
+    std::unique_ptr<RobotKinematics> robotKinematics;
+    QDoubleValidator *validator;
 };
 
 

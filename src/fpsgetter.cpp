@@ -14,7 +14,7 @@ FPSGetter::FPSGetter() {
             fps = frameCount * 1000.0 / elapsed;
             frameCount = 0;
             elapsedTimer.restart();
-            emit updateFps(fps);
+            emit updateFps(std::round(fps * 100) / 100);
         }
     });
     timer->start(16);

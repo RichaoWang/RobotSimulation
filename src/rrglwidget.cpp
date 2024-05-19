@@ -74,17 +74,15 @@ void RRGLWidget::drawCoordinates() {
 
     // 标签
     qglColor(QColor::fromRgbF(1, 1, 1));
-    renderText(-1050, 0, 0, "-X", QFont("helvetica", 12, QFont::Bold, true));
     renderText(1050, 0, 0, "+X", QFont("helvetica", 12, QFont::Bold, true));
-    renderText(0, -1050, 0, "-Y", QFont("helvetica", 12, QFont::Bold, true));
     renderText(0, 1050, 0, "+Y", QFont("helvetica", 12, QFont::Bold, true));
     renderText(0, 0, 1050, "+Z", QFont("helvetica", 12, QFont::Bold, true));
-
+    renderText(500, 500, 0, "World", QFont("helvetica", 12, QFont::Bold, true));
     glLineWidth(1.0f);
     glPopMatrix();
 }
 
-void RRGLWidget::drawSTLCoordinates(int r, int g, int b) {
+void RRGLWidget::drawSTLCoordinates(int r, int g, int b, std::string text) {
     glPushMatrix();
     glLineWidth(1.5f);
     setupColor(r, g, b);
@@ -95,18 +93,15 @@ void RRGLWidget::drawSTLCoordinates(int r, int g, int b) {
     glVertex3f(0, -300, 0);
     glVertex3f(0, 300, 0);
     glVertex3f(0, 0, 0);
-    glVertex3f(0, 0, 500);
+    glVertex3f(0, 0, 300);
     glEnd();
 
     // 标签
-    qglColor(QColor::fromRgbF(1, 0, 0));
-    renderText(-300, 0, 0, "-X", QFont("helvetica", 12, QFont::Bold, true));
+    qglColor(QColor::fromRgbF(r / 255, g / 255, b / 255));
     renderText(300, 0, 0, "+X", QFont("helvetica", 12, QFont::Bold, true));
-    qglColor(QColor::fromRgbF(0, 1, 0));
-    renderText(0, -300, 0, "-Y", QFont("helvetica", 12, QFont::Bold, true));
     renderText(0, 300, 0, "+Y", QFont("helvetica", 12, QFont::Bold, true));
-    qglColor(QColor::fromRgbF(0, 0, 1));
-    renderText(0, 0, 500, "+Z", QFont("helvetica", 12, QFont::Bold, true));
+    renderText(0, 0, 300, "+Z", QFont("helvetica", 12, QFont::Bold, true));
+    renderText(50, 50, 100, text.c_str(), QFont("helvetica", 12, QFont::Bold, true));
     glLineWidth(1.0f);
     glPopMatrix();
 }
@@ -227,7 +222,7 @@ void RRGLWidget::mouseMoveEvent(QMouseEvent *event) {
         setYRotation(yRot - 4 * dx);
     } else if (event->buttons() & Qt::RightButton) {
         setZoom(z_zoom + 5.0 * dy);
-    } else if (event->buttons() & Qt::MidButton) {
+    } else if (event->buttons() & Qt::MiddleButton) {
         setXYTranslate(dx, dy);
     }
     lastPos = event->pos();

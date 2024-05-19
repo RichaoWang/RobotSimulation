@@ -48,7 +48,7 @@
        </size>
       </property>
       <property name="title">
-       <string>Controller</string>
+       <string>Control</string>
       </property>
       <layout class="QGridLayout" name="gridLayout">
        <property name="leftMargin">

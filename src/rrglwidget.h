@@ -21,7 +21,7 @@ public:
     void drawCoordinates();
 
     /// 画每个组件变换后的坐标系
-    void drawSTLCoordinates(int r, int g, int b);
+    void drawSTLCoordinates(int r, int g, int b,std::string text);
 
     /// 画STL模型
     virtual void drawGL();
@@ -106,6 +106,7 @@ public:
         bool isDrawJoint5Coord; //关节5坐标系
         bool isDrawJoint6Coord; //关节6坐标系
         bool isDrawDesk;        //桌子
+        bool isDrawEnd;        //末端
     } GlobalConfig;
 
     /// 全局场景开关配置

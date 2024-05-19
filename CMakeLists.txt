@@ -12,6 +12,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets OpenGL)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets OpenGL)
 
+set(Eigen3_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/eigen-3.4.0/cmake)
+find_package(Eigen3 REQUIRED)
+
 # qrc
 set(QRC_SOURCE_FILES res.qrc)
 qt5_add_resources(QRC_FILES ${QRC_SOURCE_FILES})
@@ -28,6 +31,7 @@ if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
             MANUAL_FINALIZATION
             ${PROJECT_SOURCES}
             ${PROJECT_FROMS}
+            "icon.rc"
             )
     # Define target properties for Android with Qt 6 as:
     #    set_property(TARGET RobotSimulation APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -46,11 +50,16 @@ else ()
                 ${PROJECT_SOURCES}
                 ${PROJECT_FROMS}
                 ${QRC_FILES}
+                "icon.rc"
                 )
     endif ()
 endif ()
 
-target_link_libraries(RobotSimulation PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::OpenGL OpenGL)
+IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
+    target_link_libraries(RobotSimulation PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::OpenGL OpenGL Eigen3::Eigen)
+ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Windows")
+    target_link_libraries(RobotSimulation PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::OpenGL OpenGL32 Eigen3::Eigen)
+ENDIF ()
 
 set_target_properties(RobotSimulation PROPERTIES
         MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
