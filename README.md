@@ -35,4 +35,4 @@
 
 ## TodoList
 + [ ] Setting
-+ [ ] IK
++ [x] IK
