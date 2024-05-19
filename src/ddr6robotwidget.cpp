@@ -13,13 +13,13 @@ DDR6RobotWidget::~DDR6RobotWidget() {
 
 void DDR6RobotWidget::loadRobotModelSTLFile() {
     //模型由7个小部件组成
-    mRobotModel.link0 = new STLFileLoader("../resources/stl_files/ur10/base.stl", 1000);
-    mRobotModel.link1 = new STLFileLoader("../resources/stl_files/ur10/shoulder.stl", 1000);
-    mRobotModel.link2 = new STLFileLoader("../resources/stl_files/ur10/upperarm.stl", 1000);
-    mRobotModel.link3 = new STLFileLoader("../resources/stl_files/ur10/forearm.stl", 1000);
-    mRobotModel.link4 = new STLFileLoader("../resources/stl_files/ur10/wrist1.stl", 1000);
-    mRobotModel.link5 = new STLFileLoader("../resources/stl_files/ur10/wrist2.stl", 1000);
-    mRobotModel.link6 = new STLFileLoader("../resources/stl_files/ur10/wrist3.stl", 1000);
+    mRobotModel.link0 = new STLFileLoader(":/stl/us10base.STL", 1000);
+    mRobotModel.link1 = new STLFileLoader(":stl/us10shoulder.STL", 1000);
+    mRobotModel.link2 = new STLFileLoader(":stl/us10upperarm.STL", 1000);
+    mRobotModel.link3 = new STLFileLoader(":stl/us10forearm.STL", 1000);
+    mRobotModel.link4 = new STLFileLoader(":stl/us10wrist1.STL", 1000);
+    mRobotModel.link5 = new STLFileLoader(":stl/us10wrist2.STL", 1000);
+    mRobotModel.link6 = new STLFileLoader(":stl/us10wrist3.STL", 1000);
 
     mDeskModel.link0 = new STLFileLoader(":/stl/desk.STL", 1);
 }

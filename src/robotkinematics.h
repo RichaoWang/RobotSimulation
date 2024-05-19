@@ -10,7 +10,6 @@
 #include <vector>
 #include "kin.h"
 
-using namespace std;
 using namespace Eigen;
 using namespace ur_kinematics;
 
@@ -174,7 +173,7 @@ public:
         return angle;
     }
 
-    vector<vector<double>> inverseSolutionFromEulerAngle(double *xyzrpy) {
+    std::vector<std::vector<double>> inverseSolutionFromEulerAngle(double *xyzrpy) {
         double T[16];
         xyzrpyToMatrix(xyzrpy, T);
 
@@ -182,9 +181,9 @@ public:
         int num_sols;
         num_sols = inverse(T, q_sols);
 //        printf("***************************************\n");
-        vector<vector<double>> res;
+        std::vector<std::vector<double>> res;
         for (int i = 0; i < num_sols; i++) {
-            vector<double> tmp{
+            std::vector<double> tmp{
                     normalizeAngle(q_sols[i * 6 + 0] * (180.0 / M_PI)),
                     normalizeAngle(q_sols[i * 6 + 1] * (180.0 / M_PI)),
                     normalizeAngle(q_sols[i * 6 + 2] * (180.0 / M_PI)),
