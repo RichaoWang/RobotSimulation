@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-  Robot arm control software based on Qt Widget implementation, this project is mainly used to learn the use of OpenGL
+The robot arm control software is implemented based on Qt Widget. This project is mainly used to learn the use of OpenGL and learn robot kinematics
 </p>
 
 <div align=center>
@@ -11,12 +11,11 @@
 </div>
 
 ## Requirements
+
 ```
-* The project was built and tested on the Ubuntu 20.04 operating system.
-* Theoretically can be built and run on the Windows operating system. 
-* But it should be noted that please use the Qt 5.x version, otherwise there may be interface changes!
+* It is recommended to use the Qt5 version, otherwise there may be changes in the interface
 ```
-+ GCC
+
 + Qt5.15.2
 
 ## Get started
@@ -33,6 +32,15 @@
   >
   >2.build & run it!
 
+## Reference
+
+* > [universal robot](https://github.com/ros-industrial/universal_robot)
+
 ## TodoList
+
 + [ ] Setting
++ [x] FK
 + [x] IK
++ [ ] CodeEdit
++ [ ] MoveAnimations
++ [ ] CameraSystem
