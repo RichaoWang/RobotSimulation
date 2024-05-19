@@ -29,7 +29,7 @@ The robot arm control software is implemented based on Qt Widget. This project i
 * Clone the repository.
 
   ```SHELL
-  git clone https://github.com/RichaoWang/RobotSimulationDemo.git
+  git clone https://github.com/RichaoWang/RobotSimulation.git
   ```
 
 * Build
