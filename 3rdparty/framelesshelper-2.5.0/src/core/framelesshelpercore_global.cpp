@@ -199,20 +199,18 @@ VersionInfo FramelessHelperVersion()
 {
     static const auto result = []() -> VersionInfo {
         VersionInfo vi = {};
-        vi.version.num = FRAMELESSHELPER_VERSION;
-        vi.version.str = FRAMELESSHELPER_VERSION_STR;
-        vi.commit.hash = FRAMELESSHELPER_COMMIT_HASH_STR;
-        vi.commit.subject = FRAMELESSHELPER_COMMIT_SUBJECT_STR;
-        vi.commit.author = FRAMELESSHELPER_COMMIT_AUTHOR_STR;
-        vi.commit.datetime = FRAMELESSHELPER_COMMIT_DATETIME_STR;
-        vi.commit.branch = FRAMELESSHELPER_COMMIT_BRANCH_STR;
-        vi.compiler.name = FRAMELESSHELPER_COMPILER_NAME_STR;
-        vi.compiler.version = FRAMELESSHELPER_COMPILER_VERSION_STR;
-        vi.compiler.vendor = FRAMELESSHELPER_COMPILER_VENDOR_STR;
-        vi.build.cmake_version = FRAMELESSHELPER_CMAKE_VERSION_STR;
-        vi.build.configure_datetime = FRAMELESSHELPER_BUILD_DATETIME_STR;
-        vi.build.generator = FRAMELESSHELPER_CMAKE_GENERATOR_STR;
-        vi.build.architecture = FRAMELESSHELPER_ARCHITECTURE_STR;
+//        vi.version.num = FRAMELESSHELPER_VERSION;
+//        vi.version.str = FRAMELESSHELPER_VERSION_STR;
+//        vi.commit.hash = FRAMELESSHELPER_COMMIT_HASH_STR;
+//        vi.commit.datetime = FRAMELESSHELPER_COMMIT_DATETIME_STR;
+//        vi.commit.branch = FRAMELESSHELPER_COMMIT_BRANCH_STR;
+//        vi.compiler.name = FRAMELESSHELPER_COMPILER_NAME_STR;
+//        vi.compiler.version = FRAMELESSHELPER_COMPILER_VERSION_STR;
+//        vi.compiler.vendor = FRAMELESSHELPER_COMPILER_VENDOR_STR;
+//        vi.build.cmake_version = FRAMELESSHELPER_CMAKE_VERSION_STR;
+//        vi.build.configure_datetime = FRAMELESSHELPER_BUILD_DATETIME_STR;
+//        vi.build.generator = FRAMELESSHELPER_CMAKE_GENERATOR_STR;
+//        vi.build.architecture = FRAMELESSHELPER_ARCHITECTURE_STR;
         vi.build.is_debug = []() -> bool {
 #ifdef _DEBUG
             return true;
