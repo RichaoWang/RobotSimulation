@@ -1,8 +1,14 @@
 #include "kin.h"
 
-#include <math.h>
-#include <stdio.h>
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES
 
+#include <cmath>
+#include <math.h>
+
+#else
+#include <math.h>
+#endif
 
 namespace ur_kinematics {
 

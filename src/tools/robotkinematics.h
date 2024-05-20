@@ -5,6 +5,17 @@
 #ifndef ROBOTSIMULATION_ROBOTKINEMATICS_H
 #define ROBOTSIMULATION_ROBOTKINEMATICS_H
 
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES
+
+#include <cmath>
+#include <math.h>
+
+#else
+#include <math.h>
+#endif
+
+
 #include <iostream>
 #include "Eigen/Dense"
 #include <vector>
