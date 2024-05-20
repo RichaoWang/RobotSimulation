@@ -18,9 +18,7 @@ The robot arm control software is implemented based on Qt Widget. This project i
 
 ## Requirements
 
-```
-* It is recommended to use the Qt5 version, otherwise there may be changes in the interface
-```
+> It is recommended to use the Qt5 version, otherwise there may be changes in the interface
 
 + Qt5.15.2
 
