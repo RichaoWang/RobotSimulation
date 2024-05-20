@@ -1,25 +1,22 @@
-//#include "mainwindow.h"
-//#include "components/FluFrameLessWidget.h"
-//#include <QApplication>
-//
-//int main(int argc, char *argv[])
-//{
-//    QApplication a(argc, argv);
-//    FluFrameLessWidget w;
-//    w.show();
-//    return a.exec();
-//}
-
-
 #include <QApplication>
 #include "./components/FluWidget.h"
 #include "widgets/robotsimulationwindow.h"
 #include "./components/utils/FluLogUtils.h"
 
-int main(int argc, char **argv)
-{
-    QApplication app(argc, argv);
+void setFont(const QApplication &app) {
+    QFont font;
+    QStringList l;
+    l << "微软雅黑";
+    font.setFamilies(l);
+    app.setFont(font);
+}
 
+
+int main(int argc, char **argv) {
+    QApplication app(argc, argv);
+#ifdef _WIN32
+    setFont(app);
+#endif
     FluLogUtils::__init();
     RobotSimulationWindow w;
     w.show();
