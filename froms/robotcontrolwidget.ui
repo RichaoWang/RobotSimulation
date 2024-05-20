@@ -199,7 +199,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QSlider" name="j1Slider">
+           <widget class="FluSlider" name="j1Slider">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -587,28 +587,28 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
           <item row="0" column="0">
-           <widget class="QCheckBox" name="gridCheckBox">
+           <widget class="FluCheckBox" name="gridCheckBox">
             <property name="text">
              <string>Grid</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QCheckBox" name="baseCoordCheckBox">
+           <widget class="FluCheckBox" name="baseCoordCheckBox">
             <property name="text">
              <string>WorldCoord</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QCheckBox" name="endCheckBox">
+           <widget class="FluCheckBox" name="endCheckBox">
             <property name="text">
              <string>EndCoord</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QCheckBox" name="deskCheckBox">
+           <widget class="FluCheckBox" name="deskCheckBox">
             <property name="text">
              <string>Desk</string>
             </property>
@@ -623,6 +623,18 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FluCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>components/FluCheckBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FluSlider</class>
+   <extends>QSlider</extends>
+   <header>components/FluSlider.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

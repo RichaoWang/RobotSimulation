@@ -9,14 +9,18 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets OpenGL)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets OpenGL)
+# Qt
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg OpenGL)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Svg OpenGL)
 
+# Eigen
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/eigen-3.4.0)
 
-
-#set(Eigen3_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/eigen-3.4.0/cmake)
-#find_package(Eigen3 REQUIRED)
+# framelesshelper
+set(FRAMELESSHELPER_BUILD_STATIC ON)
+set(FRAMELESSHELPER_BUILD_QUICK OFF)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/framelesshelper-2.5.0")
+add_library(framelesshelper INTERFACE)
 
 # qrc
 set(QRC_SOURCE_FILES res.qrc)
@@ -27,6 +31,11 @@ file(GLOB_RECURSE PROJECT_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h ${CMAKE_CU
 
 # froms
 file(GLOB_RECURSE PROJECT_FROMS ${CMAKE_CURRENT_SOURCE_DIR}/froms/*.ui)
+
+set(PROJECT_SOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+include_directories(
+        ${PROJECT_SOURCES_DIR}
+)
 
 
 if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -58,11 +67,12 @@ else ()
     endif ()
 endif ()
 
-IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
-    target_link_libraries(RobotSimulation PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::OpenGL OpenGL)
-ELSEIF (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    target_link_libraries(RobotSimulation PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::OpenGL OpenGL32)
-ENDIF ()
+if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+    target_link_libraries(RobotSimulation PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Svg Qt${QT_VERSION_MAJOR}::OpenGL OpenGL FramelessHelperCore FramelessHelperWidgets)
+elseif (CMAKE_SYSTEM_NAME MATCHES "Windows")
+    target_link_libraries(RobotSimulation PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Svg Qt${QT_VERSION_MAJOR}::OpenGL OpenGL32 FramelessHelperCore FramelessHelperWidgets)
+endif ()
+
 
 set_target_properties(RobotSimulation PROPERTIES
         MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
