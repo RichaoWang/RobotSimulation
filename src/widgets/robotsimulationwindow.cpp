@@ -11,6 +11,8 @@
 #include "FluAEmptyPage.h"
 #include "FluAEmptyPage2.h"
 #include "FluAEmptyPage3.h"
+#include "widgets/homewidget.h"
+#include "widgets/settingwidget.h"
 
 FRAMELESSHELPER_USE_NAMESPACE
 
@@ -48,24 +50,33 @@ RobotSimulationWindow::RobotSimulationWindow(QWidget *parent /*= nullptr*/) : Fl
 
 //    connect(FluThemeUtils::getUtils(), &FluThemeUtils::themeChanged, [=](FluTheme theme) { onThemeChanged(); });
 
-//    connect(m_titleBar->closeButton(), &QPushButton::clicked, [=]() {
-////        FluMessageBox messageBox("", "", this);
-////        messageBox.exec();
-//    });
+    moveToCenter();
 }
 
-void RobotSimulationWindow::closeEvent(QCloseEvent *event) {
-    FluMessageBox messageBox("Close", "Close RobotSimulation Window?",
-                             this);
 
-    int nExec = messageBox.exec();
-    if (nExec == QDialog::Rejected) {
-        m_titleBar->show();
-        event->ignore(); // can't run it! has some bug.
-        return;
-    } else if (nExec == QDialog::Accepted) {
-        event->accept();
-    }
+void RobotSimulationWindow::moveToCenter() {
+    int screenWidth = QApplication::desktop()->width();
+    int screenHeight = QApplication::desktop()->height();
+    int windowWidth = width();
+    int windowHeight = height();
+    int x = (screenWidth - windowWidth) / 2;
+    int y = (screenHeight - windowHeight) / 2;
+    move(x, y);
+}
+
+
+void RobotSimulationWindow::closeEvent(QCloseEvent *event) {
+//    FluMessageBox messageBox("Close RobotSimulation?", "Choose \"Ok\" to close window, Choose \"Cancel\" return.",
+//                             this);
+//
+//    int nExec = messageBox.exec();
+//    if (nExec == QDialog::Rejected) {
+//        m_titleBar->show();
+//        event->ignore(); // can't run it! has some bug.
+//        return;
+//    } else if (nExec == QDialog::Accepted) {
+//        event->accept();
+//    }
 }
 
 void RobotSimulationWindow::onThemeChanged() {
@@ -107,18 +118,15 @@ void RobotSimulationWindow::onThemeChanged() {
 }
 
 void RobotSimulationWindow::makeHomeNavItem() {
-    FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(FluAwesomeType::Home, "Home", this);
+    FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(FluAwesomeType::KeyboardRightHanded, "Home",
+                                                                      this);
     m_navView->addItemToMidLayout(item);
 
-    auto homePage = new FluAEmptyPage();
+    QWidget *homePage = new HomeWidget(this);
 
-//        auto homePage = new FluHomePage;
     m_sLayout->addWidget("HomePage", homePage);
     connect(item, &FluVNavigationIconTextItem::itemClicked, [=]() {
         m_sLayout->setCurrentWidget("HomePage");
-
-        //  FluMessageBox messageBox("Close Gallery Window?", "choose \"Ok\" to close. choose \"Cancel\" do nothing.", this);
-        // int nExec = messageBox.exec();
     });
 }
 
@@ -127,9 +135,9 @@ void RobotSimulationWindow::makeCodeEditNavItem() {
                                                                       this);
     m_navView->addItemToMidLayout(item);
 
-    auto typographyPage = new FluAEmptyPage2(this);
-    m_sLayout->addWidget("TypographyPage", typographyPage);
-    connect(item, &FluVNavigationIconTextItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("TypographyPage"); });
+    auto typographyPage = new FluAEmptyPage(this);
+    m_sLayout->addWidget("codeEditPage", typographyPage);
+    connect(item, &FluVNavigationIconTextItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("codeEditPage"); });
 //
 //        auto iconsPage = new FluIconsPage;
 //        m_sLayout->addWidget("IconsPage", iconsPage);
@@ -140,7 +148,7 @@ void RobotSimulationWindow::makeSettingsNavItem() {
     FluVNavigationSettingsItem *item = new FluVNavigationSettingsItem(FluAwesomeType::Settings, "Set", this);
     m_navView->addItemToMidLayout(item);
 
-    auto settingPage = new FluAEmptyPage3(this);
+    auto settingPage = new SettingWidget();
     m_sLayout->addWidget("settingPage", settingPage);
     connect(item, &FluVNavigationSettingsItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("settingPage"); });
 

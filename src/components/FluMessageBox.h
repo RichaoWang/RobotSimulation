@@ -74,7 +74,7 @@ class FluMessageBox : public QDialog
         setWindowFlags(Qt::FramelessWindowHint);
         setAttribute(Qt::WA_TranslucentBackground);
 
-        LOG_DEBUG << m_parentWidget->size();
+//        LOG_DEBUG << m_parentWidget->size();
         setGeometry(0, 0, m_parentWidget->width(), m_parentWidget->height());
         m_windowMask->resize(m_parentWidget->size());
 

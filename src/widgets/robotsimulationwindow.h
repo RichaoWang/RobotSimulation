@@ -3,7 +3,7 @@
 #include <QStackedLayout>
 #include <QPainter>
 #include <QStyleOption>
-
+#include <QDesktopWidget>
 #include "../components/FluFrameLessWidget.h"
 #include "../components/FluVNavigationView.h"
 #include "../components/FluVNavigationIconTextItem.h"
@@ -27,6 +27,7 @@ public:
 
     void closeEvent(QCloseEvent *event);
 
+    void moveToCenter();
 //    void paintEvent(QPaintEvent *event) {
 //        QStyleOption opt;
 //        opt.initFrom(this);
