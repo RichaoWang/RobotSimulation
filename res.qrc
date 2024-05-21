@@ -4,9 +4,12 @@
     </qresource>
 
     <qresource prefix="/img">
-        <file alias="robot_arm.png">resources/images/robot_arm.png</file>
-        <file alias="setting.svg">resources/images/setting.svg</file>
-        <file alias="setting.png">resources/images/setting.png</file>
+        <file alias="setting-light.png">resources/images/setting-light.png</file>
+        <file alias="setting-dark.png">resources/images/setting-dark.png</file>
+        <file alias="code-light.png">resources/images/code-light.png</file>
+        <file alias="code-dark.png">resources/images/code-dark.png</file>
+        <file alias="visual-light.png">resources/images/visual-light.png</file>
+        <file alias="visual-dark.png">resources/images/visual-dark.png</file>
     </qresource>
 
     <qresource prefix="/ttfs">
@@ -298,5 +301,9 @@
         <file>stylesheet/light/FluVRadioGroupBox.qss</file>
         <file>stylesheet/light/FluVScrollView.qss</file>
         <file>stylesheet/light/FluVSplitLine.qss</file>
+        <file>stylesheet/light/SettingWidget.qss</file>
+        <file>stylesheet/dark/SettingWidget.qss</file>
+        <file>stylesheet/dark/RobotSimulationWindow.qss</file>
+        <file>stylesheet/light/RobotSimulationWindow.qss</file>
     </qresource>
 </RCC>

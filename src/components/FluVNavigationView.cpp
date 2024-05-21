@@ -23,6 +23,9 @@ FluVNavigationView::FluVNavigationView(QWidget *parent /*= nullptr*/) : FluWidge
     m_vTopWrapLayout->setSpacing(5);
     m_vBottomLayout->setSpacing(5);
 
+    // todo 设置导航控件间距
+    m_midVScrollView->getMainLayout()->setSpacing(15);
+
     m_vTopWrapLayout->setAlignment(Qt::AlignTop);
     m_midVScrollView->getMainLayout()->setAlignment(Qt::AlignTop);
     m_vBottomLayout->setAlignment(Qt::AlignTop);
@@ -48,7 +51,7 @@ FluVNavigationView::FluVNavigationView(QWidget *parent /*= nullptr*/) : FluWidge
     m_bLong = true;
     // todo Width reduction
 //    setFixedWidth(320 + 20);
-    setFixedWidth(100);
+    setFixedWidth(130);
 //    connect(menuButtonItem, &FluVNavigationMenuItem::menuItemClicked, [=]() { m_bLong?menuButtonItem->setDirection(0):menuButtonItem->setDirection(1);onMenuItemClicked(); });
 //    connect(searchItem, &FluVNavigationSearchItem::itemClicked, [=]() { onMenuItemClicked(); });
 }
@@ -60,8 +63,8 @@ void FluVNavigationView::addItemToTopLayout(QWidget *item)
 
 void FluVNavigationView::addItemToMidLayout(QWidget *item)
 {
-    m_midVScrollView->getMainLayout()->addWidget(item, Qt::AlignTop);
-
+    m_midVScrollView->getMainLayout()->addWidget(item);
+//    m_midVScrollView->getMainLayout()->addSpacing(50);
     auto iconTextItem = (FluVNavigationIconTextItem *)item;
     iconTextItem->setParentView(this);
 }

@@ -7,12 +7,10 @@
 #include <QStyleOption>
 #include <QPainter>
 
-class FluSettingsLabelBox : public FluWidget
-{
-    Q_OBJECT
-  public:
-    FluSettingsLabelBox(QWidget* parent = nullptr)
-    {
+class FluSettingsLabelBox : public FluWidget {
+Q_OBJECT
+public:
+    FluSettingsLabelBox(QWidget *parent = nullptr) {
         m_mainLayout = new QHBoxLayout;
         setLayout(m_mainLayout);
 
@@ -42,47 +40,41 @@ class FluSettingsLabelBox : public FluWidget
         FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/FluSettingsLabelBox.qss", this);
     }
 
-    void setIcon(QIcon icon)
-    {
-        m_iconLabel->setPixmap(icon.pixmap(20, 20));
+    void setIcon(QIcon icon, int w = 20, int h = 20) {
+        m_iconLabel->setPixmap(icon.pixmap(w, h));
     }
 
-    void setTitleInfo(QString title, QString info)
-    {
+    void setTitleInfo(QString title, QString info) {
         m_titleLabel->setText(title);
         m_infoLabel->setText(info);
     }
 
-    void setVersion(QString version)
-    {
+    void setVersion(QString version) {
         m_versionLabel->setText(version);
     }
 
-    void paintEvent(QPaintEvent* event)
-    {
+    void paintEvent(QPaintEvent *event) {
         QStyleOption opt;
         opt.initFrom(this);
         QPainter painter(this);
         style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
     }
-  public slots:
-    void onThemeChanged()
-    {
-        if (FluThemeUtils::getUtils()->getTheme() == FluTheme::Light)
-        {
+
+public slots:
+
+    void onThemeChanged() {
+        if (FluThemeUtils::getUtils()->getTheme() == FluTheme::Light) {
             FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/FluSettingsLabelBox.qss", this);
-        }
-        else
-        {
+        } else {
             FluStyleSheetUitls::setQssByFileName(":/stylesheet/dark/FluSettingsLabelBox.qss", this);
         }
     }
 
-  protected:
-    QHBoxLayout* m_mainLayout;
-    QVBoxLayout* m_vLayout;
-    QLabel* m_iconLabel;
-    QLabel* m_titleLabel;
-    QLabel* m_infoLabel;
-    QLabel* m_versionLabel;
+protected:
+    QHBoxLayout *m_mainLayout;
+    QVBoxLayout *m_vLayout;
+    QLabel *m_iconLabel;
+    QLabel *m_titleLabel;
+    QLabel *m_infoLabel;
+    QLabel *m_versionLabel;
 };

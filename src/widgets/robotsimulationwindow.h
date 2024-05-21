@@ -23,11 +23,12 @@ public:
 
     void makeSettingsNavItem();
 
-    void resizeEvent(QResizeEvent *event);
+//    void resizeEvent(QResizeEvent *event);
 
     void closeEvent(QCloseEvent *event);
 
     void moveToCenter();
+
 //    void paintEvent(QPaintEvent *event) {
 //        QStyleOption opt;
 //        opt.initFrom(this);

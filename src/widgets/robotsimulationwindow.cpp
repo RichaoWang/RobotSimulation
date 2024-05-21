@@ -9,8 +9,6 @@
 #include "robotsimulationwindow.h"
 // todo test
 #include "FluAEmptyPage.h"
-#include "FluAEmptyPage2.h"
-#include "FluAEmptyPage3.h"
 #include "widgets/homewidget.h"
 #include "widgets/settingwidget.h"
 
@@ -23,20 +21,21 @@ RobotSimulationWindow::RobotSimulationWindow(QWidget *parent /*= nullptr*/) : Fl
 
     resize(1200, 800);
 
+    m_titleBar->setObjectName("titleBar");
     m_titleBar->chromePalette()->setTitleBarActiveBackgroundColor(Qt::transparent);
     m_titleBar->chromePalette()->setTitleBarInactiveBackgroundColor(Qt::transparent);
     m_titleBar->chromePalette()->setTitleBarActiveForegroundColor(Qt::black);
     m_titleBar->chromePalette()->setTitleBarInactiveForegroundColor(Qt::black);
     m_titleBar->setFixedHeight(35);
 
-    QString qss = FluStyleSheetUitls::getQssByFileName(":/stylesheet/light/FluGalleryWindow.qss");
+    QString qss = FluStyleSheetUitls::getQssByFileName(":/stylesheet/light/RobotSimulationWindow.qss");
     setStyleSheet(qss);
 
     m_navView = new FluVNavigationView(this);
     m_sLayout = new FluStackedLayout(this);
 
     m_contentLayout->addWidget(m_navView);
-    m_contentLayout->addSpacing(20);
+    m_contentLayout->addSpacing(0);
     m_contentLayout->addLayout(m_sLayout, 1);
 
     // home
@@ -48,7 +47,7 @@ RobotSimulationWindow::RobotSimulationWindow(QWidget *parent /*= nullptr*/) : Fl
     // settings
     makeSettingsNavItem();
 
-//    connect(FluThemeUtils::getUtils(), &FluThemeUtils::themeChanged, [=](FluTheme theme) { onThemeChanged(); });
+    connect(FluThemeUtils::getUtils(), &FluThemeUtils::themeChanged, [=](FluTheme theme) { onThemeChanged(); });
 
     moveToCenter();
 }
@@ -80,7 +79,6 @@ void RobotSimulationWindow::closeEvent(QCloseEvent *event) {
 }
 
 void RobotSimulationWindow::onThemeChanged() {
-    // LOG_DEBUG << "Func Beg";
     if (FluThemeUtils::getUtils()->getTheme() == FluTheme::Light) {
         m_titleBar->chromePalette()->setTitleBarActiveBackgroundColor(Qt::transparent);
         m_titleBar->chromePalette()->setTitleBarInactiveBackgroundColor(Qt::transparent);
@@ -91,34 +89,25 @@ void RobotSimulationWindow::onThemeChanged() {
         m_titleBar->closeButton()->setActiveForegroundColor(Qt::black);
         m_titleBar->maximizeButton()->setActiveForegroundColor(Qt::black);
 
-        // m_titleBar->update();
-        // m_titleBar->style()->polish(m_titleBar);
         m_titleBar->show();
-        FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/FluGalleryWindow.qss", this);
-        // repaint();
-        // QApplication::processEvents();
+        FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/RobotSimulationWindow.qss", this);
     } else {
         m_titleBar->chromePalette()->setTitleBarActiveBackgroundColor(Qt::transparent);
         m_titleBar->chromePalette()->setTitleBarInactiveBackgroundColor(Qt::transparent);
         m_titleBar->chromePalette()->setTitleBarActiveForegroundColor(Qt::white);
         m_titleBar->chromePalette()->setTitleBarInactiveForegroundColor(Qt::white);
-        // m_titleBar->update();
-        // m_titleBar->style()->polish(m_titleBar);
 
         m_titleBar->minimizeButton()->setActiveForegroundColor(Qt::white);
         m_titleBar->closeButton()->setActiveForegroundColor(Qt::white);
         m_titleBar->maximizeButton()->setActiveForegroundColor(Qt::white);
 
         m_titleBar->show();
-        FluStyleSheetUitls::setQssByFileName(":/stylesheet/dark/FluGalleryWindow.qss", this);
-        // repaint();
-        // QApplication::processEvents();
+        FluStyleSheetUitls::setQssByFileName(":/stylesheet/dark/RobotSimulationWindow.qss", this);
     }
-    // LOG_DEBUG << "Func End";
 }
 
 void RobotSimulationWindow::makeHomeNavItem() {
-    FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(FluAwesomeType::KeyboardRightHanded, "Home",
+    FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(":/img/visual-light.png", "Display",
                                                                       this);
     m_navView->addItemToMidLayout(item);
 
@@ -131,47 +120,37 @@ void RobotSimulationWindow::makeHomeNavItem() {
 }
 
 void RobotSimulationWindow::makeCodeEditNavItem() {
-    FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(FluAwesomeType::Code, "Code",
+    FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(":/img/code-light.png", "CodeEdit",
                                                                       this);
     m_navView->addItemToMidLayout(item);
 
     auto typographyPage = new FluAEmptyPage(this);
     m_sLayout->addWidget("codeEditPage", typographyPage);
     connect(item, &FluVNavigationIconTextItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("codeEditPage"); });
-//
-//        auto iconsPage = new FluIconsPage;
-//        m_sLayout->addWidget("IconsPage", iconsPage);
-//        connect(item2, &FluVNavigationIconTextItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("IconsPage"); });
 }
 
 void RobotSimulationWindow::makeSettingsNavItem() {
-    FluVNavigationSettingsItem *item = new FluVNavigationSettingsItem(FluAwesomeType::Settings, "Set", this);
+    FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(":/img/setting-light.png", "Setting", this);
     m_navView->addItemToMidLayout(item);
 
     auto settingPage = new SettingWidget();
     m_sLayout->addWidget("settingPage", settingPage);
-    connect(item, &FluVNavigationSettingsItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("settingPage"); });
-
-//        m_navView->addItemToBottomLayout(item);
-
-//        auto settingsPage = new FluSettingPage;
-//        m_sLayout->addWidget("SettingPage", settingsPage);
-//        connect(item, &FluVNavigationSettingsItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("SettingPage"); });
+    connect(item, &FluVNavigationIconTextItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("settingPage"); });
 }
 
-void RobotSimulationWindow::resizeEvent(QResizeEvent *event) {
-    // if (event->size().width() == width())
-    //     return;
-
-//        if (width() > 1000)
-//        {
-//            // check it
-//            if (!m_navView->isLong())
-//                m_navView->onMenuItemClicked();
-//        }
-//        else
-//        {
-//            if (m_navView->isLong())
-//                m_navView->onMenuItemClicked();
-//        }
-}
+//void RobotSimulationWindow::resizeEvent(QResizeEvent *event) {
+//    // if (event->size().width() == width())
+//    //     return;
+//
+////        if (width() > 1000)
+////        {
+////            // check it
+////            if (!m_navView->isLong())
+////                m_navView->onMenuItemClicked();
+////        }
+////        else
+////        {
+////            if (m_navView->isLong())
+////                m_navView->onMenuItemClicked();
+////        }
+//}

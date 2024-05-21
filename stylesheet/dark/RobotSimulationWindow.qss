@@ -1,0 +1,8 @@
+RobotSimulationWindow {
+    background-color: rgb(32, 32, 32);
+}
+
+#titleBar {
+    color: white;
+    background-color: rgb(32, 32, 32);
+}

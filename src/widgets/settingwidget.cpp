@@ -1,5 +1,6 @@
 
 #include "settingwidget.h"
+#include "components/FluIconButton.h"
 
 SettingWidget::SettingWidget(QWidget *parent) : FluWidget(parent) {
     m_mainLayout = new QVBoxLayout;
@@ -7,11 +8,6 @@ SettingWidget::SettingWidget(QWidget *parent) : FluWidget(parent) {
     setLayout(m_mainLayout);
 
     m_mainLayout->setContentsMargins(35, 35, 35, 35);
-
-    m_titleLabel = new QLabel;
-    m_titleLabel->setObjectName("titleLabel");
-    m_titleLabel->setText("Settings");
-    m_mainLayout->addWidget(m_titleLabel);
 
     m_vScrollView = new FluVScrollView;
     m_vScrollView->setObjectName("vScrollView");
@@ -21,11 +17,11 @@ SettingWidget::SettingWidget(QWidget *parent) : FluWidget(parent) {
 
     m_appBehaviorLabel = new QLabel;
     m_appBehaviorLabel->setObjectName("appBehaviorLabel");
-    m_appBehaviorLabel->setText("Appearance & behavior");
+    m_appBehaviorLabel->setText("Appearance");
     m_vScrollView->getMainLayout()->addWidget(m_appBehaviorLabel);
 
     auto appThemeSelectBox = new FluSettingsSelectBox;
-    appThemeSelectBox->setTitleInfo("App theme", "Select which app theme to display.");
+    appThemeSelectBox->setTitleInfo("App theme", "Select which RobotSimulation theme to display");
     appThemeSelectBox->setIcon(FluAwesomeType::Color);
 
     appThemeSelectBox->getComboBox()->addItem("Light");
@@ -36,19 +32,9 @@ SettingWidget::SettingWidget(QWidget *parent) : FluWidget(parent) {
             FluThemeUtils::getUtils()->setTheme(FluTheme::Light);
         else
             FluThemeUtils::getUtils()->setTheme(FluTheme::Dark);
-
-        // LOG_DEBUG << FluThemeUtils::getUtils()->getTheme();
     });
 
     m_vScrollView->getMainLayout()->addWidget(appThemeSelectBox);
-
-    auto navStyleSelectBox = new FluSettingsSelectBox;
-    navStyleSelectBox->hideInfoLabel();
-    navStyleSelectBox->setTitleInfo("Navigation style", "");
-    navStyleSelectBox->setIcon(FluAwesomeType::HolePunchLandscapeLeft);
-    navStyleSelectBox->getComboBox()->addItem("Left");
-    navStyleSelectBox->getComboBox()->addItem("Top");
-    m_vScrollView->getMainLayout()->addWidget(navStyleSelectBox);
 
     m_vScrollView->getMainLayout()->addSpacing(30);
 
@@ -58,8 +44,8 @@ SettingWidget::SettingWidget(QWidget *parent) : FluWidget(parent) {
     m_vScrollView->getMainLayout()->addWidget(m_aboutLabel);
 
     auto aboutLabelBox = new FluSettingsLabelBox;
-    aboutLabelBox->setTitleInfo("CppQtFluent888 Gallery", "©2023-2024 FluentUI For Qt & Cpp. All rights reserved.");
-    aboutLabelBox->setIcon(QIcon(":icon/icon.ico"));
+    aboutLabelBox->setTitleInfo("RobotSimulation", "RobotSimulation© 2024 RichaoWang, All rights reserved.");
+    aboutLabelBox->setIcon(QIcon(":icon/icon.ico"), 30, 30);
     aboutLabelBox->setVersion("");  // empty it!;
     m_vScrollView->getMainLayout()->addWidget(aboutLabelBox);
     FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/SettingWidget.qss", this);

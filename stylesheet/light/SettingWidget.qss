@@ -11,11 +11,11 @@ SettingWidget {
 }
 
 #appBehaviorLabel {
-    font-size: 13px;
+    font-size: 26px;
     font-weight: bold;
 }
 
 #aboutLabel {
-    font-size: 13px;
+    font-size: 26px;
     font-weight: bold;
 }

@@ -55,7 +55,8 @@ FluVNavigationIconTextItem {
 #label {
     background-color: transparent;
     color: rgb(239, 239, 239);
-    font-size: 12px;
+    font-size: 17px;
+    font-weight: bold;
 }
 
 #label[enableThisItem=false] {
