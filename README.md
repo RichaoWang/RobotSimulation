@@ -38,7 +38,8 @@ The robot arm control software is implemented based on Qt Widget. This project i
 
 ## Reference
 
-* > [universal robot](https://github.com/ros-industrial/universal_robot)
+> * [ros-industrial/universal_robot](https://github.com/ros-industrial/universal_robot): Universal Robots support (https://wiki.ros.org/universal_robot).
+> * [mowangshuying/CppQtFluentUi888](https://github.com/mowangshuying/CppQtFluentUi888): FluentUI for cpp Qt.
 
 ## TodoList
 
@@ -48,3 +49,4 @@ The robot arm control software is implemented based on Qt Widget. This project i
 + [ ] CodeEdit
 + [ ] MoveAnimations
 + [ ] CameraSystem
++ [ ] NewUi

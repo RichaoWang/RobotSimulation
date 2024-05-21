@@ -51,7 +51,7 @@ class FluVNavigationView : public FluWidget
     void paintEvent(QPaintEvent *event) override;
 
   public slots:
-    void onMenuItemClicked();
+//    void onMenuItemClicked();
     void onThemeChanged()
     {
         // LOG_DEBUG << "called";

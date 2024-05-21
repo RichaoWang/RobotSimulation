@@ -2,8 +2,7 @@
 #include "./utils/FluUtils.h"
 #include <QPropertyAnimation>
 
-FluVNavigationMenuItem::FluVNavigationMenuItem(QWidget *parent /*= nullptr*/) : FluVNavigationItem(parent)
-{
+FluVNavigationMenuItem::FluVNavigationMenuItem(QWidget *parent /*= nullptr*/) : FluVNavigationItem(parent) {
     m_itemType = FluVNavigationItemType::Menu;
 
     m_hLayout = new QHBoxLayout(this);
@@ -19,7 +18,8 @@ FluVNavigationMenuItem::FluVNavigationMenuItem(QWidget *parent /*= nullptr*/) : 
     m_wrapWidget2->setObjectName("wrapWidget2");
 
     m_menuButton = new QPushButton;
-    m_menuButton->setIcon(FluIconUtils::getFluentIcon(FluAwesomeType::GlobalNavButton));
+//    m_menuButton->setIcon(FluIconUtils::getFluentIcon(FluAwesomeType::GlobalNavButton));
+    m_menuButton->setIcon(FluIconUtils::getFluentIcon(FluAwesomeType::ChevronRight));
     m_menuButton->setIconSize(QSize(24, 24));
     m_menuButton->setFixedSize(44, 32);
 
@@ -44,16 +44,21 @@ FluVNavigationMenuItem::FluVNavigationMenuItem(QWidget *parent /*= nullptr*/) : 
     FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/FluVNavigationMenuItem.qss", this);
 }
 
-void FluVNavigationMenuItem::onThemeChanged()
-{
-    if (FluThemeUtils::getUtils()->getTheme() == FluTheme::Light)
-    {
+void FluVNavigationMenuItem::onThemeChanged() {
+    if (FluThemeUtils::getUtils()->getTheme() == FluTheme::Light) {
         m_menuButton->setIcon(FluIconUtils::getFluentIcon(FluAwesomeType::GlobalNavButton, QColor(8, 8, 8)));
         FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/FluVNavigationMenuItem.qss", this);
-    }
-    else
-    {
+    } else {
         m_menuButton->setIcon(FluIconUtils::getFluentIcon(FluAwesomeType::GlobalNavButton, QColor(239, 239, 239)));
         FluStyleSheetUitls::setQssByFileName(":/stylesheet/dark/FluVNavigationMenuItem.qss", this);
     }
+}
+
+/// 0 right 1 left
+void FluVNavigationMenuItem::setDirection(int direction) {
+    if (direction == 0)
+        m_menuButton->setIcon(FluIconUtils::getFluentIcon(FluAwesomeType::ChevronRight));
+    else
+        m_menuButton->setIcon(FluIconUtils::getFluentIcon(FluAwesomeType::ChevronLeft));
+
 }

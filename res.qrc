@@ -2,6 +2,9 @@
     <qresource prefix="/icon">
         <file alias="icon.ico">resources/images/icon.ico</file>
     </qresource>
+    <qresource prefix="/ttfs">
+        <file alias="Segoe_Fluent_Icons.ttf">resources/ttfs/Segoe_Fluent_Icons.ttf</file>
+    </qresource>
     <qresource prefix="/stl">
         <file alias="desk.STL">resources/stl_files/desk.stl</file>
         <file alias="us10base.STL">resources/stl_files/ur10/base.stl</file>

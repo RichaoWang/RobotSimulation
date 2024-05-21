@@ -14,6 +14,8 @@ class FluVNavigationMenuItem : public FluVNavigationItem
   public:
     FluVNavigationMenuItem(QWidget *parent = nullptr);
 
+    void setDirection(int);
+
     void paintEvent(QPaintEvent *event)
     {
         QStyleOption opt;

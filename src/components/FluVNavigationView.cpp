@@ -35,19 +35,22 @@ FluVNavigationView::FluVNavigationView(QWidget *parent /*= nullptr*/) : FluWidge
     m_midVScrollView->setObjectName("widget2");
     m_bottomWrapWidget->setObjectName("widget3");
 
-    auto menuButtonItem = new FluVNavigationMenuItem(this);
-    m_vTopWrapLayout->addWidget(menuButtonItem);
+//    auto menuButtonItem = new FluVNavigationMenuItem(this);
+//    m_vTopWrapLayout->addWidget(menuButtonItem);
 
-    auto searchItem = new FluVNavigationSearchItem;
-    m_vTopWrapLayout->addWidget(searchItem);
+    // todo ignore search item
+//    auto searchItem = new FluVNavigationSearchItem;
+//    m_vTopWrapLayout->addWidget(searchItem);
 
     QString qss = FluStyleSheetUitls::getQssByFileName(":/stylesheet/light/FluVNavigationView.qss");
     setStyleSheet(qss);
 
     m_bLong = true;
-    setFixedWidth(320 + 20);
-    connect(menuButtonItem, &FluVNavigationMenuItem::menuItemClicked, [=]() { onMenuItemClicked(); });
-    connect(searchItem, &FluVNavigationSearchItem::itemClicked, [=]() { onMenuItemClicked(); });
+    // todo Width reduction
+//    setFixedWidth(320 + 20);
+    setFixedWidth(100);
+//    connect(menuButtonItem, &FluVNavigationMenuItem::menuItemClicked, [=]() { m_bLong?menuButtonItem->setDirection(0):menuButtonItem->setDirection(1);onMenuItemClicked(); });
+//    connect(searchItem, &FluVNavigationSearchItem::itemClicked, [=]() { onMenuItemClicked(); });
 }
 
 void FluVNavigationView::addItemToTopLayout(QWidget *item)
@@ -162,125 +165,126 @@ void FluVNavigationView::paintEvent(QPaintEvent *event)
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
 }
 
-void FluVNavigationView::onMenuItemClicked()
-{
-    // LOG_DEBUG << "called.";
-    std::vector<QWidget *> itemVct;
-    for (int i = 0; i < m_topWrapWidget->layout()->count(); i++)
-    {
-        itemVct.push_back(m_topWrapWidget->layout()->itemAt(i)->widget());
-    }
-
-    for (int i = 0; i < m_midVScrollView->getMainLayout()->count(); i++)
-    {
-        itemVct.push_back(m_midVScrollView->getMainLayout()->itemAt(i)->widget());
-    }
-
-    for (int i = 0; i < m_bottomWrapWidget->layout()->count(); i++)
-    {
-        itemVct.push_back(m_bottomWrapWidget->layout()->itemAt(i)->widget());
-    }
-
-    if (m_bLong)
-    {
-        // close all item in vLayout
-        for (auto itemW : itemVct)
-        {
-            auto item = (FluVNavigationItem *)(itemW);
-            if (item != nullptr)
-            {
-                item->setLong(false);
-                // item->setFixedWidth(40);
-            }
-
-            if (item->getItemType() == FluVNavigationItemType::IconText)
-            {
-                auto iconTextItem = (FluVNavigationIconTextItem *)(item);
-                if (!iconTextItem->isDown())
-                {
-                    iconTextItem->onItemClicked();
-                }
-                iconTextItem->setFixedWidth(40);
-                iconTextItem->getWrapWidget1()->setFixedWidth(40);
-                iconTextItem->hideLabelArrow();
-            }
-
-            if (item->getItemType() == FluVNavigationItemType::Setting)
-            {
-                auto settingsItem = (FluVNavigationSettingsItem *)(item);
-                if (settingsItem != nullptr)
-                {
-                    settingsItem->setFixedWidth(40);
-                    settingsItem->hideLabel();
-                }
-            }
-
-            if (item->getItemType() == FluVNavigationItemType::Search)
-            {
-                auto searchItem = (FluVNavigationSearchItem *)(item);
-                if (searchItem != nullptr)
-                {
-                    searchItem->setFixedWidth(40);
-                    searchItem->hideSearchEdit();
-                }
-            }
-
-            if (item->getItemType() == FluVNavigationItemType::Menu)
-            {
-                auto menuItem = (FluVNavigationMenuItem *)(item);
-                if (menuItem != nullptr)
-                {
-                    menuItem->setFixedWidth(40);
-                }
-            }
-        }
-
-        setFixedWidth(48);
-        m_bLong = false;
-        m_midVScrollView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    }
-    else
-    {
-        for (auto itemW : itemVct)
-        {
-            auto item = (FluVNavigationItem *)(itemW);
-            if (item != nullptr)
-            {
-                item->setLong(true);
-                // item->setFixedWidth(40);
-            }
-
-            if (item->getItemType() == FluVNavigationItemType::IconText)
-            {
-                auto iconTextItem = (FluVNavigationIconTextItem *)(item);
-                iconTextItem->setFixedWidth(320);
-                iconTextItem->getWrapWidget1()->setFixedWidth(320);
-                iconTextItem->showLabelArrow();
-            }
-
-            if (item->getItemType() == FluVNavigationItemType::Setting)
-            {
-                auto settingsItem = (FluVNavigationSettingsItem *)(item);
-                if (settingsItem != nullptr)
-                {
-                    settingsItem->setFixedWidth(320);
-                    settingsItem->showLabel();
-                }
-            }
-
-            if (item->getItemType() == FluVNavigationItemType::Search)
-            {
-                auto searchItem = (FluVNavigationSearchItem *)(item);
-                if (searchItem != nullptr)
-                {
-                    searchItem->setFixedWidth(320);
-                    searchItem->hideSearchButton();
-                }
-            }
-        }
-
-        m_midVScrollView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        setFixedWidth(320 + 20);
-        m_bLong = true;
-    }
-}
+//void FluVNavigationView::onMenuItemClicked()
+//{
+//    // LOG_DEBUG << "called.";
+//    std::vector<QWidget *> itemVct;
+//    for (int i = 0; i < m_topWrapWidget->layout()->count(); i++)
+//    {
+//        itemVct.push_back(m_topWrapWidget->layout()->itemAt(i)->widget());
+//    }
+//
+//    for (int i = 0; i < m_midVScrollView->getMainLayout()->count(); i++)
+//    {
+//        itemVct.push_back(m_midVScrollView->getMainLayout()->itemAt(i)->widget());
+//    }
+//
+//    for (int i = 0; i < m_bottomWrapWidget->layout()->count(); i++)
+//    {
+//        itemVct.push_back(m_bottomWrapWidget->layout()->itemAt(i)->widget());
+//    }
+//
+//    if (m_bLong)
+//    {
+//        // close all item in vLayout
+//        for (auto itemW : itemVct)
+//        {
+//            auto item = (FluVNavigationItem *)(itemW);
+//            if (item != nullptr)
+//            {
+//                item->setLong(false);
+//                // item->setFixedWidth(40);
+//            }
+//
+//            if (item->getItemType() == FluVNavigationItemType::IconText)
+//            {
+//                auto iconTextItem = (FluVNavigationIconTextItem *)(item);
+//                if (!iconTextItem->isDown())
+//                {
+//                    iconTextItem->onItemClicked();
+//                }
+//                iconTextItem->setFixedWidth(40);
+//                iconTextItem->getWrapWidget1()->setFixedWidth(40);
+//                iconTextItem->hideLabelArrow();
+//            }
+//
+//            if (item->getItemType() == FluVNavigationItemType::Setting)
+//            {
+//                auto settingsItem = (FluVNavigationSettingsItem *)(item);
+//                if (settingsItem != nullptr)
+//                {
+//                    settingsItem->setFixedWidth(40);
+//                    settingsItem->hideLabel();
+//                }
+//            }
+//
+//            if (item->getItemType() == FluVNavigationItemType::Search)
+//            {
+//                auto searchItem = (FluVNavigationSearchItem *)(item);
+//                if (searchItem != nullptr)
+//                {
+//                    searchItem->setFixedWidth(40);
+//                    searchItem->hideSearchEdit();
+//                }
+//            }
+//
+//            if (item->getItemType() == FluVNavigationItemType::Menu)
+//            {
+//                auto menuItem = (FluVNavigationMenuItem *)(item);
+//                if (menuItem != nullptr)
+//                {
+//                    menuItem->setFixedWidth(40);
+//                }
+//            }
+//        }
+//
+//        setFixedWidth(48);
+//        m_bLong = false;
+//        m_midVScrollView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+//    }
+//    else
+//    {
+//        for (auto itemW : itemVct)
+//        {
+//            auto item = (FluVNavigationItem *)(itemW);
+//            if (item != nullptr)
+//            {
+//                item->setLong(true);
+//                // item->setFixedWidth(40);
+//            }
+//
+//            if (item->getItemType() == FluVNavigationItemType::IconText)
+//            {
+//                auto iconTextItem = (FluVNavigationIconTextItem *)(item);
+//                iconTextItem->setFixedWidth(150);
+//                iconTextItem->getWrapWidget1()->setFixedWidth(150);
+//                iconTextItem->showLabelArrow();
+//            }
+//
+//            if (item->getItemType() == FluVNavigationItemType::Setting)
+//            {
+//                auto settingsItem = (FluVNavigationSettingsItem *)(item);
+//                if (settingsItem != nullptr)
+//                {
+//                    settingsItem->setFixedWidth(150);
+//                    settingsItem->showLabel();
+//                }
+//            }
+//
+//            if (item->getItemType() == FluVNavigationItemType::Search)
+//            {
+//                auto searchItem = (FluVNavigationSearchItem *)(item);
+//                if (searchItem != nullptr)
+//                {
+//                    searchItem->setFixedWidth(150);
+//                    searchItem->hideSearchButton();
+//                }
+//            }
+//        }
+//
+//        m_midVScrollView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+////        setFixedWidth(320 + 20);
+//        setFixedWidth(150);
+//        m_bLong = true;
+//    }
+//}
