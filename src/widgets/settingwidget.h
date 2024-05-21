@@ -29,6 +29,8 @@ protected:
     QLabel *m_appBehaviorLabel;
     QLabel *m_aboutLabel;
     FluVScrollView *m_vScrollView;
+public:
+    FluSettingsSelectBox*appThemeSelectBox;
 };
 
 #endif //ROBOTSIMULATION_SETTINGWIDGET_H

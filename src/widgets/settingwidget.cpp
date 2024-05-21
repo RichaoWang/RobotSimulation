@@ -20,8 +20,8 @@ SettingWidget::SettingWidget(QWidget *parent) : FluWidget(parent) {
     m_appBehaviorLabel->setText("Appearance");
     m_vScrollView->getMainLayout()->addWidget(m_appBehaviorLabel);
 
-    auto appThemeSelectBox = new FluSettingsSelectBox;
-    appThemeSelectBox->setTitleInfo("App theme", "Select which RobotSimulation theme to display");
+    appThemeSelectBox = new FluSettingsSelectBox;
+    appThemeSelectBox->setTitleInfo("AppTheme", "Select which RobotSimulation theme to display");
     appThemeSelectBox->setIcon(FluAwesomeType::Color);
 
     appThemeSelectBox->getComboBox()->addItem("Light");

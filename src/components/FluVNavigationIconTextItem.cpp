@@ -45,7 +45,7 @@ FluVNavigationIconTextItem::FluVNavigationIconTextItem(QWidget *parent /*= nullp
 
     m_hLayout1->addSpacing(-70);
     m_hLayout1->addWidget(m_iconBtn);
-    m_hLayout1->addSpacing(60);
+    m_hLayout1->addSpacing(50);
     m_hLayout1->addWidget(m_label, 1);
     m_hLayout1->addWidget(m_arrow);
     m_hLayout1->setAlignment(Qt::AlignHCenter);
@@ -69,7 +69,7 @@ FluVNavigationIconTextItem::FluVNavigationIconTextItem(QWidget *parent /*= nullp
     m_arrow->setObjectName("arrow");
 
 //    m_iconBtn->setIcon(FluIconUtils::getFluentIcon(FluAwesomeType::Home));
-    m_iconBtn->setIconSize(QSize(80, 80));
+    m_iconBtn->setIconSize(QSize(70, 70));
 
 //    m_arrow->setIconSize(QSize(80, 80));
 //    m_arrow->setIcon(FluIconUtils::getFluentIcon(FluAwesomeType::ChevronDown));
@@ -100,6 +100,7 @@ FluVNavigationIconTextItem::FluVNavigationIconTextItem(QString iconPath, QString
     m_iconPath = iconPath;
     m_iconBtn->setIcon(icon);
     m_label->setText(text);
+    onThemeChanged();
 }
 
 FluVNavigationIconTextItem::FluVNavigationIconTextItem(QString text, QWidget *parent /*= nullptr*/)

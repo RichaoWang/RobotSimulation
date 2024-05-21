@@ -22,14 +22,15 @@ RobotSimulationWindow::RobotSimulationWindow(QWidget *parent /*= nullptr*/) : Fl
     resize(1200, 800);
 
     m_titleBar->setObjectName("titleBar");
+
     m_titleBar->chromePalette()->setTitleBarActiveBackgroundColor(Qt::transparent);
     m_titleBar->chromePalette()->setTitleBarInactiveBackgroundColor(Qt::transparent);
     m_titleBar->chromePalette()->setTitleBarActiveForegroundColor(Qt::black);
     m_titleBar->chromePalette()->setTitleBarInactiveForegroundColor(Qt::black);
-    m_titleBar->setFixedHeight(35);
-
     QString qss = FluStyleSheetUitls::getQssByFileName(":/stylesheet/light/RobotSimulationWindow.qss");
     setStyleSheet(qss);
+
+    m_titleBar->setFixedHeight(35);
 
     m_navView = new FluVNavigationView(this);
     m_sLayout = new FluStackedLayout(this);
@@ -117,6 +118,7 @@ void RobotSimulationWindow::makeHomeNavItem() {
     connect(item, &FluVNavigationIconTextItem::itemClicked, [=]() {
         m_sLayout->setCurrentWidget("HomePage");
     });
+    item->itemClicked();
 }
 
 void RobotSimulationWindow::makeCodeEditNavItem() {
@@ -125,8 +127,8 @@ void RobotSimulationWindow::makeCodeEditNavItem() {
     m_navView->addItemToMidLayout(item);
 
     auto typographyPage = new FluAEmptyPage(this);
-    m_sLayout->addWidget("codeEditPage", typographyPage);
-    connect(item, &FluVNavigationIconTextItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("codeEditPage"); });
+    m_sLayout->addWidget("CodeEditPage", typographyPage);
+    connect(item, &FluVNavigationIconTextItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("CodeEditPage"); });
 }
 
 void RobotSimulationWindow::makeSettingsNavItem() {
@@ -134,8 +136,8 @@ void RobotSimulationWindow::makeSettingsNavItem() {
     m_navView->addItemToMidLayout(item);
 
     auto settingPage = new SettingWidget();
-    m_sLayout->addWidget("settingPage", settingPage);
-    connect(item, &FluVNavigationIconTextItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("settingPage"); });
+    m_sLayout->addWidget("SettingPage", settingPage);
+    connect(item, &FluVNavigationIconTextItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("SettingPage"); });
 }
 
 //void RobotSimulationWindow::resizeEvent(QResizeEvent *event) {
