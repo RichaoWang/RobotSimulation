@@ -66,17 +66,19 @@ void RobotSimulationWindow::moveToCenter() {
 
 
 void RobotSimulationWindow::closeEvent(QCloseEvent *event) {
-//    FluMessageBox messageBox("Close RobotSimulation?", "Choose \"Ok\" to close window, Choose \"Cancel\" return.",
-//                             this);
-//
-//    int nExec = messageBox.exec();
-//    if (nExec == QDialog::Rejected) {
-//        m_titleBar->show();
-//        event->ignore(); // can't run it! has some bug.
-//        return;
-//    } else if (nExec == QDialog::Accepted) {
-//        event->accept();
-//    }
+#ifdef NDEBUG
+    FluMessageBox messageBox("Close RobotSimulation?", "Choose \"Ok\" to close window, Choose \"Cancel\" return.",
+                             this);
+
+    int nExec = messageBox.exec();
+    if (nExec == QDialog::Rejected) {
+        m_titleBar->show();
+        event->ignore(); // can't run it! has some bug.
+        return;
+    } else if (nExec == QDialog::Accepted) {
+        event->accept();
+    }
+#endif
 }
 
 void RobotSimulationWindow::onThemeChanged() {
@@ -139,20 +141,3 @@ void RobotSimulationWindow::makeSettingsNavItem() {
     m_sLayout->addWidget("SettingPage", settingPage);
     connect(item, &FluVNavigationIconTextItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("SettingPage"); });
 }
-
-//void RobotSimulationWindow::resizeEvent(QResizeEvent *event) {
-//    // if (event->size().width() == width())
-//    //     return;
-//
-////        if (width() > 1000)
-////        {
-////            // check it
-////            if (!m_navView->isLong())
-////                m_navView->onMenuItemClicked();
-////        }
-////        else
-////        {
-////            if (m_navView->isLong())
-////                m_navView->onMenuItemClicked();
-////        }
-//}
