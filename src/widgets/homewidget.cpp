@@ -6,6 +6,9 @@
 #include "components/FluCheckBox.h"
 #include "components/FluLineEdit.h"
 #include "components/FluPushButton.h"
+#include "components/FluExpander.h"
+#include "components/FluLabel.h"
+#include "components/FluDoubleSpinBox.h"
 #include "widgets/robotcontrolwidget.h"
 
 HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
@@ -304,7 +307,23 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     controlScrollView->getMainLayout()->addWidget(eleLabel);
     controlScrollView->getMainLayout()->addWidget(eleWidget);
 
+    /// todo test expend
+    auto exp = new FluExpander;
+    auto titlabel = new FluLabel;
+    titlabel->setObjectName("titlabel");
+    titlabel->setText("Title Text");
+//    titlabel->setFont(QFont("", 20, 75));
+    exp->getWrap1Layout()->setAlignment(Qt::AlignCenter);
+    exp->getWrap1Layout()->addWidget(titlabel);
+    controlScrollView->getMainLayout()->addWidget(exp);
 
+    auto testw = new QWidget;
+    testw->setFixedHeight(200);
+    exp->getWrap2Layout()->setAlignment(Qt::AlignCenter);
+    exp->getWrap2Layout()->addWidget(testw);
+
+    auto testspb=new FluDoubleSpinBox;
+    controlScrollView->getMainLayout()->addWidget(testspb);
 
 
     m_mainLayout->addWidget(controlWidget);

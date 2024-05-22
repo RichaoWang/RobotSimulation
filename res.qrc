@@ -10,6 +10,23 @@
         <file alias="code-dark.png">resources/images/code-dark.png</file>
         <file alias="visual-light.png">resources/images/visual-light.png</file>
         <file alias="visual-dark.png">resources/images/visual-dark.png</file>
+
+        <file alias="CheckBox-Black.png">resources/images/CheckBox-Black.png</file>
+        <file alias="CheckBox-White.png">resources/images/CheckBox-White.png</file>
+        <file alias="CheckBoxPressed-Black.png">resources/images/CheckBoxPressed-Black.png</file>
+        <file alias="CheckBoxPressed-White.png">resources/images/CheckBoxPressed-White.png</file>
+
+        <file alias="SpinBoxDown-Dark.png">resources/images/SpinBoxDown-Dark.png</file>
+        <file alias="SpinBoxDown-Light.png">resources/images/SpinBoxDown-Light.png</file>
+        <file alias="SpinBoxDownDisabled-Dark.png">resources/images/SpinBoxDownDisabled-Dark.png</file>
+        <file alias="SpinBoxDownDisabled-Light.png">resources/images/SpinBoxDownDisabled-Light.png</file>
+        <file alias="SpinBoxUp-Dark.png">resources/images/SpinBoxUp-Dark.png</file>
+        <file alias="SpinBoxUp-Light.png">resources/images/SpinBoxUp-Light.png</file>
+        <file alias="SpinBoxUpDisabled-Dark.png">resources/images/SpinBoxUpDisabled-Dark.png</file>
+        <file alias="SpinBoxUpDisabled-Light.png">resources/images/SpinBoxUpDisabled-Light.png</file>
+
+
+
     </qresource>
 
     <qresource prefix="/ttfs">
