@@ -22,7 +22,7 @@ class FluShortInfoBar : public FluWidget
 {
     Q_OBJECT
   public:
-    FluShortInfoBar(FluShortInfoBarType infobarType, QWidget* parent = nullptr);
+    FluShortInfoBar(FluShortInfoBarType infobarType,QString text, QWidget* parent = nullptr);
 
     ~FluShortInfoBar();
 

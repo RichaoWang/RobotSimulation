@@ -30,7 +30,8 @@ protected:
     QLabel *m_aboutLabel;
     FluVScrollView *m_vScrollView;
 public:
-    FluSettingsSelectBox*appThemeSelectBox;
+    FluSettingsSelectBox *appThemeSelectBox;
+    FluSettingsSelectBox *appLanguageSelectBox;
 };
 
 #endif //ROBOTSIMULATION_SETTINGWIDGET_H

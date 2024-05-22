@@ -109,6 +109,7 @@ void RobotSimulationWindow::onThemeChanged() {
     }
 }
 
+/// 显示页
 void RobotSimulationWindow::makeHomeNavItem() {
     FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(":/img/visual-light.png", "Display",
                                                                       this);
@@ -123,6 +124,7 @@ void RobotSimulationWindow::makeHomeNavItem() {
     item->itemClicked();
 }
 
+/// todo 代码编辑页
 void RobotSimulationWindow::makeCodeEditNavItem() {
     FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(":/img/code-light.png", "CodeEdit",
                                                                       this);
@@ -133,10 +135,12 @@ void RobotSimulationWindow::makeCodeEditNavItem() {
     connect(item, &FluVNavigationIconTextItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("CodeEditPage"); });
 }
 
+/// 设置页
 void RobotSimulationWindow::makeSettingsNavItem() {
     FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(":/img/setting-light.png", "Setting", this);
     m_navView->addItemToMidLayout(item);
 
+//    auto settingPage = new SettingWidget();
     auto settingPage = new SettingWidget();
     m_sLayout->addWidget("SettingPage", settingPage);
     connect(item, &FluVNavigationIconTextItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("SettingPage"); });

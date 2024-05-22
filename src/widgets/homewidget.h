@@ -1,12 +1,15 @@
-//
-// Created by 12168 on 2024/5/21.
-//
+#ifndef ROBOTSIMULATION_SETTINGWIDGET_H
+#define ROBOTSIMULATION_SETTINGWIDGET_H
 
-#ifndef ROBOTSIMULATION_HOMEWIDGET_H
-#define ROBOTSIMULATION_HOMEWIDGET_H
-
-#include <QWidget>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QStyleOption>
+#include <QPainter>
 #include "components/FluWidget.h"
+#include "components/utils/FluUtils.h"
+#include "components/FluVScrollView.h"
+#include "components/FluSettingsSelectBox.h"
+#include "components/FluSettingsLabelBox.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class HomeWidget; }
@@ -14,15 +17,25 @@ QT_END_NAMESPACE
 
 class HomeWidget : public FluWidget {
 Q_OBJECT
-
 public:
     explicit HomeWidget(QWidget *parent = nullptr);
 
-    ~HomeWidget() override;
+    void paintEvent(QPaintEvent *event) override;
 
-private:
-    Ui::HomeWidget *ui;
+public slots:
+
+    void onThemeChanged() override;
+
+protected:
+    QVBoxLayout *m_mainLayout;
+
+    QLabel *m_titleLabel;
+    QLabel *m_appBehaviorLabel;
+    QLabel *m_aboutLabel;
+    FluVScrollView *m_vScrollView;
+public:
+    FluSettingsSelectBox *appThemeSelectBox;
+    FluSettingsSelectBox *appLanguageSelectBox;
 };
 
-
-#endif //ROBOTSIMULATION_HOMEWIDGET_H
+#endif //ROBOTSIMULATION_SETTINGWIDGET_H

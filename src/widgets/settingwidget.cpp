@@ -1,6 +1,7 @@
 
 #include "settingwidget.h"
 #include "components/FluIconButton.h"
+#include "tools/infobar.h"
 
 SettingWidget::SettingWidget(QWidget *parent) : FluWidget(parent) {
     m_mainLayout = new QVBoxLayout;
@@ -34,7 +35,27 @@ SettingWidget::SettingWidget(QWidget *parent) : FluWidget(parent) {
             FluThemeUtils::getUtils()->setTheme(FluTheme::Dark);
     });
 
+    appLanguageSelectBox = new FluSettingsSelectBox;
+    appLanguageSelectBox->setTitleInfo("Language", "Select which RobotSimulation language to display");
+    appLanguageSelectBox->setIcon(FluAwesomeType::LocaleLanguage);
+
+    appLanguageSelectBox->getComboBox()->addItem("English");
+    appLanguageSelectBox->getComboBox()->addItem("中文");
+
+    connect(appLanguageSelectBox->getComboBox(), &FluComboBoxEx::currentIndexChanged, [=](int index) {
+        if (index == 0)
+            qDebug() << "en";
+        else {
+            /// todo cn Language translation
+            InfoBar::showInfoBar(FluShortInfoBarType::Warn, "暂未实现中文翻译", this);
+            qDebug() << "cn";
+        }
+
+    });
+
+
     m_vScrollView->getMainLayout()->addWidget(appThemeSelectBox);
+    m_vScrollView->getMainLayout()->addWidget(appLanguageSelectBox);
 
     m_vScrollView->getMainLayout()->addSpacing(30);
 

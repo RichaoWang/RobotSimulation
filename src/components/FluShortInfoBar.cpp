@@ -3,8 +3,9 @@
 #include <QPointer>
 
 int FluShortInfoBar::m_count = 0;
-FluShortInfoBar::FluShortInfoBar(FluShortInfoBarType infobarType, QWidget* parent /*= nullptr*/) : FluWidget(parent)
-{
+
+FluShortInfoBar::FluShortInfoBar(FluShortInfoBarType infobarType, QString text, QWidget *parent /*= nullptr*/)
+        : FluWidget(parent) {
     m_count++;
     LOG_DEBUG << "Count = " << m_count;
     setFixedHeight(50);
@@ -21,7 +22,8 @@ FluShortInfoBar::FluShortInfoBar(FluShortInfoBarType infobarType, QWidget* paren
 
     m_infoLabel = new QLabel;
     m_infoLabel->setWordWrap(true);
-    m_infoLabel->setText("A Short Essential app Message.");
+//    m_infoLabel->setText("A Short Essential app Message.");
+    m_infoLabel->setText(text);
     m_infoLabel->setObjectName("infoLabel");
     m_hMainLayout->addWidget(m_infoLabel, 1);
 
@@ -47,8 +49,7 @@ FluShortInfoBar::FluShortInfoBar(FluShortInfoBarType infobarType, QWidget* paren
     m_bDisappearing = false;
     FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/FluShortInfoBar.qss", this);
 
-    if (FluThemeUtils::getUtils()->getTheme() == FluTheme::Dark)
-    {
+    if (FluThemeUtils::getUtils()->getTheme() == FluTheme::Dark) {
         m_closeBtn->setIcon(FluIconUtils::getFluentIconPixmap(FluAwesomeType::ChromeClose, FluTheme::Dark));
         FluStyleSheetUitls::setQssByFileName(":/stylesheet/dark/FluShortInfoBar.qss", this);
     }
@@ -57,16 +58,14 @@ FluShortInfoBar::FluShortInfoBar(FluShortInfoBarType infobarType, QWidget* paren
     //  setAttribute(Qt::WA_TranslucentBackground);
 }
 
-FluShortInfoBar::~FluShortInfoBar()
-{
+FluShortInfoBar::~FluShortInfoBar() {
     m_count--;
     LOG_DEBUG << "Count = " << m_count;
     // disconnect();
     // FluInfoBarMgr::getInstance()->removeInfoBar(this);
 }
 
-void FluShortInfoBar::setInfoBarTypeProperty(QString infoBarType)
-{
+void FluShortInfoBar::setInfoBarTypeProperty(QString infoBarType) {
     setProperty("infoBarType", infoBarType);
     m_iconLabel->setProperty("infoBarType", infoBarType);
     m_infoLabel->setProperty("infoBarType", infoBarType);
@@ -77,35 +76,36 @@ void FluShortInfoBar::setInfoBarTypeProperty(QString infoBarType)
     m_closeBtn->style()->polish(m_closeBtn);
 }
 
-void FluShortInfoBar::updateInfoBarTypeProperty(FluShortInfoBarType infoBarType)
-{
-    switch (infoBarType)
-    {
+void FluShortInfoBar::updateInfoBarTypeProperty(FluShortInfoBarType infoBarType) {
+    switch (infoBarType) {
         case FluShortInfoBarType::Info:
             setInfoBarTypeProperty("Info");
-            m_iconLabel->setPixmap(FluIconUtils::getFluentIconPixmap(FluAwesomeType::Info, QColor(239, 239, 239), 18, 18));
+            m_iconLabel->setPixmap(
+                    FluIconUtils::getFluentIconPixmap(FluAwesomeType::Info, QColor(239, 239, 239), 18, 18));
             break;
         case FluShortInfoBarType::Suc:
             setInfoBarTypeProperty("Suc");
-            m_iconLabel->setPixmap(FluIconUtils::getFluentIconPixmap(FluAwesomeType::StatusCircleCheckmark, QColor(239, 239, 239), 18, 18));
+            m_iconLabel->setPixmap(
+                    FluIconUtils::getFluentIconPixmap(FluAwesomeType::StatusCircleCheckmark, QColor(239, 239, 239), 18,
+                                                      18));
             break;
         case FluShortInfoBarType::Warn:
             setInfoBarTypeProperty("Warn");
-            m_iconLabel->setPixmap(FluIconUtils::getFluentIconPixmap(FluAwesomeType::Info, QColor(239, 239, 239), 18, 18));
+            m_iconLabel->setPixmap(
+                    FluIconUtils::getFluentIconPixmap(FluAwesomeType::Info, QColor(239, 239, 239), 18, 18));
             break;
         case FluShortInfoBarType::Error:
             setInfoBarTypeProperty("Error");
-            m_iconLabel->setPixmap(FluIconUtils::getFluentIconPixmap(FluAwesomeType::Error, QColor(239, 239, 239), 18, 18));
+            m_iconLabel->setPixmap(
+                    FluIconUtils::getFluentIconPixmap(FluAwesomeType::Error, QColor(239, 239, 239), 18, 18));
             break;
     }
 }
 
-void FluShortInfoBar::disappear()
-{
+void FluShortInfoBar::disappear() {
     // m_nDisappearDuration = duration;
     QPointer<FluShortInfoBar> ptr(this);
-    if (m_nDisappearDuration > 0 && !m_bDisappearing)
-    {
+    if (m_nDisappearDuration > 0 && !m_bDisappearing) {
         m_bDisappearing = true;
         QTimer::singleShot(m_nDisappearDuration, [=]() {
             if (ptr == nullptr)
@@ -120,13 +120,11 @@ void FluShortInfoBar::disappear()
     }
 }
 
-void FluShortInfoBar::setDisappearDurartion(int disappearDuration)
-{
+void FluShortInfoBar::setDisappearDurartion(int disappearDuration) {
     m_nDisappearDuration = disappearDuration;
 }
 
-void FluShortInfoBar::paintEvent(QPaintEvent* event)
-{
+void FluShortInfoBar::paintEvent(QPaintEvent *event) {
     QStyleOption opt;
     opt.initFrom(this);
     QPainter painter(this);
