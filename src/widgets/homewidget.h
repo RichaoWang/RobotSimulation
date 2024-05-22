@@ -24,15 +24,13 @@ public slots:
     void onThemeChanged() override;
 
 protected:
-    QVBoxLayout *m_mainLayout;
+    QHBoxLayout *m_mainLayout;
 
-    QVBoxLayout *m_midLayout;
+//    QVBoxLayout *m_vDisPlayLayout;
 
-    QLabel *m_titleLabel;
-//    QLabel *m_appBehaviorLabel;
-    FluVScrollView *m_vScrollView;
+//    QLabel *m_titleLabel;
+//    FluVScrollView *m_vScrollView;
 public:
-//    FluSettingsSelectBox *appThemeSelectBox;
 };
 
 #endif //ROBOTSIMULATION_HOMEWIDGET_H

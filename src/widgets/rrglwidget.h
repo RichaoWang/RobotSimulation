@@ -2,10 +2,11 @@
 #define RRGLWIDGET_H
 
 #include <QGLWidget>
+#include <QOpenGLWidget>
 #include <QWidget>
 #include "tools/stlfileloader.h"
 
-class RRGLWidget : public QGLWidget {
+class RRGLWidget : public QOpenGLWidget {
     //显示机械臂gl基类，提供了鼠标旋转、方法缩小、平移、网格、坐标系等基本功能
 Q_OBJECT
 

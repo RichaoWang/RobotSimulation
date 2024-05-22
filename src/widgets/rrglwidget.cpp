@@ -1,11 +1,10 @@
 ﻿#include "rrglwidget.h"
 //#include <GL/glu.h>
-
 #include <QDebug>
 #include <QMouseEvent>
 #include <QtOpenGL>
 
-RRGLWidget::RRGLWidget(QWidget *parent) : QGLWidget(parent) {
+RRGLWidget::RRGLWidget(QWidget *parent) : QOpenGLWidget(parent) {
 
 }
 
@@ -73,11 +72,11 @@ void RRGLWidget::drawCoordinates() {
     glEnd();
 
     // 标签
-    qglColor(QColor::fromRgbF(1, 1, 1));
-    renderText(1050, 0, 0, "+X", QFont("helvetica", 12, QFont::Bold, true));
-    renderText(0, 1050, 0, "+Y", QFont("helvetica", 12, QFont::Bold, true));
-    renderText(0, 0, 1050, "+Z", QFont("helvetica", 12, QFont::Bold, true));
-    renderText(500, 500, 0, "World", QFont("helvetica", 12, QFont::Bold, true));
+//    qglColor(QColor::fromRgbF(1, 1, 1));
+//    renderText(1050, 0, 0, "+X", QFont("helvetica", 12, QFont::Bold, true));
+//    renderText(0, 1050, 0, "+Y", QFont("helvetica", 12, QFont::Bold, true));
+//    renderText(0, 0, 1050, "+Z", QFont("helvetica", 12, QFont::Bold, true));
+//    renderText(500, 500, 0, "World", QFont("helvetica", 12, QFont::Bold, true));
     glLineWidth(1.0f);
     glPopMatrix();
 }
@@ -97,11 +96,11 @@ void RRGLWidget::drawSTLCoordinates(int r, int g, int b, std::string text) {
     glEnd();
 
     // 标签
-    qglColor(QColor::fromRgbF(r / 255, g / 255, b / 255));
-    renderText(300, 0, 0, "+X", QFont("helvetica", 12, QFont::Bold, true));
-    renderText(0, 300, 0, "+Y", QFont("helvetica", 12, QFont::Bold, true));
-    renderText(0, 0, 300, "+Z", QFont("helvetica", 12, QFont::Bold, true));
-    renderText(50, 50, 100, text.c_str(), QFont("helvetica", 12, QFont::Bold, true));
+//    qglColor(QColor::fromRgbF(r / 255, g / 255, b / 255));
+//    renderText(300, 0, 0, "+X", QFont("helvetica", 12, QFont::Bold, true));
+//    renderText(0, 300, 0, "+Y", QFont("helvetica", 12, QFont::Bold, true));
+//    renderText(0, 0, 300, "+Z", QFont("helvetica", 12, QFont::Bold, true));
+//    renderText(50, 50, 100, text.c_str(), QFont("helvetica", 12, QFont::Bold, true));
     glLineWidth(1.0f);
     glPopMatrix();
 }
@@ -122,7 +121,8 @@ void RRGLWidget::setXRotation(int angle) {
         xRot = tangle;
         emit xRotationChanged(angle);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        updateGL();
+//        updateGL();
+        update();
     }
 }
 
@@ -138,7 +138,8 @@ void RRGLWidget::setYRotation(int angle) {
 void RRGLWidget::setXYTranslate(int dx, int dy) {
     xTran += 3.0 * dx;
     yTran -= 3.0 * dy;
-    updateGL();
+//    updateGL();
+    update();
 }
 
 // 注意角度： 360*16
@@ -155,7 +156,8 @@ int RRGLWidget::normalizeAngle(int angle) {
 
 void RRGLWidget::setZoom(int zoom) {
     z_zoom = zoom;
-    updateGL();
+//    updateGL();
+    update();
 }
 
 void RRGLWidget::initializeGL() {
@@ -211,6 +213,7 @@ void RRGLWidget::resizeGL(int w, int h) {
 
 void RRGLWidget::mousePressEvent(QMouseEvent *event) {
     lastPos = event->pos();
+    QWidget::mousePressEvent(event);
 }
 
 void RRGLWidget::mouseMoveEvent(QMouseEvent *event) {
@@ -226,4 +229,5 @@ void RRGLWidget::mouseMoveEvent(QMouseEvent *event) {
         setXYTranslate(dx, dy);
     }
     lastPos = event->pos();
+    QWidget::mousePressEvent(event);
 }

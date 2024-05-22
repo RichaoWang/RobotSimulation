@@ -80,7 +80,6 @@ void RobotSimulationWindow::onThemeChanged() {
         m_titleBar->closeButton()->setActiveForegroundColor(Qt::black);
         m_titleBar->maximizeButton()->setActiveForegroundColor(Qt::black);
 
-        m_titleBar->show();
         FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/RobotSimulationWindow.qss", this);
     } else {
         m_titleBar->chromePalette()->setTitleBarActiveBackgroundColor(Qt::transparent);
@@ -92,7 +91,6 @@ void RobotSimulationWindow::onThemeChanged() {
         m_titleBar->closeButton()->setActiveForegroundColor(Qt::white);
         m_titleBar->maximizeButton()->setActiveForegroundColor(Qt::white);
 
-        m_titleBar->show();
         FluStyleSheetUitls::setQssByFileName(":/stylesheet/dark/RobotSimulationWindow.qss", this);
     }
 }

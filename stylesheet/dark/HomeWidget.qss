@@ -6,9 +6,145 @@ HomeWidget {
     margin-bottom: 5px;
 }
 
-#titleLabel {
+#controlWidget {
+    background-color: rgb(39, 39, 39);
+    border-radius: 8px;
+    border: 1px solid rgb(29, 29, 29);
+    margin-right: 5px;
+    margin-left: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#checkboxesWidget {
+    background-color: rgb(39, 39, 39);
+    border-radius: 8px;
+    border: 1px solid rgb(29, 29, 29);
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#sliderWidget {
+    background-color: rgb(39, 39, 39);
+    border-radius: 8px;
+    border: 1px solid rgb(29, 29, 29);
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#eleWidget {
+    background-color: rgb(39, 39, 39);
+    border-radius: 8px;
+    border: 1px solid rgb(29, 29, 29);
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#appBehaviorLabel {
     font-size: 26px;
+    font-weight: bold;
     color: rgb(255, 255, 255);
+}
+
+#cbLabel {
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+}
+
+#eleLabel {
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+}
+
+#j1Label {
+    color: rgb(255, 255, 255);
+}
+#j2Label {
+    color: rgb(255, 255, 255);
+}
+#j3Label {
+    color: rgb(255, 255, 255);
+}
+#j4Label {
+    color: rgb(255, 255, 255);
+}
+#j5Label {
+    color: rgb(255, 255, 255);
+}
+#j6Label {
+    color: rgb(255, 255, 255);
+}
+
+#j1ValueLabel {
+    color: rgb(255, 255, 255);
+}
+#j2ValueLabel {
+    color: rgb(255, 255, 255);
+}
+#j3ValueLabel {
+    color: rgb(255, 255, 255);
+}
+#j4ValueLabel {
+    color: rgb(255, 255, 255);
+}
+#j5ValueLabel {
+    color: rgb(255, 255, 255);
+}
+#j6ValueLabel {
+    color: rgb(255, 255, 255);
+}
+
+
+#xLabel {
+    color: rgb(255, 255, 255);
+}
+#yLabel {
+    color: rgb(255, 255, 255);
+}
+#zLabel {
+    color: rgb(255, 255, 255);
+}
+#rxLabel {
+    color: rgb(255, 255, 255);
+}
+#ryLabel {
+    color: rgb(255, 255, 255);
+}
+#rzLabel {
+    color: rgb(255, 255, 255);
+}
+
+#_xLabel {
+    color: rgb(255, 255, 255);
+}
+#_yLabel {
+    color: rgb(255, 255, 255);
+}
+#_zLabel {
+    color: rgb(255, 255, 255);
+}
+#_rxLabel {
+    color: rgb(255, 255, 255);
+}
+#_ryLabel {
+    color: rgb(255, 255, 255);
+}
+#_rzLabel {
+    color: rgb(255, 255, 255);
+}
+
+#sldLabel {
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
 }
 
 #appBehaviorLabel {

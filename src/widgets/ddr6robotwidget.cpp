@@ -1,5 +1,6 @@
 ﻿#include "ddr6robotwidget.h"
 #include <QDebug>
+#include <QApplication>
 
 DDR6RobotWidget::DDR6RobotWidget(QWidget *parent)
         : RRGLWidget(parent) {
@@ -189,10 +190,10 @@ void DDR6RobotWidget::drawEndCoordinates() {
     glEnd();
 
     // 标签
-    qglColor(QColor::fromRgbF(0.2, 0.2, 0.2));
-    renderText(100, 0, 0, "+X", QFont("helvetica", 10, QFont::Bold, true));
-    renderText(0, 100, 0, "+Y", QFont("helvetica", 10, QFont::Bold, true));
-    renderText(0, 0, 100, "+Z", QFont("helvetica", 10, QFont::Bold, true));
+//    qglColor(QColor::fromRgbF(0.2, 0.2, 0.2));
+//    renderText(100, 0, 0, "+X", QFont("helvetica", 10, QFont::Bold, true));
+//    renderText(0, 100, 0, "+Y", QFont("helvetica", 10, QFont::Bold, true));
+//    renderText(0, 0, 100, "+Z", QFont("helvetica", 10, QFont::Bold, true));
     glLineWidth(1.0f);
     glPopMatrix();
 }

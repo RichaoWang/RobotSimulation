@@ -6,6 +6,139 @@ HomeWidget {
     margin-bottom: 5px;
 }
 
+#controlWidget {
+    background-color: rgb(249, 249, 249);
+    border-radius: 8px;
+    border: 1px solid rgb(229, 229, 229);
+    margin-right: 5px;
+    margin-left: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#checkboxesWidget {
+    background-color: rgb(249, 249, 249);
+    border-radius: 8px;
+    border: 1px solid rgb(229, 229, 229);
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#sliderWidget {
+    background-color: rgb(249, 249, 249);
+    border-radius: 8px;
+    border: 1px solid rgb(229, 229, 229);
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+#eleWidget {
+    background-color: rgb(249, 249, 249);
+    border-radius: 8px;
+    border: 1px solid rgb(229, 229, 229);
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#cbLabel {
+    color: rgb(50, 50, 50);
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#eleLabel {
+    color: rgb(50, 50, 50);
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#j1Label {
+    color: rgb(50, 50, 50);
+}
+#j2Label {
+    color: rgb(50, 50, 50);
+}
+#j3Label {
+    color: rgb(50, 50, 50);
+}
+#j4Label {
+    color: rgb(50, 50, 50);
+}
+#j5Label {
+    color: rgb(50, 50, 50);
+}
+#j6Label {
+    color: rgb(50, 50, 50);
+}
+#j1ValueLabel {
+    color: rgb(50, 50, 50);
+}
+#j2ValueLabel {
+    color: rgb(50, 50, 50);
+}
+#j3ValueLabel {
+    color: rgb(50, 50, 50);
+}
+#j4ValueLabel {
+    color: rgb(50, 50, 50);
+}
+#j5ValueLabel {
+    color: rgb(50, 50, 50);
+}
+#j6ValueLabel {
+    color: rgb(50, 50, 50);
+}
+
+#xLabel {
+     color: rgb(50, 50, 50);
+}
+#yLabel {
+    color: rgb(50, 50, 50);
+}
+#zLabel {
+    color: rgb(50, 50, 50);
+}
+#rxLabel {
+     color: rgb(50, 50, 50);
+}
+#ryLabel {
+     color: rgb(50, 50, 50);
+}
+#rzLabel {
+     color: rgb(50, 50, 50);
+}
+
+
+#_xLabel {
+     color: rgb(50, 50, 50);
+}
+#_yLabel {
+    color: rgb(50, 50, 50);
+}
+#_zLabel {
+    color: rgb(50, 50, 50);
+}
+#_rxLabel {
+     color: rgb(50, 50, 50);
+}
+#_ryLabel {
+     color: rgb(50, 50, 50);
+}
+#_rzLabel {
+     color: rgb(50, 50, 50);
+}
+
+#sldLabel {
+    color: rgb(50, 50, 50);
+    font-size: 14px;
+    font-weight: bold;
+}
+
 #titleLabel {
     font-size: 26px;
 }
