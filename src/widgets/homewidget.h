@@ -19,6 +19,10 @@ public:
 
     void paintEvent(QPaintEvent *event) override;
 
+    QWidget *makeCheckOptionWidget();
+
+    QWidget *makeRobotControlWidget();
+
 public slots:
 
     void onThemeChanged() override;

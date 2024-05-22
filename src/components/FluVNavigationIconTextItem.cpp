@@ -69,7 +69,7 @@ FluVNavigationIconTextItem::FluVNavigationIconTextItem(QWidget *parent /*= nullp
     m_arrow->setObjectName("arrow");
 
 //    m_iconBtn->setIcon(FluIconUtils::getFluentIcon(FluAwesomeType::Home));
-    m_iconBtn->setIconSize(QSize(70, 70));
+    m_iconBtn->setIconSize(QSize(55, 55));
 
 //    m_arrow->setIconSize(QSize(80, 80));
 //    m_arrow->setIcon(FluIconUtils::getFluentIcon(FluAwesomeType::ChevronDown));
