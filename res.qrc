@@ -306,7 +306,11 @@
         <file>stylesheet/dark/SettingWidget.qss</file>
         <file>stylesheet/dark/HomeWidget.qss</file>
         <file>stylesheet/light/HomeWidget.qss</file>
+        <file>stylesheet/light/CodeEditWidget.qss</file>
+        <file>stylesheet/dark/CodeEditWidget.qss</file>
+
         <file>stylesheet/dark/RobotSimulationWindow.qss</file>
         <file>stylesheet/light/RobotSimulationWindow.qss</file>
+
     </qresource>
 </RCC>

@@ -1,15 +1,24 @@
-#pragma once
-
 #include <QStackedLayout>
 #include <QPainter>
 #include <QStyleOption>
 #include <QDesktopWidget>
-#include "../components/FluFrameLessWidget.h"
-#include "../components/FluVNavigationView.h"
-#include "../components/FluVNavigationIconTextItem.h"
-#include "../components/FluStackedLayout.h"
-#include "../components/FluVNavigationSettingsItem.h"
-#include "../components/FluMessageBox.h"
+#include <QApplication>
+#include <FramelessHelper/Core/framelessmanager.h>
+#include <FramelessHelper/Widgets/framelesswidgetshelper.h>
+#include <FramelessHelper/Widgets/standardsystembutton.h>
+#include <FramelessHelper/Widgets/standardtitlebar.h>
+
+#include "components/FluFrameLessWidget.h"
+#include "components/FluVNavigationView.h"
+#include "components/FluVNavigationIconTextItem.h"
+#include "components/FluStackedLayout.h"
+#include "components/FluVNavigationSettingsItem.h"
+#include "components/FluMessageBox.h"
+#include "components/FluMessageBox.h"
+
+#include "widgets/homewidget.h"
+#include "widgets/codeeditwidget.h"
+#include "widgets/settingwidget.h"
 
 
 class RobotSimulationWindow : public FluFrameLessWidget {
@@ -29,12 +38,7 @@ public:
 
     void moveToCenter();
 
-//    void paintEvent(QPaintEvent *event) {
-//        QStyleOption opt;
-//        opt.initFrom(this);
-//        QPainter painter(this);
-//        style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
-//    }
+    void paintEvent(QPaintEvent *event);
 
 public slots:
 

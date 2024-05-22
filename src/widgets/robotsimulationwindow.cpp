@@ -1,16 +1,4 @@
-
-#include <FramelessHelper/Core/framelessmanager.h>
-#include <FramelessHelper/Widgets/framelesswidgetshelper.h>
-#include <FramelessHelper/Widgets/standardsystembutton.h>
-#include <FramelessHelper/Widgets/standardtitlebar.h>
-#include <QApplication>
-
-#include "../components/FluMessageBox.h"
 #include "robotsimulationwindow.h"
-// todo test
-#include "FluAEmptyPage.h"
-#include "widgets/homewidget.h"
-#include "widgets/settingwidget.h"
 
 FRAMELESSHELPER_USE_NAMESPACE
 
@@ -130,7 +118,7 @@ void RobotSimulationWindow::makeCodeEditNavItem() {
                                                                       this);
     m_navView->addItemToMidLayout(item);
 
-    auto typographyPage = new FluAEmptyPage(this);
+    auto typographyPage = new CodeEditWidget(this);
     m_sLayout->addWidget("CodeEditPage", typographyPage);
     connect(item, &FluVNavigationIconTextItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("CodeEditPage"); });
 }
@@ -144,4 +132,11 @@ void RobotSimulationWindow::makeSettingsNavItem() {
     auto settingPage = new SettingWidget();
     m_sLayout->addWidget("SettingPage", settingPage);
     connect(item, &FluVNavigationIconTextItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("SettingPage"); });
+}
+
+void RobotSimulationWindow::paintEvent(QPaintEvent *event) {
+    QStyleOption opt;
+    opt.initFrom(this);
+    QPainter painter(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
 }

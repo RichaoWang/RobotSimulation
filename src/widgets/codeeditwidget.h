@@ -1,5 +1,5 @@
-#ifndef ROBOTSIMULATION_HOMEWIDGET_H
-#define ROBOTSIMULATION_HOMEWIDGET_H
+#ifndef ROBOTSIMULATION_CODEEDITWIDGET_H
+#define ROBOTSIMULATION_CODEEDITWIDGET_H
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -12,10 +12,10 @@
 #include "components/FluSettingsLabelBox.h"
 #include "components/FluIconButton.h"
 
-class HomeWidget : public FluWidget {
+class CodeEditWidget : public FluWidget {
 Q_OBJECT
 public:
-    explicit HomeWidget(QWidget *parent = nullptr);
+    explicit CodeEditWidget(QWidget *parent = nullptr);
 
     void paintEvent(QPaintEvent *event) override;
 
@@ -26,13 +26,14 @@ public slots:
 protected:
     QVBoxLayout *m_mainLayout;
 
-    QVBoxLayout *m_midLayout;
-
     QLabel *m_titleLabel;
-//    QLabel *m_appBehaviorLabel;
+    QLabel *m_appBehaviorLabel;
+//    QLabel *m_aboutLabel;
     FluVScrollView *m_vScrollView;
 public:
 //    FluSettingsSelectBox *appThemeSelectBox;
+//    FluSettingsSelectBox *appLanguageSelectBox;
 };
 
-#endif //ROBOTSIMULATION_HOMEWIDGET_H
+
+#endif //ROBOTSIMULATION_CODEEDITWIDGET_H
