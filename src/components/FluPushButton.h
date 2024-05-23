@@ -12,8 +12,8 @@ class FluPushButton : public QPushButton
   public:
     FluPushButton(QWidget *parent = nullptr) : QPushButton(parent)
     {
-        setFixedSize(200, 30);
-        // setFixedHeight(30);
+//        setFixedSize(200, 30);
+         setFixedHeight(30);
         FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/FluPushButton.qss", this);
         if (FluThemeUtils::getUtils()->getTheme() == FluTheme::Dark)
         {

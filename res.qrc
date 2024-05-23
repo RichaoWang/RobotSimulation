@@ -25,6 +25,33 @@
         <file alias="SpinBoxUpDisabled-Dark.png">resources/images/SpinBoxUpDisabled-Dark.png</file>
         <file alias="SpinBoxUpDisabled-Light.png">resources/images/SpinBoxUpDisabled-Light.png</file>
 
+        <file alias="ChevronDown-Dark.png">resources/images/ChevronDown-Dark.png</file>
+        <file alias="ChevronDown-Light.png">resources/images/ChevronDown-Light.png</file>
+        <file alias="ChevronRight-Black.png">resources/images/ChevronRight-Black.png</file>
+
+
+        <file alias="RadioButton-Black.png">resources/images/RadioButton-Black.png</file>
+        <file alias="RadioButton-White.png">resources/images/RadioButton-White.png</file>
+        <file alias="RadioButtonHover-Black.png">resources/images/RadioButtonHover-Black.png</file>
+        <file alias="RadioButtonHover-White.png">resources/images/RadioButtonHover-White.png</file>
+        <file alias="RadioButtonPressed-Black.png">resources/images/RadioButtonPressed-Black.png</file>
+        <file alias="RadioButtonPressed-White.png">resources/images/RadioButtonPressed-White.png</file>
+
+        <file alias="ToggleSwitchDisabled-Dark.png">resources/images/ToggleSwitchDisabled-Dark.png</file>
+        <file alias="ToggleSwitchDisabled-light.png">resources/images/ToggleSwitchDisabled-light.png</file>
+        <file alias="ToggleSwitchOff-Dark.png">resources/images/ToggleSwitchOff-Dark.png</file>
+        <file alias="ToggleSwitchOff-light.png">resources/images/ToggleSwitchOff-light.png</file>
+        <file alias="ToggleSwitchOffHover-Dark.png">resources/images/ToggleSwitchOffHover-Dark.png</file>
+        <file alias="ToggleSwitchOffHover-light.png">resources/images/ToggleSwitchOffHover-light.png</file>
+        <file alias="ToggleSwitchOffPressed-Dark.png">resources/images/ToggleSwitchOffPressed-Dark.png</file>
+        <file alias="ToggleSwitchOffPressed-light.png">resources/images/ToggleSwitchOffPressed-light.png</file>
+        <file alias="ToggleSwitchOn-Dark.png">resources/images/ToggleSwitchOn-Dark.png</file>
+        <file alias="ToggleSwitchOn-light.png">resources/images/ToggleSwitchOn-light.png</file>
+        <file alias="ToggleSwitchOnHover-Dark.png">resources/images/ToggleSwitchOnHover-Dark.png</file>
+        <file alias="ToggleSwitchOnHover-light.png">resources/images/ToggleSwitchOnHover-light.png</file>
+        <file alias="ToggleSwitchOnPressed-Dark.png">resources/images/ToggleSwitchOnPressed-Dark.png</file>
+        <file alias="ToggleSwitchOnPressed-light.png">resources/images/ToggleSwitchOnPressed-light.png</file>
+
 
 
     </qresource>

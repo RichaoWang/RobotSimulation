@@ -23,7 +23,8 @@ class FluIconButton : public QPushButton
 
     FluIconButton(FluAwesomeType type1, QWidget* parent = nullptr) : QPushButton(parent)
     {
-        setFixedSize(30, 30);
+//        setFixedSize(30, 30);
+        setFixedHeight(30);
         setIconSize(QSize(20, 20));
         // please ensure type1 will in FluAwesomeType, if can't suitable may crash.
 

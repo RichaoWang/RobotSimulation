@@ -19,9 +19,13 @@ public:
 
     void paintEvent(QPaintEvent *event) override;
 
+    QWidget*makePosDisplayWidget();
+
     QWidget *makeCheckOptionWidget();
 
     QWidget *makeRobotControlWidget();
+
+    QWidget *makePointsWidget();
 
 public slots:
 

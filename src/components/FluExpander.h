@@ -17,6 +17,8 @@ class FluExpander : public FluWidget
   public:
     FluExpander(QWidget* parent = nullptr);
 
+    void expand();
+
     void setWrap2Height(int h)
     {
         m_wrap2Height = h;

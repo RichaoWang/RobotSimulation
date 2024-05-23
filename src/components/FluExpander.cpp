@@ -1,8 +1,7 @@
 #include "FluExpander.h"
 #include <QEvent>
 
-FluExpander::FluExpander(QWidget* parent /*= nullptr*/) : FluWidget(parent)
-{
+FluExpander::FluExpander(QWidget *parent /*= nullptr*/) : FluWidget(parent) {
     m_mainLayout = new QVBoxLayout(this);
     m_mainLayout->setContentsMargins(0, 0, 0, 0);
     m_mainLayout->setSpacing(0);
@@ -41,17 +40,14 @@ FluExpander::FluExpander(QWidget* parent /*= nullptr*/) : FluWidget(parent)
 
     // m_wrap2Height = 128;
     connect(m_downOrUpButton, &QPushButton::clicked, [=](bool b) {
-        if (m_bDown)
-        {
+        if (m_bDown) {
             expandAni->setStartValue(QRect(m_wrap2->x(), m_wrap2->y(), m_wrap2->width(), 0));
             expandAni->setEndValue(QRect(m_wrap2->x(), m_wrap2->y(), m_wrap2->width(), m_wrap2->sizeHint().height()));
             expandAni->start();
 
             m_downOrUpButton->setType1(FluAwesomeType::ChevronUp);
             m_bDown = false;
-        }
-        else
-        {
+        } else {
             expandAni->setStartValue(QRect(m_wrap2->x(), m_wrap2->y(), m_wrap2->width(), m_wrap2->sizeHint().height()));
             expandAni->setEndValue(QRect(m_wrap2->x(), m_wrap2->y(), m_wrap2->width(), 0));
             expandAni->start();
@@ -60,7 +56,7 @@ FluExpander::FluExpander(QWidget* parent /*= nullptr*/) : FluWidget(parent)
         }
     });
 
-    connect(expandAni, &QPropertyAnimation::valueChanged, [=](const QVariant& value) {
+    connect(expandAni, &QPropertyAnimation::valueChanged, [=](const QVariant &value) {
         QRect tmp = value.toRect();
         m_wrap2->setFixedHeight(tmp.height());
         setFixedHeight(m_wrap1->height() + m_wrap2->height() + 1);
@@ -70,32 +66,29 @@ FluExpander::FluExpander(QWidget* parent /*= nullptr*/) : FluWidget(parent)
     onThemeChanged();
 }
 
-void FluExpander::resizeEvent(QResizeEvent* event)
-{
+void FluExpander::resizeEvent(QResizeEvent *event) {
     int nX = m_wrap1->width() - m_downOrUpButton->height() - 5;
     int nY = (m_wrap1->height() - m_downOrUpButton->height()) / 2;
     m_downOrUpButton->move(nX, nY);
 }
 
-bool FluExpander::eventFilter(QObject* watched, QEvent* event)
-{
-    if (watched == m_wrap1 && event->type() == QEvent::MouseButtonRelease)
-    {
+bool FluExpander::eventFilter(QObject *watched, QEvent *event) {
+    if (watched == m_wrap1 && event->type() == QEvent::MouseButtonRelease) {
         m_downOrUpButton->clicked();
     }
     return QWidget::eventFilter(watched, event);
 }
 
-void FluExpander::onThemeChanged()
-{
-    if (FluThemeUtils::getUtils()->getTheme() == FluTheme::Light)
-    {
+void FluExpander::onThemeChanged() {
+    if (FluThemeUtils::getUtils()->getTheme() == FluTheme::Light) {
         FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/FluExpander.qss", this);
         FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/FluExpander.qss", m_downOrUpButton);
-    }
-    else
-    {
+    } else {
         FluStyleSheetUitls::setQssByFileName(":/stylesheet/dark/FluExpander.qss", this);
         FluStyleSheetUitls::setQssByFileName(":/stylesheet/dark/FluExpander.qss", m_downOrUpButton);
     }
+}
+
+void FluExpander::expand() {
+    m_downOrUpButton->clicked();
 }

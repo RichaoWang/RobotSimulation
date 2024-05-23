@@ -16,6 +16,18 @@ HomeWidget {
     margin-bottom: 5px;
 }
 
+#posDisplayWidget {
+    background-color: rgb(39, 39, 39);
+    border-radius: 8px;
+    border: 1px solid rgb(29, 29, 29);
+}
+
+#pointsWidget {
+    background-color: rgb(39, 39, 39);
+    border-radius: 8px;
+    border: 1px solid rgb(29, 29, 29);
+}
+
 #checkboxesWidget {
     background-color: rgb(39, 39, 39);
     border-radius: 8px;

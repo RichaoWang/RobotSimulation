@@ -9,6 +9,7 @@
 #include "components/FluExpander.h"
 #include "components/FluLabel.h"
 #include "components/FluDoubleSpinBox.h"
+#include "components/FluComboBox.h"
 
 HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     m_mainLayout = new QHBoxLayout;
@@ -35,7 +36,18 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     controlWidget->setLayout(vCtlLayout);
     controlScrollView->getMainLayout()->setSpacing(2);
 
-    /// todo position visualiztion
+    /// -------------------------- pos display part --------------------------
+    auto posDisplayExpander = new FluExpander(this);
+    auto posDisplayExpLabel = new FluLabel(FluLabelStyle::BodyStrongTextBlockStyle, this);
+    posDisplayExpLabel->setText("RealtimePosition");
+    posDisplayExpander->getWrap1Layout()->setAlignment(Qt::AlignCenter);
+    posDisplayExpander->getWrap1Layout()->addWidget(posDisplayExpLabel);
+    QWidget *posDisplayWidget = makePosDisplayWidget();
+    posDisplayExpander->getWrap2Layout()->setAlignment(Qt::AlignCenter);
+    posDisplayExpander->getWrap2Layout()->addWidget(posDisplayWidget);
+    controlScrollView->getMainLayout()->addWidget(posDisplayExpander);
+    controlScrollView->getMainLayout()->addSpacing(10);
+    /// -------------------------------------------------------------
 
 
     /// -------------------------- opt part --------------------------
@@ -48,6 +60,19 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     optExpander->getWrap2Layout()->setAlignment(Qt::AlignCenter);
     optExpander->getWrap2Layout()->addWidget(checkboxesWidget);
     controlScrollView->getMainLayout()->addWidget(optExpander);
+    controlScrollView->getMainLayout()->addSpacing(10);
+    /// -------------------------------------------------------------
+
+    /// -------------------------- points part --------------------------
+    auto pointsExpander = new FluExpander(this);
+    auto pointsExpLabel = new FluLabel(FluLabelStyle::BodyStrongTextBlockStyle, this);
+    pointsExpLabel->setText("Points");
+    pointsExpander->getWrap1Layout()->setAlignment(Qt::AlignCenter);
+    pointsExpander->getWrap1Layout()->addWidget(pointsExpLabel);
+    QWidget *pointsWidget = makePointsWidget();
+    pointsExpander->getWrap2Layout()->setAlignment(Qt::AlignCenter);
+    pointsExpander->getWrap2Layout()->addWidget(pointsWidget);
+    controlScrollView->getMainLayout()->addWidget(pointsExpander);
     controlScrollView->getMainLayout()->addSpacing(10);
     /// -------------------------------------------------------------
 
@@ -66,15 +91,17 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     /// -------------------------------------------------------------
 
 
-    /// -------------------------- todo teach part --------------------------
 
-    /// -------------------------------------------------------------
 
 
     m_mainLayout->addWidget(controlWidget);
 
-
     FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/HomeWidget.qss", this);
+
+    posDisplayExpander->expand();
+    optExpander->expand();
+    ctrlExpander->expand();
+    pointsExpander->expand();
 }
 
 void HomeWidget::paintEvent(QPaintEvent *event) {
@@ -94,7 +121,8 @@ void HomeWidget::onThemeChanged() {
 
 QWidget *HomeWidget::makeCheckOptionWidget() {
     auto checkboxesWidget = new QWidget(this);
-    checkboxesWidget->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
+    checkboxesWidget->setObjectName("checkboxesWidget");
+    checkboxesWidget->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
 
     auto checkBoxesLayout = new QGridLayout(this);
     checkBoxesLayout->setContentsMargins(10, 5, 10, 5);
@@ -120,18 +148,20 @@ QWidget *HomeWidget::makeCheckOptionWidget() {
 
 QWidget *HomeWidget::makeRobotControlWidget() {
     auto ctrlWidget = new QWidget(this);
+    ctrlWidget->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
 
     auto ctrlLayout = new QVBoxLayout(this);
-    ctrlLayout->setSpacing(2);
+    ctrlLayout->setSpacing(5);
 
     auto sliderLabel = new FluLabel(this);
+    sliderLabel->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
     sliderLabel->setText("ControlWithJoint");
     ctrlLayout->addWidget(sliderLabel);
 
     /// slider group
     auto sliderWidget = new QWidget(this);
     sliderWidget->setObjectName("sliderWidget");
-    sliderWidget->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
+    sliderWidget->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
     auto sldLayout = new QGridLayout(this);
     sldLayout->setContentsMargins(10, 5, 10, 5);
 
@@ -236,14 +266,17 @@ QWidget *HomeWidget::makeRobotControlWidget() {
     ctrlLayout->addWidget(sliderWidget);
     ctrlLayout->addSpacing(10);
 
+//    auto posLabel = new FluLabel(FluLabelStyle::BodyStrongTextBlockStyle,this);
+//    auto posLabel = new FluLabel(FluLabelStyle::SubTitleTextBlockStyle,this);
     auto posLabel = new FluLabel(this);
+    posLabel->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
     posLabel->setText("ControlWithEulerAngle");
     ctrlLayout->addWidget(posLabel);
 
     /// line edit group
     auto eleWidget = new QWidget(this);
     eleWidget->setObjectName("eleWidget");
-    eleWidget->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
+    eleWidget->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
     auto eleLayout = new QGridLayout(this);
     eleLayout->setContentsMargins(10, 5, 10, 5);
 
@@ -356,7 +389,7 @@ QWidget *HomeWidget::makeRobotControlWidget() {
     auto pubBtn = new FluPushButton(this);
     pubBtn->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
     pubBtn->setText("Publish");
-    eleLayout->addWidget(pubBtn, 6, 0, 3, 0, Qt::AlignCenter);
+    eleLayout->addWidget(pubBtn, 6, 0, 3, 0, Qt::AlignVCenter);
 
     eleWidget->setLayout(eleLayout);
 
@@ -364,4 +397,114 @@ QWidget *HomeWidget::makeRobotControlWidget() {
 
     ctrlWidget->setLayout(ctrlLayout);
     return ctrlWidget;
+}
+
+QWidget *HomeWidget::makePosDisplayWidget() {
+    auto posDisplayWidget = new QWidget(this);
+    posDisplayWidget->setObjectName("posDisplayWidget");
+    posDisplayWidget->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
+    posDisplayWidget->setContentsMargins(5, 10, 5, 10);
+
+    auto posDisPlayLayout = new QGridLayout(this);
+
+    auto xVisualPosLabel = new FluLabel(this);
+    xVisualPosLabel->setText("X:");
+    xVisualPosLabel->setAlignment(Qt::AlignCenter);
+
+    auto yVisualPosLabel = new FluLabel(this);
+    yVisualPosLabel->setText("Y:");
+    yVisualPosLabel->setAlignment(Qt::AlignCenter);
+
+    auto zVisualPosLabel = new FluLabel(this);
+    zVisualPosLabel->setText("Z:");
+    zVisualPosLabel->setAlignment(Qt::AlignCenter);
+
+    auto rxVisualPosLabel = new FluLabel(this);
+    rxVisualPosLabel->setText("Rx:");
+    rxVisualPosLabel->setAlignment(Qt::AlignCenter);
+
+    auto ryVisualPosLabel = new FluLabel(this);
+    ryVisualPosLabel->setText("Ry:");
+    ryVisualPosLabel->setAlignment(Qt::AlignCenter);
+
+    auto rzVisualPosLabel = new FluLabel(this);
+    rzVisualPosLabel->setText("Rz:");
+    rzVisualPosLabel->setAlignment(Qt::AlignCenter);
+
+    auto xPosLabel = new FluLabel(this);
+    xPosLabel->setAlignment(Qt::AlignCenter);
+    xPosLabel->setObjectName("xPosLabel");
+
+    auto yPosLabel = new FluLabel(this);
+    yPosLabel->setAlignment(Qt::AlignCenter);
+    yPosLabel->setObjectName("yPosLabel");
+
+    auto zPosLabel = new FluLabel(this);
+    zPosLabel->setAlignment(Qt::AlignCenter);
+    zPosLabel->setObjectName("zPosLabel");
+
+    auto rxPosLabel = new FluLabel(this);
+    rxPosLabel->setAlignment(Qt::AlignCenter);
+    rxPosLabel->setObjectName("rxPosLabel");
+
+    auto ryPosLabel = new FluLabel(this);
+    ryPosLabel->setAlignment(Qt::AlignCenter);
+    ryPosLabel->setObjectName("ryPosLabel");
+
+    auto rzPosLabel = new FluLabel(this);
+    rzPosLabel->setAlignment(Qt::AlignCenter);
+    rzPosLabel->setObjectName("rzPosLabel");
+
+    posDisPlayLayout->addWidget(xVisualPosLabel, 0, 0);
+    posDisPlayLayout->addWidget(xPosLabel, 0, 1);
+
+    posDisPlayLayout->addWidget(yVisualPosLabel, 0, 2);
+    posDisPlayLayout->addWidget(yPosLabel, 0, 3);
+
+    posDisPlayLayout->addWidget(zVisualPosLabel, 0, 4);
+    posDisPlayLayout->addWidget(zPosLabel, 0, 5);
+
+
+    posDisPlayLayout->addWidget(rxVisualPosLabel, 1, 0);
+    posDisPlayLayout->addWidget(rxPosLabel, 1, 1);
+
+    posDisPlayLayout->addWidget(ryVisualPosLabel, 1, 2);
+    posDisPlayLayout->addWidget(ryPosLabel, 1, 3);
+
+    posDisPlayLayout->addWidget(rzVisualPosLabel, 1, 4);
+    posDisPlayLayout->addWidget(rzPosLabel, 1, 5);
+
+    posDisplayWidget->setLayout(posDisPlayLayout);
+
+    return posDisplayWidget;
+}
+
+QWidget *HomeWidget::makePointsWidget() {
+    auto pointsWidget = new QWidget(this);
+    pointsWidget->setObjectName("pointsWidget");
+    pointsWidget->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
+    pointsWidget->setContentsMargins(5, 10, 5, 10);
+
+    auto pointsLayout = new QGridLayout(pointsWidget);
+    pointsLayout->setSpacing(10);
+    auto pointsCB = new FluComboBox(this);
+    pointsCB->addItem("ZeroPoint");
+    pointsCB->addItem("InitPoint");
+
+    auto addBtn = new FluIconButton(FluAwesomeType::Add, this);
+    addBtn->setToolTip("add current point");
+    auto runBtn = new FluIconButton(FluAwesomeType::Robot, this);
+    runBtn->setToolTip("run select point");
+    auto delBtn = new FluIconButton(FluAwesomeType::Delete, this);
+    delBtn->setToolTip("delete select point");
+
+    pointsLayout->addWidget(pointsCB, 0, 0, 2, 0, Qt::AlignVCenter);
+
+    pointsLayout->addWidget(addBtn, 3, 0);
+    pointsLayout->addWidget(runBtn, 3, 1);
+    pointsLayout->addWidget(delBtn, 3, 2);
+
+    pointsWidget->setLayout(pointsLayout);
+
+    return pointsWidget;
 }
