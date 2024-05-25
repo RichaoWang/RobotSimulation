@@ -14,7 +14,7 @@
 
 class FluComboBox : public QComboBox
 {
-  public:
+public:
     FluComboBox(QWidget* parent = nullptr) : QComboBox(parent)
     {
         setFixedHeight(30);
@@ -23,9 +23,11 @@ class FluComboBox : public QComboBox
         view()->window()->setWindowFlags(Qt::Popup | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
         view()->window()->setAttribute(Qt::WA_TranslucentBackground);
         FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/FluComboBox.qss", this);
+        /// todo fix combox style not set bug...
+        connect(FluThemeUtils::getUtils(), &FluThemeUtils::themeChanged, this, [=](FluTheme theme) { onThemeChanged(); });
     }
 
-  public slots:
+public slots:
     void onThemeChanged()
     {
         if (FluThemeUtils::getUtils()->getTheme() == FluTheme::Light)
@@ -38,5 +40,5 @@ class FluComboBox : public QComboBox
         }
     }
 
-  protected:
+protected:
 };

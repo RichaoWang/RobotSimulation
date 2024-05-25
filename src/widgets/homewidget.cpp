@@ -1,6 +1,7 @@
 
 #include "homewidget.h"
 #include "tools/infobar.h"
+#include "components/FluComboBox.h"
 #include "components/FluSlider.h"
 #include "components/FluCheckBox.h"
 #include "components/FluLineEdit.h"
@@ -8,7 +9,6 @@
 #include "components/FluExpander.h"
 #include "components/FluLabel.h"
 #include "components/FluDoubleSpinBox.h"
-#include "components/FluComboBox.h"
 
 HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     m_mainLayout = new QHBoxLayout;
@@ -97,16 +97,16 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/HomeWidget.qss", this);
 
 
-    robotKinematics=std::make_unique<RobotKinematics>();
+    robotKinematics = std::make_unique<RobotKinematics>();
 
     connectSignsSlots();
 
 
     /// default option
-    checkboxesWidget->findChildren<QCheckBox*>("gridCheckBox")[0]->setChecked(true);
-    checkboxesWidget->findChildren<QCheckBox*>("endAxisCheckBox")[0]->setChecked(true);
+    checkboxesWidget->findChildren<QCheckBox *>("gridCheckBox")[0]->setChecked(true);
+    checkboxesWidget->findChildren<QCheckBox *>("endAxisCheckBox")[0]->setChecked(true);
 //    checkboxesWidget->findChildren<QCheckBox*>("worldAxisCheckBox")[0]->setChecked(true);
-    checkboxesWidget->findChildren<QCheckBox*>("deskCheckBox")[0]->setChecked(true);
+    checkboxesWidget->findChildren<QCheckBox *>("deskCheckBox")[0]->setChecked(true);
 
     posDisplayExpander->expand();
     optExpander->expand();
@@ -575,9 +575,9 @@ QWidget *HomeWidget::makePointsWidget() {
 
     pointsLayout->addWidget(pointsCB, 0, 0, 2, 0, Qt::AlignVCenter);
 
-    pointsLayout->addWidget(runBtn, 3, 0);
-    pointsLayout->addWidget(addBtn, 3, 1);
-    pointsLayout->addWidget(delBtn, 3, 2);
+    pointsLayout->addWidget(runBtn, 2, 0);
+    pointsLayout->addWidget(addBtn, 2, 1);
+    pointsLayout->addWidget(delBtn, 2, 2);
 
     pointsWidget->setLayout(pointsLayout);
 

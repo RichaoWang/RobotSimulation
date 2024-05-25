@@ -12,8 +12,6 @@ QComboBox::drop-down {
     margin-top: 8px;
     height: 15px;
     width: 15px;
-    /* background-color: greenyellow; */
-    /* image: url("../../res/ChevronDown.png"); */
     border: none;
 }
 
