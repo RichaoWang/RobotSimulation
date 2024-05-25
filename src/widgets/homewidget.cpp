@@ -1,7 +1,6 @@
 
 #include "homewidget.h"
 #include "tools/infobar.h"
-#include "ddr6robotwidget.h"
 #include "components/FluSlider.h"
 #include "components/FluCheckBox.h"
 #include "components/FluLineEdit.h"
@@ -17,8 +16,8 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
 
     m_mainLayout->setContentsMargins(10, 10, 10, 15);
 
-    /// robot display
-    auto ddr6widget = new DDR6RobotWidget(this);
+    /// robot display widget
+    ddr6widget = new DDR6RobotWidget(this);
     ddr6widget->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
     m_mainLayout->addWidget(ddr6widget);
     m_mainLayout->addWidget(ddr6widget);
@@ -56,7 +55,7 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     optExpLabel->setText("CheckOption");
     optExpander->getWrap1Layout()->setAlignment(Qt::AlignCenter);
     optExpander->getWrap1Layout()->addWidget(optExpLabel);
-    QWidget *checkboxesWidget = makeCheckOptionWidget();
+    checkboxesWidget = makeCheckOptionWidget();
     optExpander->getWrap2Layout()->setAlignment(Qt::AlignCenter);
     optExpander->getWrap2Layout()->addWidget(checkboxesWidget);
     controlScrollView->getMainLayout()->addWidget(optExpander);
@@ -83,25 +82,97 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     ctrlExpLabel->setText("RobotControl");
     ctrlExpander->getWrap1Layout()->setAlignment(Qt::AlignCenter);
     ctrlExpander->getWrap1Layout()->addWidget(ctrlExpLabel);
-    QWidget *robotControlWidget = makeRobotControlWidget();
+    robotControlWidget = makeRobotControlWidget();
     ctrlExpander->getWrap2Layout()->setAlignment(Qt::AlignCenter);
     ctrlExpander->getWrap2Layout()->addWidget(robotControlWidget);
     controlScrollView->getMainLayout()->addWidget(ctrlExpander);
     controlScrollView->getMainLayout()->addSpacing(10);
     /// -------------------------------------------------------------
 
-
-
-
-
     m_mainLayout->addWidget(controlWidget);
 
+
+
+
     FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/HomeWidget.qss", this);
+
+
+    robotKinematics=std::make_unique<RobotKinematics>();
+
+    connectSignsSlots();
+
+
+    /// default option
+    checkboxesWidget->findChildren<QCheckBox*>("gridCheckBox")[0]->setChecked(true);
+    checkboxesWidget->findChildren<QCheckBox*>("endAxisCheckBox")[0]->setChecked(true);
+//    checkboxesWidget->findChildren<QCheckBox*>("worldAxisCheckBox")[0]->setChecked(true);
+    checkboxesWidget->findChildren<QCheckBox*>("deskCheckBox")[0]->setChecked(true);
 
     posDisplayExpander->expand();
     optExpander->expand();
     ctrlExpander->expand();
     pointsExpander->expand();
+}
+
+void HomeWidget::connectSignsSlots() {
+    connect(this, &HomeWidget::sigJoinVarChanged, this, [=](int idx, int var) {
+        if (idx == 2 || idx == 3 || idx == 4) {
+            ddr6widget->mRobotConfig.JVars[idx] = -var;
+        } else {
+            ddr6widget->mRobotConfig.JVars[idx] = var;
+        }
+        ddr6widget->update();
+    }, Qt::QueuedConnection);
+    {
+        auto jointSliders = robotControlWidget->findChildren<QSlider *>();
+        for (int i = 0; i < jointSliders.size(); ++i) {
+            QSlider *slider = jointSliders.at(i);
+            slider->setMinimum(-180);
+            slider->setMaximum(180);
+            slider->setTickInterval(1);
+            connect(slider, &QSlider::valueChanged, this, &HomeWidget::slotUpdateJVarsValue,
+                    Qt::ConnectionType::QueuedConnection);
+        }
+    }
+
+
+    connect(this, &HomeWidget::sigCheckOptChanged, ddr6widget, [=](QString key, bool arg) {
+        if (key == "grid") {
+            ddr6widget->mGlobalConfig.isDrawGrid = arg;
+        } else if (key == "worldAxis") {
+            ddr6widget->mGlobalConfig.isDrawWorldCoord = arg;
+        } else if (key == "j1") {
+            ddr6widget->mGlobalConfig.isDrawJoint1Coord = arg;
+        } else if (key == "j2") {
+            ddr6widget->mGlobalConfig.isDrawJoint2Coord = arg;
+        } else if (key == "j3") {
+            ddr6widget->mGlobalConfig.isDrawJoint3Coord = arg;
+        } else if (key == "j4") {
+            ddr6widget->mGlobalConfig.isDrawJoint4Coord = arg;
+        } else if (key == "j5") {
+            ddr6widget->mGlobalConfig.isDrawJoint5Coord = arg;
+        } else if (key == "j6") {
+            ddr6widget->mGlobalConfig.isDrawJoint6Coord = arg;
+        } else if (key == "desk") {
+            ddr6widget->mGlobalConfig.isDrawDesk = arg;
+        } else if (key == "endAxis") {
+            ddr6widget->mGlobalConfig.isDrawEnd = arg;
+        } else {
+            return;
+        }
+        ddr6widget->update();
+    }, Qt::ConnectionType::QueuedConnection);
+
+    {
+        auto checkBoxes = checkboxesWidget->findChildren<QCheckBox *>();
+        for (int i = 0; i < checkBoxes.size(); ++i) {
+            QCheckBox *checkBox = checkBoxes.at(i);
+            connect(checkBox, &QCheckBox::toggled, this, &HomeWidget::slotUpdateCheckOpt,
+                    Qt::ConnectionType::QueuedConnection);
+        }
+    }
+
+
 }
 
 void HomeWidget::paintEvent(QPaintEvent *event) {
@@ -127,15 +198,19 @@ QWidget *HomeWidget::makeCheckOptionWidget() {
     auto checkBoxesLayout = new QGridLayout(this);
     checkBoxesLayout->setContentsMargins(10, 5, 10, 5);
     auto gridCb = new FluCheckBox("Grid", this);
+    gridCb->setObjectName("gridCheckBox");
     gridCb->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
 
-    auto worldCoordCb = new FluCheckBox("WorldCoord", this);
+    auto worldCoordCb = new FluCheckBox("WorldAxis", this);
+    worldCoordCb->setObjectName("worldAxisCheckBox");
     worldCoordCb->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
 
-    auto EndCoordCb = new FluCheckBox("EndCoord", this);
+    auto EndCoordCb = new FluCheckBox("EndAxis", this);
+    EndCoordCb->setObjectName("endAxisCheckBox");
     EndCoordCb->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
 
     auto DeskCb = new FluCheckBox("Desk", this);
+    DeskCb->setObjectName("deskCheckBox");
     DeskCb->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
 
     checkBoxesLayout->addWidget(gridCb, 0, 0);
@@ -500,11 +575,28 @@ QWidget *HomeWidget::makePointsWidget() {
 
     pointsLayout->addWidget(pointsCB, 0, 0, 2, 0, Qt::AlignVCenter);
 
-    pointsLayout->addWidget(addBtn, 3, 0);
-    pointsLayout->addWidget(runBtn, 3, 1);
+    pointsLayout->addWidget(runBtn, 3, 0);
+    pointsLayout->addWidget(addBtn, 3, 1);
     pointsLayout->addWidget(delBtn, 3, 2);
 
     pointsWidget->setLayout(pointsLayout);
 
     return pointsWidget;
+}
+
+void HomeWidget::slotUpdateCheckOpt(bool arg) {
+    QCheckBox *cb = (QCheckBox *) sender();
+    QString cbName = cb->objectName();
+    auto key = cbName.split("CheckBox").at(0);
+    emit sigCheckOptChanged(key, arg);
+}
+
+void HomeWidget::slotUpdateJVarsValue(int var) {
+    QSlider *senderSlider = (QSlider *) sender();
+    QString sliderName = senderSlider->objectName();
+    QString idx = sliderName.at(1);
+//    auto label = this->findChildren<QLabel *>("j" + idx + "Label");
+//    label.at(0)->setText(QString::number(var));
+//    emit sigJointVar
+    emit sigJoinVarChanged(idx.toInt(), var);
 }

@@ -13,8 +13,8 @@ class FluIconButton : public QPushButton
     FluIconButton(QWidget* parent = nullptr) : QPushButton(parent)
     {
         // set fixed size
-        setFixedSize(30, 30);
-        setIconSize(QSize(20, 20));
+//        setFixedSize(30, 30);
+        setIconSize(QSize(30, 30));
 
         // FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/FluIconButton.qss", this);
         onThemeChanged();
@@ -24,7 +24,7 @@ class FluIconButton : public QPushButton
     FluIconButton(FluAwesomeType type1, QWidget* parent = nullptr) : QPushButton(parent)
     {
 //        setFixedSize(30, 30);
-        setFixedHeight(30);
+//        setFixedHeight(30);
         setIconSize(QSize(20, 20));
         // please ensure type1 will in FluAwesomeType, if can't suitable may crash.
 

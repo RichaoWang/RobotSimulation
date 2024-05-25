@@ -1,7 +1,3 @@
-//
-// Created by JerryWang on 24-5-14.
-//
-
 #include "fpsgetter.h"
 
 

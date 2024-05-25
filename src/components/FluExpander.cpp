@@ -9,7 +9,7 @@ FluExpander::FluExpander(QWidget *parent /*= nullptr*/) : FluWidget(parent) {
     m_wrap1 = new QWidget(this);
     m_wrap1->installEventFilter(this);
     m_wrap1->setObjectName("wrap1");
-    m_wrap1->setFixedHeight(48);  // the wrap1 set fixed height 48.
+    m_wrap1->setFixedHeight(40);  // the wrap1 set fixed height 48.
 
     m_hWrap1Layout = new QHBoxLayout;
     m_wrap1->setLayout(m_hWrap1Layout);

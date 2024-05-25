@@ -3,7 +3,10 @@
 
 #include <QGLWidget>
 #include <QOpenGLWidget>
+#include <QOpenGLFunctions>
 #include <QWidget>
+#include <QMouseEvent>
+#include <QtOpenGL>
 #include "tools/stlfileloader.h"
 
 class RRGLWidget : public QOpenGLWidget {
@@ -15,6 +18,20 @@ public:
 
     ~RRGLWidget();
 
+    /// 绘制三维文字
+    void renderText(double x, double y, double z, const QString &str, const QFont &font ,const QColor &color);
+
+    GLint project(GLdouble objx, GLdouble objy, GLdouble objz,
+                  const GLdouble model[16], const GLdouble proj[16],
+                  const GLint viewport[4],
+                  GLdouble *winx, GLdouble *winy, GLdouble *winz);
+
+    void transformPoint(GLdouble out[4], const GLdouble m[16], const GLdouble in[4]);
+
+    /// 保存/加载 GL状态 否则绘制文字时会将模型破坏！
+    static void QtSaveGLState();
+    static void QtRestoreGLState();
+
     /// 画网格
     void drawGrid();
 
@@ -22,7 +39,7 @@ public:
     void drawCoordinates();
 
     /// 画每个组件变换后的坐标系
-    void drawSTLCoordinates(int r, int g, int b,std::string text);
+    void drawSTLCoordinates(int r, int g, int b, std::string text);
 
     /// 画STL模型
     virtual void drawGL();

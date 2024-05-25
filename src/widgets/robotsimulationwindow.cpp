@@ -126,7 +126,6 @@ void RobotSimulationWindow::makeSettingsNavItem() {
     FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(":/img/setting-light.png", "Setting", this);
     m_navView->addItemToMidLayout(item);
 
-//    auto settingPage = new SettingWidget();
     auto settingPage = new SettingWidget();
     m_sLayout->addWidget("SettingPage", settingPage);
     connect(item, &FluVNavigationIconTextItem::itemClicked, [=]() { m_sLayout->setCurrentWidget("SettingPage"); });

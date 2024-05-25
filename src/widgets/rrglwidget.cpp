@@ -1,8 +1,7 @@
 ﻿#include "rrglwidget.h"
 //#include <GL/glu.h>
 #include <QDebug>
-#include <QMouseEvent>
-#include <QtOpenGL>
+
 
 RRGLWidget::RRGLWidget(QWidget *parent) : QOpenGLWidget(parent) {
 
@@ -10,6 +9,105 @@ RRGLWidget::RRGLWidget(QWidget *parent) : QOpenGLWidget(parent) {
 
 RRGLWidget::~RRGLWidget() {
 
+}
+
+void RRGLWidget::transformPoint(GLdouble out[4], const GLdouble m[16], const GLdouble in[4]) {
+#define M(row, col)  m[col*4+row]
+    out[0] =
+            M(0, 0) * in[0] + M(0, 1) * in[1] + M(0, 2) * in[2] + M(0, 3) * in[3];
+    out[1] =
+            M(1, 0) * in[0] + M(1, 1) * in[1] + M(1, 2) * in[2] + M(1, 3) * in[3];
+    out[2] =
+            M(2, 0) * in[0] + M(2, 1) * in[1] + M(2, 2) * in[2] + M(2, 3) * in[3];
+    out[3] =
+            M(3, 0) * in[0] + M(3, 1) * in[1] + M(3, 2) * in[2] + M(3, 3) * in[3];
+#undef M
+}
+
+GLint RRGLWidget::project(GLdouble objx, GLdouble objy, GLdouble objz,
+                          const GLdouble model[16], const GLdouble proj[16],
+                          const GLint viewport[4],
+                          GLdouble *winx, GLdouble *winy, GLdouble *winz) {
+    GLdouble in[4], out[4];
+
+    in[0] = objx;
+    in[1] = objy;
+    in[2] = objz;
+    in[3] = 1.0;
+    transformPoint(out, model, in);
+    transformPoint(in, proj, out);
+
+    if (in[3] == 0.0)
+        return GL_FALSE;
+
+    in[0] /= in[3];
+    in[1] /= in[3];
+    in[2] /= in[3];
+
+    *winx = viewport[0] + (1 + in[0]) * viewport[2] / 2;
+    *winy = viewport[1] + (1 + in[1]) * viewport[3] / 2;
+
+    *winz = (1 + in[2]) / 2;
+    return GL_TRUE;
+}
+
+void RRGLWidget::renderText(double x, double y, double z, const QString &text, const QFont &font, const QColor &color) {
+    QtSaveGLState();
+//    int width = this->width();
+    int height = this->height();
+
+    GLdouble model[4][4], proj[4][4];
+    GLint view[4];
+    glGetDoublev(GL_MODELVIEW_MATRIX, &model[0][0]);
+    glGetDoublev(GL_PROJECTION_MATRIX, &proj[0][0]);
+    glGetIntegerv(GL_VIEWPORT, &view[0]);
+    GLdouble textPosX = 0, textPosY = 0, textPosZ = 0;
+
+    project(x, y, z,
+            &model[0][0], &proj[0][0], &view[0],
+            &textPosX, &textPosY, &textPosZ);
+
+    textPosY = height - textPosY; // y is inverted
+
+    QPainter painter(this);
+
+    painter.setPen(color);
+    painter.setFont(font);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+    painter.drawText(textPosX, textPosY, text); // z = pointT4.z + distOverOp / 4
+    painter.end();
+    QtRestoreGLState();
+}
+
+void RRGLWidget::QtSaveGLState() {
+    glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+    glLoadIdentity();
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+
+    glShadeModel(GL_FLAT);
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_STENCIL_TEST);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+void RRGLWidget::QtRestoreGLState() {
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+    glPopAttrib();
+    glPopClientAttrib();
 }
 
 void RRGLWidget::drawGrid() {
@@ -73,10 +171,13 @@ void RRGLWidget::drawCoordinates() {
 
     // 标签
 //    qglColor(QColor::fromRgbF(1, 1, 1));
-//    renderText(1050, 0, 0, "+X", QFont("helvetica", 12, QFont::Bold, true));
-//    renderText(0, 1050, 0, "+Y", QFont("helvetica", 12, QFont::Bold, true));
-//    renderText(0, 0, 1050, "+Z", QFont("helvetica", 12, QFont::Bold, true));
-//    renderText(500, 500, 0, "World", QFont("helvetica", 12, QFont::Bold, true));
+//    qt_save_gl_state();
+    renderText(1050, 0, 0, "+X", QFont("helvetica", 12, QFont::Bold, true), QColor(255, 0, 0));
+    renderText(0, 1050, 0, "+Y", QFont("helvetica", 12, QFont::Bold, true), QColor(0, 255, 0));
+    renderText(0, 0, 1050, "+Z", QFont("helvetica", 12, QFont::Bold, true), QColor(0, 0, 255));
+    renderText(500, 500, 0, "World", QFont("helvetica", 12, QFont::Bold, true), QColor(255, 255, 255));
+//    qt_restore_gl_state();
+
     glLineWidth(1.0f);
     glPopMatrix();
 }
@@ -97,10 +198,10 @@ void RRGLWidget::drawSTLCoordinates(int r, int g, int b, std::string text) {
 
     // 标签
 //    qglColor(QColor::fromRgbF(r / 255, g / 255, b / 255));
-//    renderText(300, 0, 0, "+X", QFont("helvetica", 12, QFont::Bold, true));
-//    renderText(0, 300, 0, "+Y", QFont("helvetica", 12, QFont::Bold, true));
-//    renderText(0, 0, 300, "+Z", QFont("helvetica", 12, QFont::Bold, true));
-//    renderText(50, 50, 100, text.c_str(), QFont("helvetica", 12, QFont::Bold, true));
+    renderText(300, 0, 0, "+X", QFont("helvetica", 12, QFont::Bold, true),QColor(255,255,255));
+    renderText(0, 300, 0, "+Y", QFont("helvetica", 12, QFont::Bold, true),QColor(255,255,255));
+    renderText(0, 0, 300, "+Z", QFont("helvetica", 12, QFont::Bold, true),QColor(255,255,255));
+    renderText(50, 50, 100, text.c_str(), QFont("helvetica", 12, QFont::Bold, true),QColor(255,255,255));
     glLineWidth(1.0f);
     glPopMatrix();
 }
@@ -121,7 +222,6 @@ void RRGLWidget::setXRotation(int angle) {
         xRot = tangle;
         emit xRotationChanged(angle);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//        updateGL();
         update();
     }
 }
@@ -138,7 +238,6 @@ void RRGLWidget::setYRotation(int angle) {
 void RRGLWidget::setXYTranslate(int dx, int dy) {
     xTran += 3.0 * dx;
     yTran -= 3.0 * dy;
-//    updateGL();
     update();
 }
 
@@ -156,7 +255,6 @@ int RRGLWidget::normalizeAngle(int angle) {
 
 void RRGLWidget::setZoom(int zoom) {
     z_zoom = zoom;
-//    updateGL();
     update();
 }
 

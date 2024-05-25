@@ -37,6 +37,7 @@ void DDR6RobotWidget::configureModelParams() {
 
     // 默认开启网格
     mGlobalConfig = {false, false, false, false, false, false, false, false, false};
+//    mGlobalConfig = {true, true, true, true, true, true, true, true, true,true};
 }
 
 void DDR6RobotWidget::drawGL() {
@@ -191,9 +192,9 @@ void DDR6RobotWidget::drawEndCoordinates() {
 
     // 标签
 //    qglColor(QColor::fromRgbF(0.2, 0.2, 0.2));
-//    renderText(100, 0, 0, "+X", QFont("helvetica", 10, QFont::Bold, true));
-//    renderText(0, 100, 0, "+Y", QFont("helvetica", 10, QFont::Bold, true));
-//    renderText(0, 0, 100, "+Z", QFont("helvetica", 10, QFont::Bold, true));
+    renderText(100, 0, 0, "+X", QFont("helvetica", 10, QFont::Bold, true),QColor(255*0.2,255*0.2,255*0.2));
+    renderText(0, 100, 0, "+Y", QFont("helvetica", 10, QFont::Bold, true),QColor(255*0.2,255*0.2,255*0.2));
+    renderText(0, 0, 100, "+Z", QFont("helvetica", 10, QFont::Bold, true),QColor(255*0.2,255*0.2,255*0.2));
     glLineWidth(1.0f);
     glPopMatrix();
 }

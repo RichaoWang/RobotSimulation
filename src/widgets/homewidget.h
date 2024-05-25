@@ -11,6 +11,8 @@
 #include "components/FluSettingsSelectBox.h"
 #include "components/FluSettingsLabelBox.h"
 #include "components/FluIconButton.h"
+#include "ddr6robotwidget.h"
+#include "tools/robotkinematics.h"
 
 class HomeWidget : public FluWidget {
 Q_OBJECT
@@ -19,7 +21,7 @@ public:
 
     void paintEvent(QPaintEvent *event) override;
 
-    QWidget*makePosDisplayWidget();
+    QWidget *makePosDisplayWidget();
 
     QWidget *makeCheckOptionWidget();
 
@@ -27,9 +29,21 @@ public:
 
     QWidget *makePointsWidget();
 
+    void connectSignsSlots();
+
 public slots:
 
     void onThemeChanged() override;
+
+    void slotUpdateCheckOpt(bool arg);
+
+    void slotUpdateJVarsValue(int var);
+
+signals:
+
+    void sigCheckOptChanged(QString, bool);
+
+    void sigJoinVarChanged(int, int);
 
 protected:
     QHBoxLayout *m_mainLayout;
@@ -38,7 +52,11 @@ protected:
 
 //    QLabel *m_titleLabel;
 //    FluVScrollView *m_vScrollView;
-public:
+private:
+    QWidget *checkboxesWidget;
+    QWidget *robotControlWidget;
+    DDR6RobotWidget *ddr6widget;
+    std::unique_ptr<RobotKinematics> robotKinematics;
 };
 
 #endif //ROBOTSIMULATION_HOMEWIDGET_H
