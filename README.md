@@ -48,3 +48,4 @@ The robot arm control software is implemented based on Qt Widget. This project i
 + [x] ~~IK~~
 + [ ] MoveAnimations
 + [ ] CodeEdit
++ [ ] Cn/En
