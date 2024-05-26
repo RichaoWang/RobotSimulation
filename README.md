@@ -7,7 +7,7 @@ The robot arm control software is implemented based on Qt Widget. This project i
 </p>
 
 <div align=center>
-  <img src="docs/shot.jpg" width="90%" height="90%">
+  <img src="docs/shot.png" width="90%" height="90%">
 </div>
 <p align="center">
 <a ><img src="https://img.shields.io/badge/Windows-pass-flygreen"></a>
@@ -18,9 +18,7 @@ The robot arm control software is implemented based on Qt Widget. This project i
 
 ## Requirements
 
-> It is recommended to use the Qt5 version, otherwise there may be changes in the interface
-
-+ Qt5.15.2
++ Qt5+
 
 ## Get started
 
@@ -38,15 +36,15 @@ The robot arm control software is implemented based on Qt Widget. This project i
 
 ## Reference
 
-> * [ros-industrial/universal_robot](https://github.com/ros-industrial/universal_robot): Universal Robots support (https://wiki.ros.org/universal_robot).
+> * [ros-industrial/universal_robot](https://github.com/ros-industrial/universal_robot): Universal Robots support.
 > * [mowangshuying/CppQtFluentUi888](https://github.com/mowangshuying/CppQtFluentUi888): FluentUI for cpp Qt.
+> * [wangwenx190/framelesshelper](https://github.com/wangwenx190/framelesshelper): Cross-platform window customization
+    framework for Qt Widgets and Qt Quick.
 
 ## TodoList
 
-+ [ ] Setting
++ [x] ~~NewUi~~
 + [x] ~~FK~~
 + [x] ~~IK~~
-+ [ ] CodeEdit
 + [ ] MoveAnimations
-+ [ ] CameraSystem
-+ [ ] NewUi
++ [ ] CodeEdit
