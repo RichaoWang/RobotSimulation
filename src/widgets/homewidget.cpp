@@ -5,10 +5,12 @@
 #include "components/FluSlider.h"
 #include "components/FluCheckBox.h"
 #include "components/FluLineEdit.h"
-#include "components/FluPushButton.h"
 #include "components/FluExpander.h"
 #include "components/FluLabel.h"
 #include "components/FluDoubleSpinBox.h"
+#include "components/FluConfirmFlyout.h"
+#include "components/FluLineEditFlyout.h"
+
 
 HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     m_mainLayout = new QHBoxLayout;
@@ -36,17 +38,17 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     controlScrollView->getMainLayout()->setSpacing(2);
 
     /// -------------------------- pos display part --------------------------
-    auto posDisplayExpander = new FluExpander(this);
-    auto posDisplayExpLabel = new FluLabel(FluLabelStyle::BodyStrongTextBlockStyle, this);
-    posDisplayExpLabel->setText("RealtimePosition");
-    posDisplayExpander->getWrap1Layout()->setAlignment(Qt::AlignCenter);
-    posDisplayExpander->getWrap1Layout()->addWidget(posDisplayExpLabel);
-    QWidget *posDisplayWidget = makePosDisplayWidget();
-    posDisplayExpander->getWrap2Layout()->setAlignment(Qt::AlignCenter);
-    posDisplayExpander->getWrap2Layout()->addWidget(posDisplayWidget);
-    controlScrollView->getMainLayout()->addWidget(posDisplayExpander);
-    controlScrollView->getMainLayout()->addSpacing(10);
-    /// -------------------------------------------------------------
+//    auto posDisplayExpander = new FluExpander(this);
+//    auto posDisplayExpLabel = new FluLabel(FluLabelStyle::BodyStrongTextBlockStyle, this);
+//    posDisplayExpLabel->setText("RealtimePosition");
+//    posDisplayExpander->getWrap1Layout()->setAlignment(Qt::AlignCenter);
+//    posDisplayExpander->getWrap1Layout()->addWidget(posDisplayExpLabel);
+//    posDisplayWidget = makePosDisplayWidget();
+//    posDisplayExpander->getWrap2Layout()->setAlignment(Qt::AlignCenter);
+//    posDisplayExpander->getWrap2Layout()->addWidget(posDisplayWidget);
+//    controlScrollView->getMainLayout()->addWidget(posDisplayExpander);
+//    controlScrollView->getMainLayout()->addSpacing(10);
+//    /// -------------------------------------------------------------
 
 
     /// -------------------------- opt part --------------------------
@@ -68,7 +70,7 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     pointsExpLabel->setText("Points");
     pointsExpander->getWrap1Layout()->setAlignment(Qt::AlignCenter);
     pointsExpander->getWrap1Layout()->addWidget(pointsExpLabel);
-    QWidget *pointsWidget = makePointsWidget();
+    QWidget * pointsWidget = makePointsWidget();
     pointsExpander->getWrap2Layout()->setAlignment(Qt::AlignCenter);
     pointsExpander->getWrap2Layout()->addWidget(pointsWidget);
     controlScrollView->getMainLayout()->addWidget(pointsExpander);
@@ -92,29 +94,134 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     m_mainLayout->addWidget(controlWidget);
 
 
-
-
     FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/HomeWidget.qss", this);
 
-
+    /// robot kinematics
     robotKinematics = std::make_unique<RobotKinematics>();
 
     connectSignsSlots();
 
+    /// local save points
+    m_pointSetting = new QSettings("points.ini", QSettings::IniFormat);
+    QStringList zero_point{"0.0", "0.0", "0.0", "0.0", "0.0", "0.0"};
+    m_pointSetting->setValue("zero_point", zero_point);
 
-    /// default option
+    /// default
     checkboxesWidget->findChildren<QCheckBox *>("gridCheckBox")[0]->setChecked(true);
     checkboxesWidget->findChildren<QCheckBox *>("endAxisCheckBox")[0]->setChecked(true);
-//    checkboxesWidget->findChildren<QCheckBox*>("worldAxisCheckBox")[0]->setChecked(true);
+    checkboxesWidget->findChildren<QCheckBox *>("worldAxisCheckBox")[0]->setChecked(true);
     checkboxesWidget->findChildren<QCheckBox *>("deskCheckBox")[0]->setChecked(true);
+    checkboxesWidget->findChildren<QCheckBox *>("posTextCheckBox")[0]->setChecked(true);
 
-    posDisplayExpander->expand();
+//    posDisplayExpander->expand();
     optExpander->expand();
     ctrlExpander->expand();
     pointsExpander->expand();
+
+    controlWidget->findChildren<QSlider *>("j1Slider")[0]->setValue(12);
+    controlWidget->findChildren<QSlider *>("j2Slider")[0]->setValue(-132);
+    controlWidget->findChildren<QSlider *>("j3Slider")[0]->setValue(144);
+    controlWidget->findChildren<QSlider *>("j4Slider")[0]->setValue(-21);
+    controlWidget->findChildren<QSlider *>("j5Slider")[0]->setValue(54);
+//    controlWidget->findChildren<QSlider*>("j4Slider")[0]->setValue(-21);
 }
 
 void HomeWidget::connectSignsSlots() {
+    connect(this, &HomeWidget::sigGlDrawPosText, ddr6widget, &RRGLWidget::setPoseText, Qt::QueuedConnection);
+
+    connect(this, &HomeWidget::sigIkSolutionSuccess, this, [=](std::vector<double> res) {
+        /// todo 动画更新机器人
+        for (int i = 0; i < res.size(); ++i) {
+            robotControlWidget->findChildren<QSlider *>("j" + QString::number(i + 1) + "Slider")[0]->setValue(res[i]);
+        }
+//        robotControlWidget->findChildren<QSlider *>("j1Slider")[0]->setValue(12);
+//        robotControlWidget->findChildren<QSlider *>("j2Slider")[0]->setValue(-132);
+//        robotControlWidget->findChildren<QSlider *>("j3Slider")[0]->setValue(144);
+//        robotControlWidget->findChildren<QSlider *>("j4Slider")[0]->setValue(-21);
+//        robotControlWidget->findChildren<QSlider *>("j5Slider")[0]->setValue(54);
+//        robotControlWidget->findChildren<QSlider *>("j6Slider")[0]->setValue(54);
+    }, Qt::QueuedConnection);
+
+
+    connect(pubBtn, &QPushButton::clicked, [=]() {
+        auto spinBoxes = robotControlWidget->findChildren<FluDoubleSpinBox *>();
+        double xyzrpy[6];
+        for (int i = 0; i < spinBoxes.size(); ++i) {
+            auto var = spinBoxes[i]->text().toDouble();
+            if (i <= 2) {
+                var = var / 1000;
+            } else {
+                var = var * M_PI / 180;
+            }
+            xyzrpy[i] = var;
+        }
+        /// best 8*6
+        auto invRes = robotKinematics->inverseSolutionFromEulerAngle(xyzrpy);
+
+        if (invRes.empty()) {
+            InfoBar::showInfoBar(FluShortInfoBarType::Error, "IK Solutions Fail", this);
+            return;
+        }
+        /// todo 目前我们自取第一个解
+        bool isNan = false;
+        auto firstInvRes = invRes[0];
+        qDebug() << "inv size: " << invRes.size() << " first result is: " << firstInvRes;
+
+        for (auto i: firstInvRes) {
+            if (std::isnan(i)) {
+                isNan = true;
+            }
+        }
+        if (isNan) {
+            InfoBar::showInfoBar(FluShortInfoBarType::Error, "IK Solutions First Result is Nan", this);
+            return;
+        }
+
+        /// todo 发送结果出去
+        emit sigIkSolutionSuccess(firstInvRes);
+    });
+
+
+    connect(this, &HomeWidget::sigKinCalc, this, [=]() {
+
+//        double q[6];
+//        auto slds = robotControlWidget->findChildren<QSlider *>();
+//        for (int j = 0; j < slds.size(); ++j) {
+//            q[j] = slds[j]->value() * (M_PI / 180.0);
+//        }
+
+        auto jvars = ddr6widget->getJVars();
+        double q[6];
+        for (int i = 1; i < jvars.size(); ++i) {
+            if (i == 2 || i == 3 || i == 4) {
+                q[i - 1] = -jvars[i] * (M_PI / 180.0);
+            } else {
+                q[i - 1] = jvars[i] * (M_PI / 180.0);
+            }
+        }
+
+        auto xyzrxryrz = robotKinematics->forwardSolution(q);
+        double x = xyzrxryrz[0];
+        double y = xyzrxryrz[1];
+        double z = xyzrxryrz[2];
+        double rx = xyzrxryrz[3];
+        double ry = xyzrxryrz[4];
+        double rz = xyzrxryrz[5];
+//        qDebug() << "x:" << x * 1000 << " y:" << y * 1000 << " z:" << z * 1000 << " rx:" << rx * 180 / M_PI << " ry:"
+//                 << ry * 180 / M_PI << " rz:" << rz * 180 / M_PI;
+        emit sigGlDrawPosText(QString::number(x * 1000, 'f', 2), QString::number(y * 1000, 'f', 2),
+                              QString::number(z * 1000, 'f', 2), QString::number(rx * 180 / M_PI, 'f', 2),
+                              QString::number(ry * 180 / M_PI, 'f', 2), QString::number(rz * 180 / M_PI, 'f', 2));
+//        posDisplayWidget->findChildren<QLabel *>("xPosLabel")[0]->setText(QString::number(x * 1000, 'f', 2));
+//        posDisplayWidget->findChildren<QLabel *>("yPosLabel")[0]->setText(QString::number(y * 1000, 'f', 2));
+//        posDisplayWidget->findChildren<QLabel *>("zPosLabel")[0]->setText(QString::number(z * 1000, 'f', 2));
+//        posDisplayWidget->findChildren<QLabel *>("rxPosLabel")[0]->setText(QString::number(rx * 180 / M_PI, 'f', 2));
+//        posDisplayWidget->findChildren<QLabel *>("ryPosLabel")[0]->setText(QString::number(ry * 180 / M_PI, 'f', 2));
+//        posDisplayWidget->findChildren<QLabel *>("rzPosLabel")[0]->setText(QString::number(rz * 180 / M_PI, 'f', 2));
+
+    }, Qt::QueuedConnection);
+
+
     connect(this, &HomeWidget::sigJoinVarChanged, this, [=](int idx, int var) {
         if (idx == 2 || idx == 3 || idx == 4) {
             ddr6widget->mRobotConfig.JVars[idx] = -var;
@@ -122,7 +229,12 @@ void HomeWidget::connectSignsSlots() {
             ddr6widget->mRobotConfig.JVars[idx] = var;
         }
         ddr6widget->update();
+
+        robotControlWidget->findChildren<QLabel *>("j" + QString::number(idx) + "ValueLabel")[0]->setText(
+                QString::number(var));
+        emit sigKinCalc();
     }, Qt::QueuedConnection);
+
     {
         auto jointSliders = robotControlWidget->findChildren<QSlider *>();
         for (int i = 0; i < jointSliders.size(); ++i) {
@@ -157,6 +269,8 @@ void HomeWidget::connectSignsSlots() {
             ddr6widget->mGlobalConfig.isDrawDesk = arg;
         } else if (key == "endAxis") {
             ddr6widget->mGlobalConfig.isDrawEnd = arg;
+        } else if (key == "posText") {
+            ddr6widget->mGlobalConfig.isDrawPoseText = arg;
         } else {
             return;
         }
@@ -213,10 +327,15 @@ QWidget *HomeWidget::makeCheckOptionWidget() {
     DeskCb->setObjectName("deskCheckBox");
     DeskCb->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
 
+    auto PosTextCb = new FluCheckBox("PosText", this);
+    PosTextCb->setObjectName("posTextCheckBox");
+    PosTextCb->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
+
     checkBoxesLayout->addWidget(gridCb, 0, 0);
     checkBoxesLayout->addWidget(worldCoordCb, 0, 1);
     checkBoxesLayout->addWidget(EndCoordCb, 1, 0);
     checkBoxesLayout->addWidget(DeskCb, 1, 1);
+    checkBoxesLayout->addWidget(PosTextCb, 2, 0);
     checkboxesWidget->setLayout(checkBoxesLayout);
     return checkboxesWidget;
 }
@@ -291,26 +410,39 @@ QWidget *HomeWidget::makeRobotControlWidget() {
     auto j1ValueLabel = new FluLabel(this);
     j1ValueLabel->setAlignment(Qt::AlignCenter);
     j1ValueLabel->setObjectName("j1ValueLabel");
+    j1ValueLabel->setText("0.0");
+    j1ValueLabel->setFixedWidth(50);
 
     auto j2ValueLabel = new FluLabel(this);
     j2ValueLabel->setAlignment(Qt::AlignCenter);
     j2ValueLabel->setObjectName("j2ValueLabel");
+    j2ValueLabel->setText("0.0");
+    j2ValueLabel->setFixedWidth(50);
 
     auto j3ValueLabel = new FluLabel(this);
     j3ValueLabel->setAlignment(Qt::AlignCenter);
     j3ValueLabel->setObjectName("j3ValueLabel");
+    j3ValueLabel->setText("0.0");
+    j3ValueLabel->setFixedWidth(50);
 
     auto j4ValueLabel = new FluLabel(this);
     j4ValueLabel->setAlignment(Qt::AlignCenter);
     j4ValueLabel->setObjectName("j4ValueLabel");
+    j4ValueLabel->setText("0.0");
+    j4ValueLabel->setFixedWidth(50);
 
     auto j5ValueLabel = new FluLabel(this);
     j5ValueLabel->setAlignment(Qt::AlignCenter);
     j5ValueLabel->setObjectName("j5ValueLabel");
+    j5ValueLabel->setText("0.0");
+    j5ValueLabel->setFixedWidth(50);
+
 
     auto j6ValueLabel = new FluLabel(this);
     j6ValueLabel->setAlignment(Qt::AlignCenter);
     j6ValueLabel->setObjectName("j6ValueLabel");
+    j6ValueLabel->setText("0.0");
+    j6ValueLabel->setFixedWidth(50);
 
     sldLayout->addWidget(j1Label, 0, 0);
     sldLayout->addWidget(j1Slider, 0, 1);
@@ -461,7 +593,7 @@ QWidget *HomeWidget::makeRobotControlWidget() {
     eleLayout->addWidget(rzLineEdit, 5, 1);
     eleLayout->addWidget(_rzLabel, 5, 2);
 
-    auto pubBtn = new FluPushButton(this);
+    pubBtn = new FluPushButton(this);
     pubBtn->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
     pubBtn->setText("Publish");
     eleLayout->addWidget(pubBtn, 6, 0, 3, 0, Qt::AlignVCenter);
@@ -580,6 +712,35 @@ QWidget *HomeWidget::makePointsWidget() {
     pointsLayout->addWidget(delBtn, 2, 2);
 
     pointsWidget->setLayout(pointsLayout);
+
+
+    connect(delBtn, &QPushButton::clicked, [=]() {
+        auto delFlyout = new FluConfirmFlyout(delBtn, FluFlyoutPosition::Left);
+        delFlyout->setTitle("Do you want to delete this point?");
+        delFlyout->setInfo("Choose \"Ok\" will be delete this point, Choose \"Cancel\" will be back to up step.");
+        connect(delFlyout, &FluConfirmFlyout::sigOkClick, [=] {
+            pointsCB->removeItem(pointsCB->currentIndex());
+            /// todo 从本地删除
+//            pointsCB.de
+
+        });
+        delFlyout->show();
+    });
+
+    connect(addBtn, &QPushButton::clicked, [=]() {
+        auto addFlyout = new FluLineEditFlyout(addBtn, FluFlyoutPosition::Left);
+        addFlyout->setTitle("Input the point name");
+        connect(addFlyout, &FluLineEditFlyout::sigOkClick, [=](QString s) {
+            pointsCB->addItem(s);
+            /// todo 从本地增加点
+
+            pointsCB->setCurrentText(s);
+        });
+
+
+        addFlyout->show();
+    });
+
 
     return pointsWidget;
 }

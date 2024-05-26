@@ -49,6 +49,8 @@ void DDR6RobotWidget::drawGL() {
     if (mGlobalConfig.isDrawWorldCoord) drawCoordinates();
     if (mGlobalConfig.isDrawDesk) drawGLForDesk();
 
+
+
     glRotatef(180, 0.0, 0.0, 1.0);
 
     // 基座
@@ -133,6 +135,10 @@ void DDR6RobotWidget::drawGL() {
         drawEndCoordinates();
     }
 
+    if (mGlobalConfig.isDrawPoseText) {
+        drawPoseText();
+    }
+
     glPopMatrix();
 }
 
@@ -181,6 +187,12 @@ void DDR6RobotWidget::drawEndCoordinates() {
     glVertex3f(-10, 90, 0);
     glVertex3f(0, 100, 0);
 
+#ifdef _DEBUG
+    setupColor(0, 0, 255);
+    glVertex3f(0, 0, 0);
+    glVertex3f(0, 0, 1000);
+    glEnd();
+#else
     setupColor(0, 0, 255);
     glVertex3f(0, 0, 0);
     glVertex3f(0, 0, 100);
@@ -189,7 +201,7 @@ void DDR6RobotWidget::drawEndCoordinates() {
     glVertex3f(-10, 0, 90);
     glVertex3f(0, 0, 100);
     glEnd();
-
+#endif
     // 标签
 //    qglColor(QColor::fromRgbF(0.2, 0.2, 0.2));
     renderText(100, 0, 0, "+X", QFont("helvetica", 10, QFont::Bold, true),QColor(255*0.2,255*0.2,255*0.2));
@@ -198,3 +210,5 @@ void DDR6RobotWidget::drawEndCoordinates() {
     glLineWidth(1.0f);
     glPopMatrix();
 }
+
+

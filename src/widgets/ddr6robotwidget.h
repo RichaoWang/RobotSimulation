@@ -22,6 +22,7 @@ public:
     /// 画末端轴
     void drawEndCoordinates();
 
+
 public:
     /// 7个小部件组成
     typedef struct DD6RobotModel {

@@ -120,8 +120,8 @@ void RRGLWidget::drawGrid() {
     /// @param params 四维数组，这个数组描述了反光率的RGBA值，每一项取值都为0-1之间
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
 
-    int step = 50;
-    int num = 15;
+    int step = 100;
+    int num = 8;
     for (int i = -num; i < num + 1; i++) {
         glBegin(GL_LINES);
         glVertex3f(i * step, -num * step, 0);
@@ -198,10 +198,10 @@ void RRGLWidget::drawSTLCoordinates(int r, int g, int b, std::string text) {
 
     // 标签
 //    qglColor(QColor::fromRgbF(r / 255, g / 255, b / 255));
-    renderText(300, 0, 0, "+X", QFont("helvetica", 12, QFont::Bold, true),QColor(255,255,255));
-    renderText(0, 300, 0, "+Y", QFont("helvetica", 12, QFont::Bold, true),QColor(255,255,255));
-    renderText(0, 0, 300, "+Z", QFont("helvetica", 12, QFont::Bold, true),QColor(255,255,255));
-    renderText(50, 50, 100, text.c_str(), QFont("helvetica", 12, QFont::Bold, true),QColor(255,255,255));
+    renderText(300, 0, 0, "+X", QFont("helvetica", 12, QFont::Bold, true), QColor(255, 255, 255));
+    renderText(0, 300, 0, "+Y", QFont("helvetica", 12, QFont::Bold, true), QColor(255, 255, 255));
+    renderText(0, 0, 300, "+Z", QFont("helvetica", 12, QFont::Bold, true), QColor(255, 255, 255));
+    renderText(50, 50, 100, text.c_str(), QFont("helvetica", 12, QFont::Bold, true), QColor(255, 255, 255));
     glLineWidth(1.0f);
     glPopMatrix();
 }
@@ -328,4 +328,49 @@ void RRGLWidget::mouseMoveEvent(QMouseEvent *event) {
     }
     lastPos = event->pos();
     QWidget::mousePressEvent(event);
+}
+
+QVector<float> RRGLWidget::getJVars() {
+    return mRobotConfig.JVars;
+}
+
+void RRGLWidget::setPoseText(QString x, QString y, QString z, QString rx, QString ry, QString rz) {
+    mEulerConfig.x = x;
+    mEulerConfig.y = y;
+    mEulerConfig.z = z;
+    mEulerConfig.rx = rx;
+    mEulerConfig.ry = ry;
+    mEulerConfig.rz = rz;
+    if (mGlobalConfig.isDrawPoseText) {
+        update();
+    }
+}
+
+void RRGLWidget::drawPoseText() {
+    QtSaveGLState();
+    QPainter painter(this);
+    painter.setPen(QColor(255, 255, 255));
+    painter.setFont(QFont("helvetica", 10));
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+    painter.drawText(10, 30, "x:");
+    painter.drawText(25, 30, mEulerConfig.x);
+
+    painter.drawText(10, 50, "y:");
+    painter.drawText(25, 50, mEulerConfig.y);
+
+    painter.drawText(10, 70, "z:");
+    painter.drawText(25, 70, mEulerConfig.z);
+
+
+    painter.drawText(10 + 70, 30, "rx:");
+    painter.drawText(25 + 70, 30, mEulerConfig.rx);
+
+    painter.drawText(10 + 70, 50, "ry:");
+    painter.drawText(25 + 70, 50, mEulerConfig.ry);
+
+    painter.drawText(10 + 70, 70, "rz:");
+    painter.drawText(25 + 70, 70, mEulerConfig.rz);
+
+    painter.end();
+    QtRestoreGLState();
 }

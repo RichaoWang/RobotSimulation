@@ -19,7 +19,7 @@ public:
     ~RRGLWidget();
 
     /// 绘制三维文字
-    void renderText(double x, double y, double z, const QString &str, const QFont &font ,const QColor &color);
+    void renderText(double x, double y, double z, const QString &str, const QFont &font, const QColor &color);
 
     GLint project(GLdouble objx, GLdouble objy, GLdouble objz,
                   const GLdouble model[16], const GLdouble proj[16],
@@ -30,6 +30,7 @@ public:
 
     /// 保存/加载 GL状态 否则绘制文字时会将模型破坏！
     static void QtSaveGLState();
+
     static void QtRestoreGLState();
 
     /// 画网格
@@ -61,6 +62,14 @@ public:
 
     /// 设置Z轴距离
     void setZoom(int zoom);
+
+
+    QVector<float> getJVars();
+
+    void setPoseText(QString, QString, QString, QString, QString, QString);
+
+    void drawPoseText();
+
 
 signals:
 
@@ -108,6 +117,17 @@ public:
         QVector<float> JVars; // 绕z轴旋转
     } RobotConfig;
 
+
+    ///
+    typedef struct EulerConfig {
+        QString x;
+        QString y;
+        QString z;
+        QString rx;
+        QString ry;
+        QString rz;
+    } EulerConfig;
+
     /// XY平台配置信息结构体
     typedef struct XYPlatformConfig {
         float x;
@@ -125,12 +145,15 @@ public:
         bool isDrawJoint6Coord; //关节6坐标系
         bool isDrawDesk;        //桌子
         bool isDrawEnd;        //末端
+        bool isDrawPoseText;  // 绘制pos文字
     } GlobalConfig;
 
     /// 全局场景开关配置
     GlobalConfig mGlobalConfig;
     /// 机械臂旋转平移配置
     RobotConfig mRobotConfig;
+
+    EulerConfig mEulerConfig;
 };
 
 #endif // RRGLWIDGET_H

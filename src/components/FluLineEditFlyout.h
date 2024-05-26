@@ -5,24 +5,27 @@
 #include "./utils/FluUtils.h"
 #include "FluStyleButton.h"
 #include "FluPushButton.h"
+#include "FluTextEdit.h"
 #include <QHBoxLayout>
 #include <QStyleOption>
 #include <QPainter>
 
-class FluConfirmFlyout : public FluVFlyout {
+
+/// new add: 支持lineEdit 的 flyout
+class FluLineEditFlyout : public FluVFlyout {
 Q_OBJECT
 public:
-    FluConfirmFlyout(QWidget *target, FluFlyoutPosition position = FluFlyoutPosition::Top) : FluVFlyout(target,
-                                                                                                        position) {
+    FluLineEditFlyout(QWidget *target, FluFlyoutPosition position = FluFlyoutPosition::Top) : FluVFlyout(target,
+                                                                                                         position) {
         m_titleLabel = new FluLabel;
         m_titleLabel->setWordWrap(true);
         m_titleLabel->setLabelStyle(FluLabelStyle::SubTitleTextBlockStyle);
-        m_infoLabel = new FluLabel;
-        m_infoLabel->setWordWrap(true);
-        m_infoLabel->setLabelStyle(FluLabelStyle::BodyTextBlockStyle);
+
+        m_textEdit = new FluTextEdit;
+        m_textEdit->setFixedHeight(25);
 
         m_vShadowLayout->addWidget(m_titleLabel);
-        m_vShadowLayout->addWidget(m_infoLabel);
+        m_vShadowLayout->addWidget(m_textEdit);
 
         m_hBtnLayout = new QHBoxLayout;
         m_vShadowLayout->addLayout(m_hBtnLayout);
@@ -39,11 +42,16 @@ public:
         m_okBtn->setText("Ok");
         m_cancelBtn->setText("Cancel");
 
-//        connect(m_okBtn, &FluStyleButton::clicked, [=]() { close(); });
-        connect(m_okBtn, &FluStyleButton::clicked, [=]() { emit sigOkClick();close(); });
+        connect(m_okBtn, &FluStyleButton::clicked, [=]() {
+            QString s = m_textEdit->toPlainText();
+            emit sigOkClick(s);
+            close();
+        });
 
-//        connect(m_cancelBtn, &FluPushButton::clicked, [=]() { close(); });
-        connect(m_cancelBtn, &FluPushButton::clicked, [=]() { emit sigCancelClick();close(); });
+        connect(m_cancelBtn, &FluPushButton::clicked, [=]() {
+            emit sigCancelClick();
+            close();
+        });
 
         FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/FluConfirmFlyout.qss", this);
         if (FluThemeUtils::getUtils()->getTheme() == FluTheme::Dark) {
@@ -55,9 +63,6 @@ public:
         m_titleLabel->setText(title);
     }
 
-    void setInfo(QString info) {
-        m_infoLabel->setText(info);
-    }
 
     void setOk(QString ok) {
         m_okBtn->setText(ok);
@@ -86,13 +91,13 @@ public slots:
 
 signals:
 
-    void sigOkClick();
+    void sigOkClick(QString s);
 
     void sigCancelClick();
 
 protected:
     FluLabel *m_titleLabel;
-    FluLabel *m_infoLabel;
+    FluTextEdit *m_textEdit;
     FluStyleButton *m_okBtn;
     FluPushButton *m_cancelBtn;
 
