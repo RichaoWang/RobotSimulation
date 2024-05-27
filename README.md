@@ -5,10 +5,11 @@
 <p align="center">
 The robot arm control software is implemented based on Qt Widget. This project is mainly used to learn the use of OpenGL and learn robot kinematics
 </p>
-
 <div align=center>
-  <img src="docs/shot.png" width="90%" height="90%">
+  <img src="docs/shot.png" width="80%" height="80%">
 </div>
+
+
 <p align="center">
 <a ><img src="https://img.shields.io/badge/Windows-pass-flygreen"></a>
 <a ><img src="https://img.shields.io/badge/Ubuntu-pass-flygreen"></a>
