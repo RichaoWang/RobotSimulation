@@ -369,24 +369,24 @@ void RRGLWidget::drawPoseText() {
     painter.setPen(QColor(255, 255, 255));
     painter.setFont(QFont("helvetica", 10));
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-    painter.drawText(10, 30, "x:");
-    painter.drawText(25, 30, mEulerConfig.x);
+    painter.drawText(10, 20, "x:");
+    painter.drawText(25, 20, mEulerConfig.x + "mm");
 
-    painter.drawText(90, 30, "y:");
-    painter.drawText(105, 30, mEulerConfig.y);
+    painter.drawText(110, 20, "y:");
+    painter.drawText(125, 20, mEulerConfig.y + "mm");
 
-    painter.drawText(170, 30, "z:");
-    painter.drawText(185, 30, mEulerConfig.z);
+    painter.drawText(210, 20, "z:");
+    painter.drawText(225, 20, mEulerConfig.z + "mm");
 
 
-    painter.drawText(10, 50, "rx:");
-    painter.drawText(25, 50, mEulerConfig.rx);
+    painter.drawText(10, 40, "rx:");
+    painter.drawText(25, 40, mEulerConfig.rx + "deg");
 
-    painter.drawText(90, 50, "ry:");
-    painter.drawText(105, 50, mEulerConfig.ry);
+    painter.drawText(110, 40, "ry:");
+    painter.drawText(125, 40, mEulerConfig.ry + "deg");
 
-    painter.drawText(170, 50, "rz:");
-    painter.drawText(185, 50, mEulerConfig.rz);
+    painter.drawText(210, 40, "rz:");
+    painter.drawText(225, 40, mEulerConfig.rz + "deg");
 
     painter.end();
     QtRestoreGLState();

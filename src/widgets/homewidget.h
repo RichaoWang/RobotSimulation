@@ -71,6 +71,8 @@ private:
 
     std::pair<std::string, std::vector<float>> m_points;
     QSettings *m_pointSetting;
+
+    int mCount;
 };
 
 #endif //ROBOTSIMULATION_HOMEWIDGET_H

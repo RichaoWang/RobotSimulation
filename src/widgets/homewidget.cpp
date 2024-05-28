@@ -70,7 +70,7 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     pointsExpLabel->setText("Points");
     pointsExpander->getWrap1Layout()->setAlignment(Qt::AlignCenter);
     pointsExpander->getWrap1Layout()->addWidget(pointsExpLabel);
-    QWidget * pointsWidget = makePointsWidget();
+    QWidget *pointsWidget = makePointsWidget();
     pointsExpander->getWrap2Layout()->setAlignment(Qt::AlignCenter);
     pointsExpander->getWrap2Layout()->addWidget(pointsWidget);
     controlScrollView->getMainLayout()->addWidget(pointsExpander);
@@ -130,16 +130,78 @@ void HomeWidget::connectSignsSlots() {
     connect(this, &HomeWidget::sigGlDrawPosText, ddr6widget, &RRGLWidget::setPoseText, Qt::QueuedConnection);
 
     connect(this, &HomeWidget::sigIkSolutionSuccess, this, [=](std::vector<double> res) {
-        /// todo 动画更新机器人
-        for (int i = 0; i < res.size(); ++i) {
-            robotControlWidget->findChildren<QSlider *>("j" + QString::number(i + 1) + "Slider")[0]->setValue(res[i]);
+        mCount = 0;
+        auto slds = robotControlWidget->findChildren<QSlider *>();
+        for (int i = 0; i < slds.size(); ++i) {
+            slds[i]->setEnabled(false);
         }
-//        robotControlWidget->findChildren<QSlider *>("j1Slider")[0]->setValue(12);
-//        robotControlWidget->findChildren<QSlider *>("j2Slider")[0]->setValue(-132);
-//        robotControlWidget->findChildren<QSlider *>("j3Slider")[0]->setValue(144);
-//        robotControlWidget->findChildren<QSlider *>("j4Slider")[0]->setValue(-21);
-//        robotControlWidget->findChildren<QSlider *>("j5Slider")[0]->setValue(54);
-//        robotControlWidget->findChildren<QSlider *>("j6Slider")[0]->setValue(54);
+
+        /// 动画更新机器人
+        std::vector<double> ori_joints;
+        for (int i = 1; i < 7; ++i) {
+            auto v = robotControlWidget->findChildren<QSlider *>("j" + QString::number(i) + "Slider")[0]->value();
+            ori_joints.push_back(v);
+        }
+
+//        std::vector<double> dif_joints(res.size());
+
+//        qDebug() << "============================================";
+//        qDebug() << "原关节角:" << ori_joints;
+//        qDebug() << "反解关节角:" << res;
+//        std::transform(res.begin(), res.end(), ori_joints.begin(), dif_joints.begin(), std::minus<double>());
+//        qDebug() << "差值关节角:" << dif_joints;
+
+
+        for (int i = 0; i < res.size(); ++i) {
+            auto cur_j = ori_joints[i];
+            auto calc_j = res[i];
+//            if (0 <= std::abs(calc_j - cur_j) < 1) {
+//                continue;
+//            }
+            auto dif_j = calc_j - cur_j;
+//            qDebug() << "关节" << i + 1 << "差值 " << dif_j;
+            auto t = new QTimer(this);
+//            t->setInterval(10);
+            connect(t, &QTimer::timeout, [=]() {
+                if (dif_j > 0) {
+                    auto v = robotControlWidget->findChildren<QSlider *>(
+                            "j" + QString::number(i + 1) + "Slider")[0]->value();
+                    v += 1;
+                    if (v >= calc_j) {
+                        t->stop();
+                        t->destroyed();
+                    }
+                    robotControlWidget->findChildren<QSlider *>("j" + QString::number(i + 1) + "Slider")[0]->setValue(
+                            v);
+                } else {
+                    auto v = robotControlWidget->findChildren<QSlider *>(
+                            "j" + QString::number(i + 1) + "Slider")[0]->value();
+                    v -= 1;
+                    if (v <= calc_j) {
+                        t->stop();
+                        t->destroyed();
+                    }
+                    robotControlWidget->findChildren<QSlider *>("j" + QString::number(i + 1) + "Slider")[0]->setValue(
+                            v);
+                }
+
+            });
+
+
+            connect(t, &QTimer::destroyed, [=]() {
+                qDebug() << i + 1 << "关闭";
+                mCount += 1;
+                if (mCount == 6) {
+                    qDebug() << "所有定时器关闭...";
+                    auto slds = robotControlWidget->findChildren<QSlider *>();
+                    for (int k = 0; k < slds.size(); ++k) {
+                        slds[k]->setEnabled(true);
+                    }
+                }
+            });
+
+            t->start(10);
+        }
     }, Qt::QueuedConnection);
 
 
