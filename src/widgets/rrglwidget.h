@@ -8,6 +8,7 @@
 #include <QMouseEvent>
 #include <QtOpenGL>
 #include "tools/stlfileloader.h"
+//#include "components/utils/FluUtils.h"
 
 class RRGLWidget : public QOpenGLWidget {
     //显示机械臂gl基类，提供了鼠标旋转、方法缩小、平移、网格、坐标系等基本功能
@@ -35,6 +36,13 @@ public:
 
     /// 画网格
     void drawGrid();
+
+    /// 画圆锥
+    void drawCone();
+
+    /// 画圆
+    void drawCircle();
+//    void drawBackGround();
 
     /// 画坐标系
     void drawCoordinates();
@@ -70,7 +78,7 @@ public:
 
     void drawPoseText();
 
-
+//    void onThemeChanged();
 signals:
 
     /// 信号：x轴旋转角度变化
@@ -92,6 +100,8 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
 
     void mouseMoveEvent(QMouseEvent *event) override;
+
+//    void showEvent(QShowEvent *event) override;
 
 public:
     /// x旋转角度
@@ -154,6 +164,8 @@ public:
     RobotConfig mRobotConfig;
 
     EulerConfig mEulerConfig;
+
+//    FluTheme m_theme;
 };
 
 #endif // RRGLWIDGET_H

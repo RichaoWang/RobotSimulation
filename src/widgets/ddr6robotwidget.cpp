@@ -44,12 +44,12 @@ void DDR6RobotWidget::drawGL() {
     /// TODO 坐标写死了 （当前ur10）
 
     glPushMatrix();
-
     if (mGlobalConfig.isDrawGrid) drawGrid();
     if (mGlobalConfig.isDrawWorldCoord) drawCoordinates();
     if (mGlobalConfig.isDrawDesk) drawGLForDesk();
 
 
+    drawCone();
 
     glRotatef(180, 0.0, 0.0, 1.0);
 

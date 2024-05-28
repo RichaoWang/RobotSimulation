@@ -7,7 +7,8 @@ RobotSimulationWindow::RobotSimulationWindow(QWidget *parent /*= nullptr*/) : Fl
 
     setWindowIcon(QIcon(":/icon/icon.ico"));
 
-    resize(1200, 800);
+//    resize(1200, 800);
+    setMinimumSize(1200,800);
 
     m_titleBar->setObjectName("titleBar");
 

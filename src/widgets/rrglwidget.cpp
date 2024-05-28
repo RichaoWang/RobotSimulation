@@ -4,7 +4,13 @@
 
 
 RRGLWidget::RRGLWidget(QWidget *parent) : QOpenGLWidget(parent) {
-
+//    m_theme = FluThemeUtils::getUtils()->getTheme();
+//    connect(FluThemeUtils::getUtils(), &FluThemeUtils::themeChanged, [=]() {
+//        if (!isVisible()) {
+//            return;
+//        }
+//        onThemeChanged();
+//    });
 }
 
 RRGLWidget::~RRGLWidget() {
@@ -112,7 +118,18 @@ void RRGLWidget::QtRestoreGLState() {
 
 void RRGLWidget::drawGrid() {
     glPushMatrix();         // 存储当前坐标系位置
-    GLfloat color[] = {170.0 / 255, 170.0 / 255, 170.0 / 255};
+    GLfloat color[3] = {170.0 / 255, 170.0 / 255, 170.0 / 255};
+//    if (m_theme == FluTheme::Dark) {
+////         color = {125 / 255, 10/ 255, 185 / 255};
+//        color[0] = 125.0 / 255;
+//        color[1] = 10.0 / 255;
+//        color[2] = 185.0 / 255;
+//    } else {
+////        color = {170.0 / 255, 170.0 / 255, 170.0 / 255};
+//        color[0] = 170.0 / 255;
+//        color[1] = 170.0 / 255;
+//        color[2] = 170.0 / 255;
+//    }
     ///
     /// \brief glMaterialfv  指定材质对漫射光的反射率
     /// @param face   决定该材质运用于图元的正面还是反面
@@ -355,22 +372,83 @@ void RRGLWidget::drawPoseText() {
     painter.drawText(10, 30, "x:");
     painter.drawText(25, 30, mEulerConfig.x);
 
-    painter.drawText(10, 50, "y:");
-    painter.drawText(25, 50, mEulerConfig.y);
+    painter.drawText(90, 30, "y:");
+    painter.drawText(105, 30, mEulerConfig.y);
 
-    painter.drawText(10, 70, "z:");
-    painter.drawText(25, 70, mEulerConfig.z);
+    painter.drawText(170, 30, "z:");
+    painter.drawText(185, 30, mEulerConfig.z);
 
 
-    painter.drawText(10 + 70, 30, "rx:");
-    painter.drawText(25 + 70, 30, mEulerConfig.rx);
+    painter.drawText(10, 50, "rx:");
+    painter.drawText(25, 50, mEulerConfig.rx);
 
-    painter.drawText(10 + 70, 50, "ry:");
-    painter.drawText(25 + 70, 50, mEulerConfig.ry);
+    painter.drawText(90, 50, "ry:");
+    painter.drawText(105, 50, mEulerConfig.ry);
 
-    painter.drawText(10 + 70, 70, "rz:");
-    painter.drawText(25 + 70, 70, mEulerConfig.rz);
+    painter.drawText(170, 50, "rz:");
+    painter.drawText(185, 50, mEulerConfig.rz);
 
     painter.end();
     QtRestoreGLState();
 }
+
+void RRGLWidget::drawCone() {
+    glBegin(GL_QUAD_STRIP);//连续填充四边形串
+    int i = 0;
+    for (i = 0; i <= 360; i += 15) {
+        float p = i * 3.14 / 180;
+        glColor3f(sin(p), cos(p), 1.0f);
+        glVertex3f(100, 100, 100.0f);
+        glVertex3f(sin(p), cos(p), 0.0f);
+    }
+    glEnd();
+    //bottom circle
+    glColor3f(0, 1, 1);
+    drawCircle();
+}
+
+void RRGLWidget::drawCircle() {
+    glBegin(GL_TRIANGLE_FAN);           //扇形连续填充三角形串
+    glVertex3f(0.0f, 0.0f, 0.0f);
+    int i = 0;
+    for (i = 0; i <= 360; i += 15) {
+        float p = i * 3.14 / 180;
+        glColor3f(sin(p), cos(p), tan(p));
+        glVertex3f(sin(p), cos(p), 100.0f);
+    }
+    glEnd();
+}
+
+//void RRGLWidget::showEvent(QShowEvent *event) {
+//    QWidget::showEvent(event);
+//    if (m_theme != FluThemeUtils::getUtils()->getTheme()) {
+//        onThemeChanged();
+//        m_theme = FluThemeUtils::getUtils()->getTheme();
+//    }
+//
+//}
+//
+//void RRGLWidget::onThemeChanged() {
+//    m_theme = FluThemeUtils::getUtils()->getTheme();
+//    update();
+////    if (FluThemeUtils::getUtils()->getTheme() == FluTheme::Light)
+////    {
+//////        FluStyleSheetUitls::setQssByFileName(":/stylesheet/light/FluCodeBox.qss", this);
+////        qDebug()<<"Light Mode";
+////        m_theme = FluThemeUtils::getUtils()->getTheme();
+////    }
+////    else
+////    {
+//////        FluStyleSheetUitls::setQssByFileName(":/stylesheet/dark/FluCodeBox.qss", this);
+////        qDebug()<<"Dark Mode";
+////
+////    }
+//}
+//
+//void RRGLWidget::drawBackGround() {
+//    if (m_theme == FluTheme::Dark) {
+//        glClearColor(0.2, 0.4, 0.6, 0.8);
+//    } else {
+//        glClearColor(0.5, 0.6, 0.6, 0.8);
+//    }
+//}
