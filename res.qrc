@@ -3,6 +3,15 @@
         <file alias="icon.ico">resources/images/icon.ico</file>
     </qresource>
 
+    <qresource prefix="/code_edit">
+        <file alias="default_style.xml">resources/code_edit/style/default_style.xml</file>
+        <file alias="drakula.xml">resources/code_edit/style/drakula.xml</file>
+
+        <file alias="rs.xml">resources/code_edit/languages/rs.xml</file>
+        <file alias="robotsimulation.rs">resources/code_edit/code_samples/robotsimulation.rs</file>
+
+    </qresource>
+
     <qresource prefix="/img">
         <file alias="setting-light.png">resources/images/setting-light.png</file>
         <file alias="setting-dark.png">resources/images/setting-dark.png</file>

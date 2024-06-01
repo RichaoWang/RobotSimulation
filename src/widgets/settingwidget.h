@@ -5,11 +5,11 @@
 #include <QVBoxLayout>
 #include <QStyleOption>
 #include <QPainter>
-#include "components/FluWidget.h"
-#include "components/utils/FluUtils.h"
-#include "components/FluVScrollView.h"
-#include "components/FluSettingsSelectBox.h"
-#include "components/FluSettingsLabelBox.h"
+#include "components/fluwidgets/FluWidget.h"
+#include "components/fluwidgets/utils/FluUtils.h"
+#include "components/fluwidgets/FluVScrollView.h"
+#include "components/fluwidgets/FluSettingsSelectBox.h"
+#include "components/fluwidgets/FluSettingsLabelBox.h"
 
 class SettingWidget : public FluWidget {
 Q_OBJECT

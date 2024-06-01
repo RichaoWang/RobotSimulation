@@ -1,15 +1,15 @@
 
 #include "homewidget.h"
 #include "tools/infobar.h"
-#include "components/FluComboBox.h"
-#include "components/FluSlider.h"
-#include "components/FluCheckBox.h"
-#include "components/FluLineEdit.h"
-#include "components/FluExpander.h"
-#include "components/FluLabel.h"
-#include "components/FluDoubleSpinBox.h"
-#include "components/FluConfirmFlyout.h"
-#include "components/FluLineEditFlyout.h"
+#include "components/fluwidgets/FluComboBox.h"
+#include "components/fluwidgets/FluSlider.h"
+#include "components/fluwidgets/FluCheckBox.h"
+#include "components/fluwidgets/FluLineEdit.h"
+#include "components/fluwidgets/FluExpander.h"
+#include "components/fluwidgets/FluLabel.h"
+#include "components/fluwidgets/FluDoubleSpinBox.h"
+#include "components/fluwidgets/FluConfirmFlyout.h"
+#include "components/fluwidgets/FluLineEditFlyout.h"
 
 
 HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
@@ -129,7 +129,7 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
 void HomeWidget::connectSignsSlots() {
     connect(this, &HomeWidget::sigGlDrawPosText, ddr6widget, &RRGLWidget::setPoseText, Qt::QueuedConnection);
 
-    connect(this, &HomeWidget::sigIkSolutionSuccess, this, [=](std::vector<double> res) {
+    connect(this, &HomeWidget::sigJointMoveAnimation, this, [=](std::vector<double> res) {
         mCount = 0;
         auto slds = robotControlWidget->findChildren<QSlider *>();
         for (int i = 0; i < slds.size(); ++i) {
@@ -240,7 +240,7 @@ void HomeWidget::connectSignsSlots() {
         }
 
         /// todo 发送结果出去
-        emit sigIkSolutionSuccess(firstInvRes);
+        emit sigJointMoveAnimation(firstInvRes);
     });
 
 
@@ -541,6 +541,10 @@ QWidget *HomeWidget::makeRobotControlWidget() {
     posLabel->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
     posLabel->setText("ControlWithEulerAngle");
     ctrlLayout->addWidget(posLabel);
+
+    /// pos ctrl btn group
+    
+
 
     /// line edit group
     auto eleWidget = new QWidget(this);

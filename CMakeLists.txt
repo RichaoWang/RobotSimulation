@@ -10,8 +10,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Qt
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Svg OpenGL)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Svg OpenGL)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core Gui Svg OpenGL)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Gui Svg OpenGL)
 
 # Eigen
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/eigen-3.4.0)
@@ -30,7 +30,7 @@ qt5_add_resources(QRC_FILES ${QRC_SOURCE_FILES})
 file(GLOB_RECURSE PROJECT_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 # froms
-file(GLOB_RECURSE PROJECT_FROMS ${CMAKE_CURRENT_SOURCE_DIR}/froms/*.ui)
+file(GLOB_RECURSE PROJECT_FROMS backup/froms/*.ui)
 
 set(PROJECT_SOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(
@@ -44,7 +44,7 @@ if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
             ${PROJECT_SOURCES}
             ${PROJECT_FROMS}
             "icon.rc"
-            )
+    )
     # Define target properties for Android with Qt 6 as:
     #    set_property(TARGET RobotSimulation APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
     #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
@@ -54,7 +54,7 @@ else ()
         add_library(RobotSimulation SHARED
                 ${PROJECT_SOURCES}
                 ${PROJECT_FROMS}
-                )
+        )
         # Define properties for Android with Qt 5 after find_package() calls as:
         #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else ()
@@ -63,14 +63,14 @@ else ()
                 ${PROJECT_FROMS}
                 ${QRC_FILES}
                 "icon.rc"
-                )
+        )
     endif ()
 endif ()
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-    target_link_libraries(RobotSimulation PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Svg Qt${QT_VERSION_MAJOR}::OpenGL OpenGL FramelessHelperCore FramelessHelperWidgets)
+    target_link_libraries(RobotSimulation PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Svg Qt${QT_VERSION_MAJOR}::OpenGL OpenGL GLU FramelessHelperCore FramelessHelperWidgets)
 elseif (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    target_link_libraries(RobotSimulation PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Svg Qt${QT_VERSION_MAJOR}::OpenGL OpenGL32 FramelessHelperCore FramelessHelperWidgets)
+    target_link_libraries(RobotSimulation PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Svg Qt${QT_VERSION_MAJOR}::OpenGL OpenGL32 GLU32 FramelessHelperCore FramelessHelperWidgets)
 endif ()
 
 
@@ -80,7 +80,7 @@ set_target_properties(RobotSimulation PROPERTIES
         MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
         MACOSX_BUNDLE TRUE
         WIN32_EXECUTABLE TRUE
-        )
+)
 
 install(TARGETS RobotSimulation
         BUNDLE DESTINATION .

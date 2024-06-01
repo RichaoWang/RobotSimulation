@@ -8,13 +8,13 @@
 #include <FramelessHelper/Widgets/standardsystembutton.h>
 #include <FramelessHelper/Widgets/standardtitlebar.h>
 
-#include "components/FluFrameLessWidget.h"
-#include "components/FluVNavigationView.h"
-#include "components/FluVNavigationIconTextItem.h"
-#include "components/FluStackedLayout.h"
-#include "components/FluVNavigationSettingsItem.h"
-#include "components/FluMessageBox.h"
-#include "components/FluMessageBox.h"
+#include "components/fluwidgets/FluFrameLessWidget.h"
+#include "components/fluwidgets/FluVNavigationView.h"
+#include "components/fluwidgets/FluVNavigationIconTextItem.h"
+#include "components/fluwidgets/FluStackedLayout.h"
+#include "components/fluwidgets/FluVNavigationSettingsItem.h"
+#include "components/fluwidgets/FluMessageBox.h"
+#include "components/fluwidgets/FluMessageBox.h"
 
 #include "widgets/homewidget.h"
 #include "widgets/codeeditwidget.h"

@@ -1,6 +1,6 @@
 #include <QWidget>
-#include "components/FluShortInfoBar.h"
-#include "components/FluInfoBarMgr.h"
+#include "components/fluwidgets/FluShortInfoBar.h"
+#include "components/fluwidgets/FluInfoBarMgr.h"
 
 namespace InfoBar {
     static void showInfoBar(FluShortInfoBarType type, QString text, QWidget *p, int w = 270) {

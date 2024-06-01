@@ -6,6 +6,22 @@ CodeEditWidget {
     margin-bottom: 5px;
 }
 
+#codeEditPage {
+    background-color: rgb(39, 39, 39);
+    border-radius: 8px;
+    border: 1px solid rgb(29, 29, 29);
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+#codeEditCtrlWidget {
+    background-color: rgb(39, 39, 39);
+    border-radius: 8px;
+    border: 1px solid rgb(29, 29, 29);
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
 #titleLabel {
     font-size: 26px;
     color: rgb(255, 255, 255);

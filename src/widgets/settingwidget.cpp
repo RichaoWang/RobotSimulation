@@ -1,6 +1,6 @@
 
 #include "settingwidget.h"
-#include "components/FluIconButton.h"
+#include "components/fluwidgets/FluIconButton.h"
 #include "tools/infobar.h"
 
 SettingWidget::SettingWidget(QWidget *parent) : FluWidget(parent) {

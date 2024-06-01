@@ -41,6 +41,7 @@ The robot arm control software is implemented based on Qt Widget. This project i
 > * [mowangshuying/CppQtFluentUi888](https://github.com/mowangshuying/CppQtFluentUi888): FluentUI for cpp Qt.
 > * [wangwenx190/framelesshelper](https://github.com/wangwenx190/framelesshelper): Cross-platform window customization
     framework for Qt Widgets and Qt Quick.
+> * [Megaxela/QCodeEditor](https://github.com/Megaxela/QCodeEditor): Qt Code Editor widget.
 
 ## TodoList
 
@@ -48,5 +49,5 @@ The robot arm control software is implemented based on Qt Widget. This project i
 + [x] ~~FK~~
 + [x] ~~IK~~
 + [x] ~~MoveAnimations~~
-+ [ ] CodeEdit
++ [ ] Program
 + [ ] Cn/En

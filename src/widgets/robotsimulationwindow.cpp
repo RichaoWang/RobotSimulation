@@ -113,7 +113,7 @@ void RobotSimulationWindow::makeHomeNavItem() {
 
 /// todo 代码编辑页
 void RobotSimulationWindow::makeCodeEditNavItem() {
-    FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(":/img/code-light.png", "CodeEdit",
+    FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(":/img/code-light.png", "Program",
                                                                       this);
     m_navView->addItemToMidLayout(item);
 

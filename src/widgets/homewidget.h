@@ -5,13 +5,13 @@
 #include <QVBoxLayout>
 #include <QStyleOption>
 #include <QPainter>
-#include "components/FluWidget.h"
-#include "components/utils/FluUtils.h"
-#include "components/FluVScrollView.h"
-#include "components/FluSettingsSelectBox.h"
-#include "components/FluSettingsLabelBox.h"
-#include "components/FluIconButton.h"
-#include "components/FluPushButton.h"
+#include "components/fluwidgets/FluWidget.h"
+#include "components/fluwidgets/utils/FluUtils.h"
+#include "components/fluwidgets/FluVScrollView.h"
+#include "components/fluwidgets/FluSettingsSelectBox.h"
+#include "components/fluwidgets/FluSettingsLabelBox.h"
+#include "components/fluwidgets/FluIconButton.h"
+#include "components/fluwidgets/FluPushButton.h"
 #include "ddr6robotwidget.h"
 #include "tools/robotkinematics.h"
 #include <QSettings>
@@ -49,7 +49,7 @@ signals:
 
     void sigKinCalc();
 
-    void sigIkSolutionSuccess(std::vector<double>);
+    void sigJointMoveAnimation(std::vector<double>);
 
     void sigGlDrawPosText(QString, QString, QString, QString, QString, QString);
 

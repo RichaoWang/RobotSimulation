@@ -1,6 +1,7 @@
 ﻿#include "ddr6robotwidget.h"
 #include <QDebug>
 #include <QApplication>
+#include <gl/GLU.h>
 
 DDR6RobotWidget::DDR6RobotWidget(QWidget *parent)
         : RRGLWidget(parent) {
@@ -49,7 +50,9 @@ void DDR6RobotWidget::drawGL() {
     if (mGlobalConfig.isDrawDesk) drawGLForDesk();
 
 
-    drawCone();
+//    drawCone();
+    glInitNames();
+    glPushName(0);
 
     glRotatef(180, 0.0, 0.0, 1.0);
 
@@ -128,6 +131,7 @@ void DDR6RobotWidget::drawGL() {
     glRotatef(mRobotConfig.JVars[6], 0.0, 0.0, 1.0);            // 绕z轴旋转
     glTranslatef(mRobotConfig.a[6], 0.0, 0.0);                  // x轴方向平移
     glRotatef(mRobotConfig.alpha[6], 1.0, 0.0, 0.0);            // 绕x轴旋转
+    glLoadName(1);
     mRobotModel.link6->draw();
 
 //     末端坐标系
@@ -210,5 +214,6 @@ void DDR6RobotWidget::drawEndCoordinates() {
     glLineWidth(1.0f);
     glPopMatrix();
 }
+
 
 

@@ -5,12 +5,17 @@
 #include <QVBoxLayout>
 #include <QStyleOption>
 #include <QPainter>
-#include "components/FluWidget.h"
-#include "components/utils/FluUtils.h"
-#include "components/FluVScrollView.h"
-#include "components/FluSettingsSelectBox.h"
-#include "components/FluSettingsLabelBox.h"
-#include "components/FluIconButton.h"
+#include "components/fluwidgets/FluWidget.h"
+#include "components/fluwidgets/utils/FluUtils.h"
+#include "components/fluwidgets/FluVScrollView.h"
+#include "components/fluwidgets/FluSettingsSelectBox.h"
+#include "components/fluwidgets/FluSettingsLabelBox.h"
+#include "components/fluwidgets/FluIconButton.h"
+#include "components/qcodeeditor/QCodeEditor.hpp"
+#include "components/qcodeeditor/QRSHighlighter.hpp"
+#include "components/qcodeeditor/QRSCompleter.hpp"
+#include "components/qcodeeditor/QSyntaxStyle.hpp"
+#include "tools/codehelper.h"
 
 class CodeEditWidget : public FluWidget {
 Q_OBJECT
@@ -19,20 +24,19 @@ public:
 
     void paintEvent(QPaintEvent *event) override;
 
+    QWidget *makeCodeEditPage();
+
+    QCodeEditor *makeRSCodeEditWidget();
+
 public slots:
 
     void onThemeChanged() override;
 
 protected:
     QVBoxLayout *m_mainLayout;
-
-    QLabel *m_titleLabel;
-    QLabel *m_appBehaviorLabel;
-//    QLabel *m_aboutLabel;
-    FluVScrollView *m_vScrollView;
+    QCodeEditor *rsCodeEdit;
 public:
-//    FluSettingsSelectBox *appThemeSelectBox;
-//    FluSettingsSelectBox *appLanguageSelectBox;
+
 };
 
 
