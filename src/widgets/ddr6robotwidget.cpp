@@ -1,7 +1,7 @@
 ﻿#include "ddr6robotwidget.h"
 #include <QDebug>
 #include <QApplication>
-#include <gl/GLU.h>
+//#include <gl/GLU.h>
 
 DDR6RobotWidget::DDR6RobotWidget(QWidget *parent)
         : RRGLWidget(parent) {

@@ -1,7 +1,7 @@
 #include <QApplication>
-#include "./components/FluWidget.h"
+#include "./components/fluwidgets/FluWidget.h"
 #include "widgets/robotsimulationwindow.h"
-#include "./components/utils/FluLogUtils.h"
+#include "./components/fluwidgets/utils/FluLogUtils.h"
 
 void setFont(const QApplication &app) {
     QFont font;
