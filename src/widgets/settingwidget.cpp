@@ -18,15 +18,15 @@ SettingWidget::SettingWidget(QWidget *parent) : FluWidget(parent) {
 
     m_appBehaviorLabel = new QLabel;
     m_appBehaviorLabel->setObjectName("appBehaviorLabel");
-    m_appBehaviorLabel->setText("Appearance");
+    m_appBehaviorLabel->setText("设置");
     m_vScrollView->getMainLayout()->addWidget(m_appBehaviorLabel);
 
     appThemeSelectBox = new FluSettingsSelectBox;
-    appThemeSelectBox->setTitleInfo("AppTheme", "Select which RobotSimulation theme to display");
+    appThemeSelectBox->setTitleInfo("主题模式", "选择一个应用于RobotSimulation的主题模式");
     appThemeSelectBox->setIcon(FluAwesomeType::Color);
 
-    appThemeSelectBox->getComboBox()->addItem("Light");
-    appThemeSelectBox->getComboBox()->addItem("Dark");
+    appThemeSelectBox->getComboBox()->addItem("明亮模式");
+    appThemeSelectBox->getComboBox()->addItem("黑暗模式");
 
     connect(appThemeSelectBox->getComboBox(), &FluComboBoxEx::currentIndexChanged, [=](int index) {
         if (index == 0)
@@ -36,21 +36,20 @@ SettingWidget::SettingWidget(QWidget *parent) : FluWidget(parent) {
     });
 
     appLanguageSelectBox = new FluSettingsSelectBox;
-    appLanguageSelectBox->setTitleInfo("Language", "Select which RobotSimulation language to display");
+    appLanguageSelectBox->setTitleInfo("语言", "选择一个应用于RobotSimulation的语言");
     appLanguageSelectBox->setIcon(FluAwesomeType::LocaleLanguage);
 
-    appLanguageSelectBox->getComboBox()->addItem("English");
     appLanguageSelectBox->getComboBox()->addItem("中文");
+    appLanguageSelectBox->getComboBox()->addItem("English");
 
     connect(appLanguageSelectBox->getComboBox(), &FluComboBoxEx::currentIndexChanged, [=](int index) {
         if (index == 0)
-            qDebug() << "en";
-        else {
-            /// todo cn Language translation
-            InfoBar::showInfoBar(FluShortInfoBarType::Warn, "暂未实现中文翻译", this);
             qDebug() << "cn";
+        else {
+            /// todo en Language translation
+            qDebug() << "en";
+            InfoBar::showInfoBar(FluShortInfoBarType::Warn, "English translation is not yet available", this);
         }
-
     });
 
 
@@ -61,11 +60,12 @@ SettingWidget::SettingWidget(QWidget *parent) : FluWidget(parent) {
 
     m_aboutLabel = new QLabel;
     m_aboutLabel->setObjectName("aboutLabel");
-    m_aboutLabel->setText("About");
+    m_aboutLabel->setText("关于");
     m_vScrollView->getMainLayout()->addWidget(m_aboutLabel);
 
     auto aboutLabelBox = new FluSettingsLabelBox;
-    aboutLabelBox->setTitleInfo("RobotSimulation", "RobotSimulation© 2024 RichaoWang, All rights reserved.");
+    aboutLabelBox->setTitleInfo("RobotSimulation",
+                                "RobotSimulation是一个兴趣使然的开源项目，使用了宽松的MIT协议，主要用于机械手的仿真测试");
     aboutLabelBox->setIcon(QIcon(":icon/icon.ico"), 30, 30);
     aboutLabelBox->setVersion("");  // empty it!;
     m_vScrollView->getMainLayout()->addWidget(aboutLabelBox);

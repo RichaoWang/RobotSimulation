@@ -21,18 +21,18 @@ CodeEditWidget::CodeEditWidget(QWidget *parent) : FluWidget(parent) {
 
     /// todo node edit
     auto nodeTitleItem = new FluPivotTitleBarItem(this);
-    nodeTitleItem->setKey("NodeEdit");
+    nodeTitleItem->setKey("节点编程");
     nodeTitleItem->setSelected(true);
     /// todo test label
     auto testnodelabel = new FluLabel(FluLabelStyle::DisplayTextBlockStyle, this);
-    testnodelabel->setText("Not Implemented NodeEdit");
+    testnodelabel->setText("未实现节点编程");
     testnodelabel->setAlignment(Qt::AlignCenter);
     pivot->addPivotItem(nodeTitleItem, testnodelabel);
 
 
     /// todo code edit
     auto codeTitleItem = new FluPivotTitleBarItem(this);
-    codeTitleItem->setKey("CodeEdit");
+    codeTitleItem->setKey("代码编程");
     codeTitleItem->setSelected(false);
     /// todo code edit widget
     QWidget * codeEditWidget = makeCodeEditPage();

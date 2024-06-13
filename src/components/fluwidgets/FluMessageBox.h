@@ -40,8 +40,8 @@ class FluMessageBox : public QDialog
         m_okBtn = new FluStyleButton;
         m_cancelBtn = new FluPushButton;
 
-        m_okBtn->setText("OK");
-        m_cancelBtn->setText("Cancel");
+        m_okBtn->setText("确定");
+        m_cancelBtn->setText("返回");
 
         m_titleLabel->setText(title);
         m_infoLabel->setText(info);

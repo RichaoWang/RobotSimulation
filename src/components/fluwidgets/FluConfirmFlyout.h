@@ -36,8 +36,8 @@ public:
         m_okBtn->setFixedWidth(100);
         setFixedWidth(260);
 
-        m_okBtn->setText("Ok");
-        m_cancelBtn->setText("Cancel");
+        m_okBtn->setText("确定");
+        m_cancelBtn->setText("返回");
 
 //        connect(m_okBtn, &FluStyleButton::clicked, [=]() { close(); });
         connect(m_okBtn, &FluStyleButton::clicked, [=]() { emit sigOkClick();close(); });

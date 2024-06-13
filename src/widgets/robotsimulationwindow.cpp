@@ -56,7 +56,7 @@ void RobotSimulationWindow::moveToCenter() {
 
 void RobotSimulationWindow::closeEvent(QCloseEvent *event) {
 #ifdef NDEBUG
-    FluMessageBox messageBox("Close RobotSimulation?", "Choose \"Ok\" to close window, Choose \"Cancel\" return.",
+    FluMessageBox messageBox("是否关闭RobotSimulation？", "温馨提示：关闭该应用前，请检查已编辑的文件是否保存成功。按下确定按钮退出，按下返回按钮继续当前应用",
                              this);
 
     int nExec = messageBox.exec();
@@ -98,7 +98,7 @@ void RobotSimulationWindow::onThemeChanged() {
 
 /// 显示页
 void RobotSimulationWindow::makeHomeNavItem() {
-    FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(":/img/visual-light.png", "Display",
+    FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(":/img/visual-light.png", "视图与控制",
                                                                       this);
     m_navView->addItemToMidLayout(item);
 
@@ -113,7 +113,7 @@ void RobotSimulationWindow::makeHomeNavItem() {
 
 /// todo 代码编辑页
 void RobotSimulationWindow::makeCodeEditNavItem() {
-    FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(":/img/code-light.png", "Program",
+    FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(":/img/code-light.png", "编程",
                                                                       this);
     m_navView->addItemToMidLayout(item);
 
@@ -124,7 +124,7 @@ void RobotSimulationWindow::makeCodeEditNavItem() {
 
 /// 设置页
 void RobotSimulationWindow::makeSettingsNavItem() {
-    FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(":/img/setting-light.png", "Setting", this);
+    FluVNavigationIconTextItem *item = new FluVNavigationIconTextItem(":/img/setting-light.png", "设置", this);
     m_navView->addItemToMidLayout(item);
 
     auto settingPage = new SettingWidget();

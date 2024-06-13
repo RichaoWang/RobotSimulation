@@ -22,6 +22,10 @@ set(FRAMELESSHELPER_BUILD_QUICK OFF)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/framelesshelper-2.5.0")
 add_library(framelesshelper INTERFACE)
 
+# osg
+find_package(OpenSceneGraph REQUIRED COMPONENTS osgDB osgGA osgUtil osgViewer osgText)
+
+
 # qrc
 set(QRC_SOURCE_FILES res.qrc)
 qt5_add_resources(QRC_FILES ${QRC_SOURCE_FILES})
@@ -36,6 +40,8 @@ set(PROJECT_SOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(
         ${PROJECT_SOURCES_DIR}
 )
+
+file(COPY ${CMAKE_SOURCE_DIR}/meshes DESTINATION ${CMAKE_BINARY_DIR})
 
 
 if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -68,9 +74,9 @@ else ()
 endif ()
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-    target_link_libraries(RobotSimulation PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Svg Qt${QT_VERSION_MAJOR}::OpenGL OpenGL GLU FramelessHelperCore FramelessHelperWidgets)
+    target_link_libraries(RobotSimulation PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Svg Qt${QT_VERSION_MAJOR}::OpenGL OpenGL GLU FramelessHelperCore FramelessHelperWidgets  ${OPENSCENEGRAPH_LIBRARIES})
 elseif (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    target_link_libraries(RobotSimulation PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Svg Qt${QT_VERSION_MAJOR}::OpenGL OpenGL32 GLU32 FramelessHelperCore FramelessHelperWidgets)
+    target_link_libraries(RobotSimulation PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Svg Qt${QT_VERSION_MAJOR}::OpenGL OpenGL32 GLU32 FramelessHelperCore FramelessHelperWidgets  ${OPENSCENEGRAPH_LIBRARIES})
 endif ()
 
 

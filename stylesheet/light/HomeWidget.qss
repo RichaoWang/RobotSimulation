@@ -6,6 +6,26 @@ HomeWidget {
     margin-bottom: 5px;
 }
 
+#endEleWidget {
+    background-color: rgb(249, 249, 249);
+    border-radius: 8px;
+    border: 1px solid rgb(229, 229, 229);
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#obsWidget {
+    background-color: rgb(249, 249, 249);
+    border-radius: 8px;
+    border: 1px solid rgb(229, 229, 229);
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
 #controlWidget {
     background-color: rgb(249, 249, 249);
     border-radius: 8px;

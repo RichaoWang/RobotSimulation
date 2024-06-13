@@ -1,16 +1,16 @@
 
 #include "homewidget.h"
-#include "tools/infobar.h"
 #include "components/fluwidgets/FluComboBox.h"
 #include "components/fluwidgets/FluSlider.h"
 #include "components/fluwidgets/FluCheckBox.h"
-#include "components/fluwidgets/FluLineEdit.h"
 #include "components/fluwidgets/FluExpander.h"
 #include "components/fluwidgets/FluLabel.h"
 #include "components/fluwidgets/FluDoubleSpinBox.h"
 #include "components/fluwidgets/FluConfirmFlyout.h"
 #include "components/fluwidgets/FluLineEditFlyout.h"
-
+#include "tools/kinematics.h"
+#include "tools/infobar.h"
+#include <QtConcurrent/QtConcurrent>
 
 HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     m_mainLayout = new QHBoxLayout;
@@ -18,11 +18,32 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
 
     m_mainLayout->setContentsMargins(10, 10, 10, 15);
 
+    m_pointSetting = new QSettings("points.ini", QSettings::IniFormat, this);
+    auto kv = m_pointSetting->allKeys();
+    if (kv.size() == 0) {
+        qDebug() << "new points.ini";
+        m_pointSetting->setValue("init",
+                                 QVariantList{1.4835298641951802, -0.22689280275926285, -1.9547687622336491,
+                                              -1.9373154697137058,
+                                              -1.3788101090755203, 2.181661564992912});
+        m_pointSetting->setValue("zero", QVariantList{0, 0, 0, 0, 0, 0});
+    }
+    kv = m_pointSetting->allKeys();
+    for (auto k: kv) {
+        std::vector<double> vector;
+        for (QVariant value: m_pointSetting->value(k).toList()) {
+            vector.push_back(value.toDouble());
+        }
+        mPointMap[k] = vector;
+    }
+
+
     /// robot display widget
-    ddr6widget = new DDR6RobotWidget(this);
-    ddr6widget->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
-    m_mainLayout->addWidget(ddr6widget);
-    m_mainLayout->addWidget(ddr6widget);
+
+    osgWidget = new OsgWidget(this);
+    osgWidget->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
+    m_mainLayout->addWidget(osgWidget);
+    m_mainLayout->addWidget(osgWidget);
 
     /// control widget
     auto controlWidget = new QWidget(this);
@@ -37,24 +58,23 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     controlWidget->setLayout(vCtlLayout);
     controlScrollView->getMainLayout()->setSpacing(2);
 
-    /// -------------------------- pos display part --------------------------
-//    auto posDisplayExpander = new FluExpander(this);
-//    auto posDisplayExpLabel = new FluLabel(FluLabelStyle::BodyStrongTextBlockStyle, this);
-//    posDisplayExpLabel->setText("RealtimePosition");
-//    posDisplayExpander->getWrap1Layout()->setAlignment(Qt::AlignCenter);
-//    posDisplayExpander->getWrap1Layout()->addWidget(posDisplayExpLabel);
-//    posDisplayWidget = makePosDisplayWidget();
-//    posDisplayExpander->getWrap2Layout()->setAlignment(Qt::AlignCenter);
-//    posDisplayExpander->getWrap2Layout()->addWidget(posDisplayWidget);
-//    controlScrollView->getMainLayout()->addWidget(posDisplayExpander);
-//    controlScrollView->getMainLayout()->addSpacing(10);
-//    /// -------------------------------------------------------------
+    /// -------------------------- 视角 --------------------------
+    auto obsExpander = new FluExpander(this);
+    auto obsExpLabel = new FluLabel(FluLabelStyle::BodyStrongTextBlockStyle, this);
+    obsExpLabel->setText("视角");
+    obsExpander->getWrap1Layout()->setAlignment(Qt::AlignCenter);
+    obsExpander->getWrap1Layout()->addWidget(obsExpLabel);
+    auto osbWidget = makeObservationWidget();
+    obsExpander->getWrap2Layout()->setAlignment(Qt::AlignCenter);
+    obsExpander->getWrap2Layout()->addWidget(osbWidget);
+    controlScrollView->getMainLayout()->addWidget(obsExpander);
+    controlScrollView->getMainLayout()->addSpacing(10);
 
 
     /// -------------------------- opt part --------------------------
     auto optExpander = new FluExpander(this);
     auto optExpLabel = new FluLabel(FluLabelStyle::BodyStrongTextBlockStyle, this);
-    optExpLabel->setText("CheckOption");
+    optExpLabel->setText("快捷显示");
     optExpander->getWrap1Layout()->setAlignment(Qt::AlignCenter);
     optExpander->getWrap1Layout()->addWidget(optExpLabel);
     checkboxesWidget = makeCheckOptionWidget();
@@ -67,7 +87,7 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     /// -------------------------- points part --------------------------
     auto pointsExpander = new FluExpander(this);
     auto pointsExpLabel = new FluLabel(FluLabelStyle::BodyStrongTextBlockStyle, this);
-    pointsExpLabel->setText("Points");
+    pointsExpLabel->setText("坐标点及示教");
     pointsExpander->getWrap1Layout()->setAlignment(Qt::AlignCenter);
     pointsExpander->getWrap1Layout()->addWidget(pointsExpLabel);
     QWidget *pointsWidget = makePointsWidget();
@@ -81,7 +101,7 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
     /// -------------------------- control part --------------------------
     auto ctrlExpander = new FluExpander(this);
     auto ctrlExpLabel = new FluLabel(FluLabelStyle::BodyStrongTextBlockStyle, this);
-    ctrlExpLabel->setText("RobotControl");
+    ctrlExpLabel->setText("控制器");
     ctrlExpander->getWrap1Layout()->setAlignment(Qt::AlignCenter);
     ctrlExpander->getWrap1Layout()->addWidget(ctrlExpLabel);
     robotControlWidget = makeRobotControlWidget();
@@ -101,56 +121,161 @@ HomeWidget::HomeWidget(QWidget *parent) : FluWidget(parent) {
 
     connectSignsSlots();
 
-    /// local save points
-    m_pointSetting = new QSettings("points.ini", QSettings::IniFormat);
-    QStringList zero_point{"0.0", "0.0", "0.0", "0.0", "0.0", "0.0"};
-    m_pointSetting->setValue("zero_point", zero_point);
 
     /// default
     checkboxesWidget->findChildren<QCheckBox *>("gridCheckBox")[0]->setChecked(true);
-    checkboxesWidget->findChildren<QCheckBox *>("endAxisCheckBox")[0]->setChecked(true);
-    checkboxesWidget->findChildren<QCheckBox *>("worldAxisCheckBox")[0]->setChecked(true);
+    checkboxesWidget->findChildren<QCheckBox *>("wrist3CoordCheckBox")[0]->setChecked(true);
+    checkboxesWidget->findChildren<QCheckBox *>("worldCoordCheckBox")[0]->setChecked(true);
     checkboxesWidget->findChildren<QCheckBox *>("deskCheckBox")[0]->setChecked(true);
     checkboxesWidget->findChildren<QCheckBox *>("posTextCheckBox")[0]->setChecked(true);
+    checkboxesWidget->findChildren<QCheckBox *>("ProceduralAnimationBox")[0]->setChecked(true);
 
 //    posDisplayExpander->expand();
     optExpander->expand();
     ctrlExpander->expand();
     pointsExpander->expand();
+    obsExpander->expand();
 
-    controlWidget->findChildren<QSlider *>("j1Slider")[0]->setValue(12);
-    controlWidget->findChildren<QSlider *>("j2Slider")[0]->setValue(-132);
-    controlWidget->findChildren<QSlider *>("j3Slider")[0]->setValue(144);
-    controlWidget->findChildren<QSlider *>("j4Slider")[0]->setValue(-21);
-    controlWidget->findChildren<QSlider *>("j5Slider")[0]->setValue(54);
-//    controlWidget->findChildren<QSlider*>("j4Slider")[0]->setValue(-21);
+    controlWidget->findChildren<QSlider *>("j1Slider")[0]->setValue(85 * 100);
+    controlWidget->findChildren<QSlider *>("j2Slider")[0]->setValue(-13 * 100);
+    controlWidget->findChildren<QSlider *>("j3Slider")[0]->setValue(-112 * 100);
+    controlWidget->findChildren<QSlider *>("j4Slider")[0]->setValue(-111 * 100);
+    controlWidget->findChildren<QSlider *>("j5Slider")[0]->setValue(-79 * 100);
+    controlWidget->findChildren<QSlider *>("j6Slider")[0]->setValue(125 * 100);
+
+}
+
+
+// 创建旋转矩阵的函数
+Eigen::Matrix3d createRotationMatrix(double roll, double pitch, double yaw) {
+    Eigen::Matrix3d rotationMatrix;
+
+    // 绕x轴的旋转矩阵（Roll）
+    Eigen::Matrix3d Rx;
+    Rx << 1, 0, 0,
+            0, cos(roll), -sin(roll),
+            0, sin(roll), cos(roll);
+
+    // 绕y轴的旋转矩阵（Pitch）
+    Eigen::Matrix3d Ry;
+    Ry << cos(pitch), 0, sin(pitch),
+            0, 1, 0,
+            -sin(pitch), 0, cos(pitch);
+
+    // 绕z轴的旋转矩阵（Yaw）
+    Eigen::Matrix3d Rz;
+    Rz << cos(yaw), -sin(yaw), 0,
+            sin(yaw), cos(yaw), 0,
+            0, 0, 1;
+
+    // 按顺序组合旋转矩阵（Roll -> Pitch -> Yaw）
+    rotationMatrix = Rz * Ry * Rx;
+
+    return rotationMatrix;
+}
+
+// 创建变换矩阵的函数
+Eigen::MatrixXd createTransformationMatrix(const double xyzrpy[6]) {
+    Eigen::MatrixXd T(4, 4);
+
+    // 提取平移和旋转信息
+    double x = xyzrpy[0];
+    double y = xyzrpy[1];
+    double z = xyzrpy[2];
+    double roll = xyzrpy[3];
+    double pitch = xyzrpy[4];
+    double yaw = xyzrpy[5];
+
+    // 创建旋转矩阵
+    Eigen::Matrix3d rotationMatrix = createRotationMatrix(roll, pitch, yaw);
+
+    // 组合变换矩阵
+    T.setIdentity();
+    T.block<3, 3>(0, 0) = rotationMatrix;
+    T(0, 3) = x;
+    T(1, 3) = y;
+    T(2, 3) = z;
+
+    return T;
 }
 
 void HomeWidget::connectSignsSlots() {
-    connect(this, &HomeWidget::sigGlDrawPosText, ddr6widget, &RRGLWidget::setPoseText, Qt::QueuedConnection);
+    /// connect
+
+    connect(this, &HomeWidget::sigOsgDrawPosText, osgWidget, &OsgWidget::setRendText, Qt::QueuedConnection);
+
+
+    connect(this, &HomeWidget::sigJointMoveAnimations, this, [=](std::vector<std::vector<double>> ress) {
+        /// todo 备份原来的点 每次循环都会回到初始点 除了最后一个
+        QtConcurrent::run([=]() {
+                              auto bkslds = robotControlWidget->findChildren<QSlider *>();
+                              std::vector<double> bkjoints;
+                              for (int i = 1; i < 7; ++i) {
+                                  auto v = robotControlWidget->findChildren<QSlider *>("j" + QString::number(i) + "Slider")[0]->value() /
+                                           100;
+                                  bkjoints.push_back(v);
+                              }
+
+                              for (int i = 0; i < ress.size(); ++i) {
+                                  for (int i = 0; i < bkjoints.size(); ++i) {
+                                      robotControlWidget->findChildren<QSlider *>("j" + QString::number(i + 1) + "Slider")[0]->setValue(
+                                              bkjoints[i] * 100);
+                                  }
+                                  qDebug() << "归位完成";
+                                  std::this_thread::sleep_for(std::chrono::seconds(1));
+                                  auto res = ress[i];
+                                  for (int i = 0; i < res.size(); ++i) {
+                                      robotControlWidget->findChildren<QSlider *>("j" + QString::number(i + 1) + "Slider")[0]->setValue(
+                                              res[i] * (180.0 / M_PI) * 100);
+                                  }
+                                  qDebug() << "到达完成";
+                                  std::this_thread::sleep_for(std::chrono::seconds(1));
+
+                              }
+//                              emit sigMsg(FluShortInfoBarType::Suc, "执行所有解完成");
+
+                          }
+        );
+
+    }, Qt::QueuedConnection);
 
     connect(this, &HomeWidget::sigJointMoveAnimation, this, [=](std::vector<double> res) {
+        auto pab = checkboxesWidget->findChildren<QCheckBox *>("ProceduralAnimationBox")[0];
+        if (!pab->isChecked()) {
+//            auto slds = robotControlWidget->findChildren<QSlider *>();
+            for (int i = 0; i < res.size(); ++i) {
+                robotControlWidget->findChildren<QSlider *>("j" + QString::number(i + 1) + "Slider")[0]->setValue(
+                        res[i] * (180.0 / M_PI) * 100);
+            }
+
+            return;
+        }
         mCount = 0;
         auto slds = robotControlWidget->findChildren<QSlider *>();
         for (int i = 0; i < slds.size(); ++i) {
             slds[i]->setEnabled(false);
         }
 
+        for (int i = 0; i < res.size(); ++i) {
+            res[i] = res[i] * (180.0 / M_PI);
+        }
+
         /// 动画更新机器人
+        /// 现在的关节角
         std::vector<double> ori_joints;
         for (int i = 1; i < 7; ++i) {
-            auto v = robotControlWidget->findChildren<QSlider *>("j" + QString::number(i) + "Slider")[0]->value();
+            auto v = robotControlWidget->findChildren<QSlider *>("j" + QString::number(i) + "Slider")[0]->value() / 100;
             ori_joints.push_back(v);
         }
 
 //        std::vector<double> dif_joints(res.size());
-
 //        qDebug() << "============================================";
 //        qDebug() << "原关节角:" << ori_joints;
 //        qDebug() << "反解关节角:" << res;
 //        std::transform(res.begin(), res.end(), ori_joints.begin(), dif_joints.begin(), std::minus<double>());
 //        qDebug() << "差值关节角:" << dif_joints;
-
+//
+//        return;
 
         for (int i = 0; i < res.size(); ++i) {
             auto cur_j = ori_joints[i];
@@ -161,29 +286,27 @@ void HomeWidget::connectSignsSlots() {
             auto dif_j = calc_j - cur_j;
 //            qDebug() << "关节" << i + 1 << "差值 " << dif_j;
             auto t = new QTimer(this);
-//            t->setInterval(10);
             connect(t, &QTimer::timeout, [=]() {
+                auto v = robotControlWidget->findChildren<QSlider *>(
+                        "j" + QString::number(i + 1) + "Slider")[0]->value() / 100;
                 if (dif_j > 0) {
-                    auto v = robotControlWidget->findChildren<QSlider *>(
-                            "j" + QString::number(i + 1) + "Slider")[0]->value();
                     v += 1;
                     if (v >= calc_j) {
+                        v = calc_j;
                         t->stop();
                         t->destroyed();
                     }
-                    robotControlWidget->findChildren<QSlider *>("j" + QString::number(i + 1) + "Slider")[0]->setValue(
-                            v);
                 } else {
-                    auto v = robotControlWidget->findChildren<QSlider *>(
-                            "j" + QString::number(i + 1) + "Slider")[0]->value();
                     v -= 1;
                     if (v <= calc_j) {
+                        v = calc_j;
                         t->stop();
                         t->destroyed();
                     }
-                    robotControlWidget->findChildren<QSlider *>("j" + QString::number(i + 1) + "Slider")[0]->setValue(
-                            v);
+
                 }
+                robotControlWidget->findChildren<QSlider *>("j" + QString::number(i + 1) + "Slider")[0]->setValue(
+                        v * 100);
 
             });
 
@@ -197,16 +320,20 @@ void HomeWidget::connectSignsSlots() {
                     for (int k = 0; k < slds.size(); ++k) {
                         slds[k]->setEnabled(true);
                     }
+                    InfoBar::showInfoBar(FluShortInfoBarType::Suc, "机器人运动完成", this);
                 }
             });
 
-            t->start(10);
+            t->start(1);
         }
     }, Qt::QueuedConnection);
 
 
-    connect(pubBtn, &QPushButton::clicked, [=]() {
-        auto spinBoxes = robotControlWidget->findChildren<FluDoubleSpinBox *>();
+    connect(allIKSolBtn, &QPushButton::clicked, [=]() {
+        qDebug() << "所有解按钮被点击";
+        auto spinBoxes = robotControlWidget->findChildren<QWidget *>(
+                "eleWidget")[0]->findChildren<FluDoubleSpinBox *>();
+
         double xyzrpy[6];
         for (int i = 0; i < spinBoxes.size(); ++i) {
             auto var = spinBoxes[i]->text().toDouble();
@@ -217,83 +344,119 @@ void HomeWidget::connectSignsSlots() {
             }
             xyzrpy[i] = var;
         }
-        /// best 8*6
-        auto invRes = robotKinematics->inverseSolutionFromEulerAngle(xyzrpy);
 
-        if (invRes.empty()) {
-            InfoBar::showInfoBar(FluShortInfoBarType::Error, "IK Solutions Fail", this);
+
+        Eigen::MatrixXd T = createTransformationMatrix(xyzrpy);
+        MatrixXd q_sols(6, 8);
+
+        auto solnum = aubo_inverse(q_sols, T);
+        if (solnum == 0) {
+            InfoBar::showInfoBar(FluShortInfoBarType::Error, "机器人反解失败（0解）", this);
             return;
         }
-        /// todo 目前我们自取第一个解
-        bool isNan = false;
-        auto firstInvRes = invRes[0];
-        qDebug() << "inv size: " << invRes.size() << " first result is: " << firstInvRes;
+//        auto res_q = q_sols.col(0);
+//        std::vector<double> res_v;
+//        for (int i = 0; i < res_q.size(); ++i) {
+//            res_v.push_back(res_q(i));
+//        }
 
-        for (auto i: firstInvRes) {
-            if (std::isnan(i)) {
-                isNan = true;
+        std::vector<std::vector<double>> res_v;
+        for (int i = 0; i < solnum; ++i) {
+            auto cs = q_sols.col(i);
+            std::vector<double> cv;
+            for (int j = 0; j < cs.size(); ++j) {
+                cv.push_back(cs(j));
             }
+            res_v.push_back(cv);
         }
-        if (isNan) {
-            InfoBar::showInfoBar(FluShortInfoBarType::Error, "IK Solutions First Result is Nan", this);
-            return;
+//        qDebug() << res_v;  //std::vector(-2.8973, -2.91319, 2.30265, 0.503459, 1.5708, 1.3265)
+        emit sigJointMoveAnimations(res_v);
+    });
+
+    connect(pubBtn, &QPushButton::clicked, [=]() {
+
+        auto spinBoxes = robotControlWidget->findChildren<QWidget *>(
+                "eleWidget")[0]->findChildren<FluDoubleSpinBox *>();
+
+        double xyzrpy[6];
+        for (int i = 0; i < spinBoxes.size(); ++i) {
+            auto var = spinBoxes[i]->text().toDouble();
+            if (i <= 2) {
+                var = var / 1000;
+            } else {
+                var = var * M_PI / 180;
+            }
+            xyzrpy[i] = var;
         }
 
-        /// todo 发送结果出去
-        emit sigJointMoveAnimation(firstInvRes);
+
+        Eigen::MatrixXd T = createTransformationMatrix(xyzrpy);
+        MatrixXd q_sols(6, 8);
+//        MatrixXd T(4, 4);
+
+        auto solnum = aubo_inverse(q_sols, T);
+        if (solnum == 0) {
+            InfoBar::showInfoBar(FluShortInfoBarType::Error, "机器人反解失败（0解）", this);
+            return;
+        }
+//        /// 所有解
+//        auto q_sols = processIK(T);
+        auto res_q = q_sols.col(0);
+        std::vector<double> res_v;
+        for (int i = 0; i < res_q.size(); ++i) {
+            res_v.push_back(res_q(i));
+        }
+//        std::vector<std::vector<double>> res_v;
+//        for (int i = 0; i < solnum; ++i) {
+//            auto cs = q_sols.col(i);
+//            std::vector<double> cv;
+//            for (int j = 0; j < cs.size(); ++j) {
+//                cv.push_back(cs(j));
+//            }
+//            res_v.push_back(cv);
+//        }
+
+
+//        /// todo 发送结果出去
+        emit sigJointMoveAnimation(res_v);
+//        emit sigJointMoveAnimations(res_v);
+
     });
 
 
     connect(this, &HomeWidget::sigKinCalc, this, [=]() {
-
-//        double q[6];
-//        auto slds = robotControlWidget->findChildren<QSlider *>();
-//        for (int j = 0; j < slds.size(); ++j) {
-//            q[j] = slds[j]->value() * (M_PI / 180.0);
-//        }
-
-        auto jvars = ddr6widget->getJVars();
-        double q[6];
-        for (int i = 1; i < jvars.size(); ++i) {
-            if (i == 2 || i == 3 || i == 4) {
-                q[i - 1] = -jvars[i] * (M_PI / 180.0);
-            } else {
-                q[i - 1] = jvars[i] * (M_PI / 180.0);
-            }
+        VectorXd q(6);
+        auto slds = robotControlWidget->findChildren<QSlider *>();
+        for (int j = 0; j < slds.size(); ++j) {
+            q[j] = slds[j]->value() / 100.0 * (M_PI / 180.0);
         }
 
-        auto xyzrxryrz = robotKinematics->forwardSolution(q);
-        double x = xyzrxryrz[0];
-        double y = xyzrxryrz[1];
-        double z = xyzrxryrz[2];
-        double rx = xyzrxryrz[3];
-        double ry = xyzrxryrz[4];
-        double rz = xyzrxryrz[5];
-//        qDebug() << "x:" << x * 1000 << " y:" << y * 1000 << " z:" << z * 1000 << " rx:" << rx * 180 / M_PI << " ry:"
-//                 << ry * 180 / M_PI << " rz:" << rz * 180 / M_PI;
-        emit sigGlDrawPosText(QString::number(x * 1000, 'f', 2), QString::number(y * 1000, 'f', 2),
-                              QString::number(z * 1000, 'f', 2), QString::number(rx * 180 / M_PI, 'f', 2),
-                              QString::number(ry * 180 / M_PI, 'f', 2), QString::number(rz * 180 / M_PI, 'f', 2));
-//        posDisplayWidget->findChildren<QLabel *>("xPosLabel")[0]->setText(QString::number(x * 1000, 'f', 2));
-//        posDisplayWidget->findChildren<QLabel *>("yPosLabel")[0]->setText(QString::number(y * 1000, 'f', 2));
-//        posDisplayWidget->findChildren<QLabel *>("zPosLabel")[0]->setText(QString::number(z * 1000, 'f', 2));
-//        posDisplayWidget->findChildren<QLabel *>("rxPosLabel")[0]->setText(QString::number(rx * 180 / M_PI, 'f', 2));
-//        posDisplayWidget->findChildren<QLabel *>("ryPosLabel")[0]->setText(QString::number(ry * 180 / M_PI, 'f', 2));
-//        posDisplayWidget->findChildren<QLabel *>("rzPosLabel")[0]->setText(QString::number(rz * 180 / M_PI, 'f', 2));
+        MatrixXd T(4, 4);
+        aubo_forward(T, q);
+//        std::cout << T << std::endl;
+
+        auto x = T(0, 3);
+        auto y = T(1, 3);
+        auto z = T(2, 3);
+
+        Eigen::Matrix3d R = T.block<3, 3>(0, 0);
+        auto rx = std::atan2(R(2, 1), R(2, 2)) * 180.0 / M_PI;
+        auto ry = std::atan2(-R(2, 0), std::sqrt(R(2, 1) * R(2, 1) + R(2, 2) * R(2, 2))) * 180.0 / M_PI;
+        auto rz = std::atan2(R(1, 0), R(0, 0)) * 180.0 / M_PI;
+
+
+        emit sigOsgDrawPosText(QString::number(x * 1000, 'f', 2), QString::number(y * 1000, 'f', 2),
+                               QString::number(z * 1000, 'f', 2), QString::number(rx, 'f', 2),
+                               QString::number(ry, 'f', 2), QString::number(rz, 'f', 2));
 
     }, Qt::QueuedConnection);
 
 
-    connect(this, &HomeWidget::sigJoinVarChanged, this, [=](int idx, int var) {
-        if (idx == 2 || idx == 3 || idx == 4) {
-            ddr6widget->mRobotConfig.JVars[idx] = -var;
-        } else {
-            ddr6widget->mRobotConfig.JVars[idx] = var;
-        }
-        ddr6widget->update();
+    connect(this, &HomeWidget::sigJoinVarChanged, this, [=](int idx, float var) {
+        osgWidget->updateJoint(mJointNameVec[idx - 1], var);
 
         robotControlWidget->findChildren<QLabel *>("j" + QString::number(idx) + "ValueLabel")[0]->setText(
-                QString::number(var));
+                QString::number(var, 'f', 2));
         emit sigKinCalc();
     }, Qt::QueuedConnection);
 
@@ -301,8 +464,8 @@ void HomeWidget::connectSignsSlots() {
         auto jointSliders = robotControlWidget->findChildren<QSlider *>();
         for (int i = 0; i < jointSliders.size(); ++i) {
             QSlider *slider = jointSliders.at(i);
-            slider->setMinimum(-180);
-            slider->setMaximum(180);
+            slider->setMinimum(-18000);
+            slider->setMaximum(18000);
             slider->setTickInterval(1);
             connect(slider, &QSlider::valueChanged, this, &HomeWidget::slotUpdateJVarsValue,
                     Qt::ConnectionType::QueuedConnection);
@@ -310,40 +473,21 @@ void HomeWidget::connectSignsSlots() {
     }
 
 
-    connect(this, &HomeWidget::sigCheckOptChanged, ddr6widget, [=](QString key, bool arg) {
-        if (key == "grid") {
-            ddr6widget->mGlobalConfig.isDrawGrid = arg;
-        } else if (key == "worldAxis") {
-            ddr6widget->mGlobalConfig.isDrawWorldCoord = arg;
-        } else if (key == "j1") {
-            ddr6widget->mGlobalConfig.isDrawJoint1Coord = arg;
-        } else if (key == "j2") {
-            ddr6widget->mGlobalConfig.isDrawJoint2Coord = arg;
-        } else if (key == "j3") {
-            ddr6widget->mGlobalConfig.isDrawJoint3Coord = arg;
-        } else if (key == "j4") {
-            ddr6widget->mGlobalConfig.isDrawJoint4Coord = arg;
-        } else if (key == "j5") {
-            ddr6widget->mGlobalConfig.isDrawJoint5Coord = arg;
-        } else if (key == "j6") {
-            ddr6widget->mGlobalConfig.isDrawJoint6Coord = arg;
-        } else if (key == "desk") {
-            ddr6widget->mGlobalConfig.isDrawDesk = arg;
-        } else if (key == "endAxis") {
-            ddr6widget->mGlobalConfig.isDrawEnd = arg;
-        } else if (key == "posText") {
-            ddr6widget->mGlobalConfig.isDrawPoseText = arg;
-        } else {
-            return;
-        }
-        ddr6widget->update();
-    }, Qt::ConnectionType::QueuedConnection);
-
     {
         auto checkBoxes = checkboxesWidget->findChildren<QCheckBox *>();
         for (int i = 0; i < checkBoxes.size(); ++i) {
             QCheckBox *checkBox = checkBoxes.at(i);
             connect(checkBox, &QCheckBox::toggled, this, &HomeWidget::slotUpdateCheckOpt,
+                    Qt::ConnectionType::QueuedConnection);
+        }
+    }
+
+    /// ???
+    {
+        auto stepBtns = robotControlWidget->findChildren<QWidget *>("endEleWidget")[0]->findChildren<QPushButton *>();
+        for (int i = 0; i < stepBtns.size(); ++i) {
+            QPushButton *btn = stepBtns.at(i);
+            connect(btn, &QCheckBox::clicked, this, &HomeWidget::slotUpdateStepMove,
                     Qt::ConnectionType::QueuedConnection);
         }
     }
@@ -373,31 +517,39 @@ QWidget *HomeWidget::makeCheckOptionWidget() {
 
     auto checkBoxesLayout = new QGridLayout(this);
     checkBoxesLayout->setContentsMargins(10, 5, 10, 5);
-    auto gridCb = new FluCheckBox("Grid", this);
+    auto gridCb = new FluCheckBox("网格", this);
     gridCb->setObjectName("gridCheckBox");
     gridCb->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
 
-    auto worldCoordCb = new FluCheckBox("WorldAxis", this);
-    worldCoordCb->setObjectName("worldAxisCheckBox");
+
+    auto worldCoordCb = new FluCheckBox("世界坐标系", this);
+    worldCoordCb->setObjectName("worldCoordCheckBox");
     worldCoordCb->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
 
-    auto EndCoordCb = new FluCheckBox("EndAxis", this);
-    EndCoordCb->setObjectName("endAxisCheckBox");
+
+    auto EndCoordCb = new FluCheckBox("末端坐标系", this);
+    EndCoordCb->setObjectName("wrist3CoordCheckBox");
+//    EndCoordCb->setObjectName("endCoordCheckBox");
     EndCoordCb->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
 
-    auto DeskCb = new FluCheckBox("Desk", this);
+    auto DeskCb = new FluCheckBox("实验台", this);
     DeskCb->setObjectName("deskCheckBox");
     DeskCb->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
 
-    auto PosTextCb = new FluCheckBox("PosText", this);
+    auto PosTextCb = new FluCheckBox("位姿文本显示", this);
     PosTextCb->setObjectName("posTextCheckBox");
     PosTextCb->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
+
+    auto ProceduralAnimationCb = new FluCheckBox("过程动画", this);
+    ProceduralAnimationCb->setObjectName("ProceduralAnimationBox");
+    ProceduralAnimationCb->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
 
     checkBoxesLayout->addWidget(gridCb, 0, 0);
     checkBoxesLayout->addWidget(worldCoordCb, 0, 1);
     checkBoxesLayout->addWidget(EndCoordCb, 1, 0);
     checkBoxesLayout->addWidget(DeskCb, 1, 1);
     checkBoxesLayout->addWidget(PosTextCb, 2, 0);
+    checkBoxesLayout->addWidget(ProceduralAnimationCb, 2, 1);
     checkboxesWidget->setLayout(checkBoxesLayout);
     return checkboxesWidget;
 }
@@ -411,7 +563,7 @@ QWidget *HomeWidget::makeRobotControlWidget() {
 
     auto sliderLabel = new FluLabel(this);
     sliderLabel->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
-    sliderLabel->setText("ControlWithJoint");
+    sliderLabel->setText("关节控制");
     ctrlLayout->addWidget(sliderLabel);
 
     /// slider group
@@ -422,27 +574,27 @@ QWidget *HomeWidget::makeRobotControlWidget() {
     sldLayout->setContentsMargins(10, 5, 10, 5);
 
     auto j1Label = new FluLabel(this);
-    j1Label->setText("Joint1");
+    j1Label->setText("关节1");
     j1Label->setAlignment(Qt::AlignCenter);
 
     auto j2Label = new FluLabel(this);
-    j2Label->setText("Joint2");
+    j2Label->setText("关节2");
     j2Label->setAlignment(Qt::AlignCenter);
 
     auto j3Label = new FluLabel(this);
-    j3Label->setText("Joint3");
+    j3Label->setText("关节3");
     j3Label->setAlignment(Qt::AlignCenter);
 
     auto j4Label = new FluLabel(this);
-    j4Label->setText("Joint4");
+    j4Label->setText("关节4");
     j4Label->setAlignment(Qt::AlignCenter);
 
     auto j5Label = new FluLabel(this);
-    j5Label->setText("Joint5");
+    j5Label->setText("关节5");
     j5Label->setAlignment(Qt::AlignCenter);
 
     auto j6Label = new FluLabel(this);
-    j6Label->setText("Joint6");
+    j6Label->setText("关节6");
     j6Label->setAlignment(Qt::AlignCenter);
 
     auto j1Slider = new FluSlider(Qt::Orientation::Horizontal, this);
@@ -535,16 +687,117 @@ QWidget *HomeWidget::makeRobotControlWidget() {
     ctrlLayout->addWidget(sliderWidget);
     ctrlLayout->addSpacing(10);
 
-//    auto posLabel = new FluLabel(FluLabelStyle::BodyStrongTextBlockStyle,this);
-//    auto posLabel = new FluLabel(FluLabelStyle::SubTitleTextBlockStyle,this);
+    auto endCroodLabel = new FluLabel(this);
+    endCroodLabel->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
+    endCroodLabel->setText("末端控制");
+    ctrlLayout->addWidget(endCroodLabel);
+    auto endEleWidget = new QWidget(this);
+    endEleWidget->setObjectName("endEleWidget");
+    endEleWidget->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
+    auto endEleLayout = new QGridLayout(this);
+    endEleLayout->setContentsMargins(10, 5, 10, 5);
+
+    auto stepWidget = new QWidget(this);
+//    stepWidget->setObjectName("stepWidget");
+    auto stepLayout = new QHBoxLayout(this);
+    auto stepBox = new FluDoubleSpinBox(this);
+    stepBox->setValue(10.0);
+    stepBox->setAlignment(Qt::AlignCenter);
+    auto stepText = new FluLabel(this);
+    stepText->setText("步进单位");
+    stepText->setAlignment(Qt::AlignCenter);
+    stepLayout->addWidget(stepText);
+    stepLayout->addWidget(stepBox);
+    stepWidget->setLayout(stepLayout);
+
+    auto xupbtn = new FluPushButton(this);
+    xupbtn->setObjectName("x_up");
+    xupbtn->setText("+X");
+    auto xdownbtn = new FluPushButton(this);
+    xdownbtn->setText("-X");
+    xdownbtn->setObjectName("x_down");
+
+    auto rxupbtn = new FluPushButton(this);
+    rxupbtn->setText("+Rx");
+    rxupbtn->setObjectName("rx_up");
+    auto rxdownbtn = new FluPushButton(this);
+    rxdownbtn->setText("-Rx");
+    rxdownbtn->setObjectName("rx_down");
+
+
+    auto yupbtn = new FluPushButton(this);
+    yupbtn->setText("+Y");
+    yupbtn->setObjectName("y_up");
+    auto ydownbtn = new FluPushButton(this);
+    ydownbtn->setText("-Y");
+    ydownbtn->setObjectName("y_down");
+
+    auto ryupbtn = new FluPushButton(this);
+    ryupbtn->setText("+Ry");
+    ryupbtn->setObjectName("ry_up");
+
+    auto rydownbtn = new FluPushButton(this);
+    rydownbtn->setText("-Ry");
+    rydownbtn->setObjectName("ry_down");
+
+    auto zupbtn = new FluPushButton(this);
+    zupbtn->setText("+Z");
+    zupbtn->setObjectName("z_up");
+
+    auto zdownbtn = new FluPushButton(this);
+    zdownbtn->setText("-Z");
+    zdownbtn->setObjectName("z_down");
+
+    auto rzupbtn = new FluPushButton(this);
+    rzupbtn->setText("+Rz");
+    rzupbtn->setObjectName("rz_up");
+
+    auto rzdownbtn = new FluPushButton(this);
+    rzdownbtn->setText("-Rz");
+    rzdownbtn->setObjectName("rz_down");
+
+    endEleLayout->addWidget(stepWidget, 0, 0, 1, 3);
+
+    endEleLayout->addWidget(xdownbtn, 2, 0);
+    endEleLayout->addWidget(xupbtn, 2, 2);
+    endEleLayout->addWidget(rxupbtn, 1, 1);
+    endEleLayout->addWidget(rxdownbtn, 3, 1);
+
+
+    QFrame *line = new QFrame(this);
+    line->setFrameShape(QFrame::HLine); // 设置为水平线
+    // 设置分割线颜色
+    QPalette palette = line->palette();
+    palette.setColor(QPalette::WindowText, QColor(230, 230, 230)); // 设置颜色为灰色
+    line->setPalette(palette);
+
+    endEleLayout->addWidget(line, 4, 0, 1, 3);
+
+    endEleLayout->addWidget(ydownbtn, 6, 0);
+    endEleLayout->addWidget(yupbtn, 6, 2);
+    endEleLayout->addWidget(ryupbtn, 5, 1);
+    endEleLayout->addWidget(rydownbtn, 7, 1);
+
+    QFrame *line2 = new QFrame(this);
+    line2->setFrameShape(QFrame::HLine); // 设置为水平线
+    // 设置分割线颜色
+    QPalette palette2 = line2->palette();
+    palette2.setColor(QPalette::WindowText, QColor(230, 230, 230)); // 设置颜色为灰色
+    line2->setPalette(palette2);
+    endEleLayout->addWidget(line2, 8, 0, 1, 3);
+
+    endEleLayout->addWidget(zdownbtn, 10, 0);
+    endEleLayout->addWidget(zupbtn, 10, 2);
+    endEleLayout->addWidget(rzupbtn, 9, 1);
+    endEleLayout->addWidget(rzdownbtn, 11, 1);
+
+    endEleWidget->setLayout(endEleLayout);
+    ctrlLayout->addWidget(endEleWidget);
+
     auto posLabel = new FluLabel(this);
     posLabel->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
-    posLabel->setText("ControlWithEulerAngle");
+    posLabel->setText("欧拉角控制");
     ctrlLayout->addWidget(posLabel);
-
-    /// pos ctrl btn group
-    
-
 
     /// line edit group
     auto eleWidget = new QWidget(this);
@@ -661,8 +914,15 @@ QWidget *HomeWidget::makeRobotControlWidget() {
 
     pubBtn = new FluPushButton(this);
     pubBtn->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
-    pubBtn->setText("Publish");
-    eleLayout->addWidget(pubBtn, 6, 0, 3, 0, Qt::AlignVCenter);
+    pubBtn->setText("执行最优解");
+
+    allIKSolBtn = new FluPushButton(this);
+    allIKSolBtn->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
+    allIKSolBtn->setText("执行所有解");
+
+
+    eleLayout->addWidget(pubBtn, 6, 0, 1, 3, Qt::AlignVCenter);
+    eleLayout->addWidget(allIKSolBtn, 7, 0, 1, 3, Qt::AlignVCenter);
 
     eleWidget->setLayout(eleLayout);
 
@@ -761,15 +1021,17 @@ QWidget *HomeWidget::makePointsWidget() {
     auto pointsLayout = new QGridLayout(pointsWidget);
     pointsLayout->setSpacing(10);
     auto pointsCB = new FluComboBox(this);
-    pointsCB->addItem("ZeroPoint");
-    pointsCB->addItem("InitPoint");
+
+    for (auto p: mPointMap) {
+        pointsCB->addItem(p.first);
+    }
 
     auto addBtn = new FluIconButton(FluAwesomeType::Add, this);
-    addBtn->setToolTip("add current point");
+    addBtn->setToolTip("添加当前点");
     auto runBtn = new FluIconButton(FluAwesomeType::Robot, this);
-    runBtn->setToolTip("run select point");
+    runBtn->setToolTip("运行当前选择的点");
     auto delBtn = new FluIconButton(FluAwesomeType::Delete, this);
-    delBtn->setToolTip("delete select point");
+    delBtn->setToolTip("删除当前点");
 
     pointsLayout->addWidget(pointsCB, 0, 0, 2, 0, Qt::AlignVCenter);
 
@@ -779,30 +1041,39 @@ QWidget *HomeWidget::makePointsWidget() {
 
     pointsWidget->setLayout(pointsLayout);
 
+    connect(runBtn, &QPushButton::clicked, [=]() {
+        auto t = pointsCB->currentText();
+        auto p = mPointMap[t];
+        emit sigJointMoveAnimation(p);
+    });
 
     connect(delBtn, &QPushButton::clicked, [=]() {
         auto delFlyout = new FluConfirmFlyout(delBtn, FluFlyoutPosition::Left);
-        delFlyout->setTitle("Do you want to delete this point?");
-        delFlyout->setInfo("Choose \"Ok\" will be delete this point, Choose \"Cancel\" will be back to up step.");
+        delFlyout->setTitle("你是否希望删除当前点？");
+        delFlyout->setInfo("注意：删除操作不可逆，点击确定按钮即可删除当前选择点");
         connect(delFlyout, &FluConfirmFlyout::sigOkClick, [=] {
+            mPointMap.erase(pointsCB->currentText());
+            InfoBar::showInfoBar(FluShortInfoBarType::Suc, "删除" + pointsCB->currentText() + "成功", this);
             pointsCB->removeItem(pointsCB->currentIndex());
-            /// todo 从本地删除
-//            pointsCB.de
-
         });
         delFlyout->show();
     });
 
     connect(addBtn, &QPushButton::clicked, [=]() {
         auto addFlyout = new FluLineEditFlyout(addBtn, FluFlyoutPosition::Left);
-        addFlyout->setTitle("Input the point name");
+        addFlyout->setTitle("请输入新增点位名称");
         connect(addFlyout, &FluLineEditFlyout::sigOkClick, [=](QString s) {
             pointsCB->addItem(s);
-            /// todo 从本地增加点
-
+            std::vector<double> rads;
+            for (int i = 1; i < 7; ++i) {
+                auto v = robotControlWidget->findChildren<QSlider *>("j" + QString::number(i) + "Slider")[0]->value() /
+                         100 * (M_PI / 180.0);
+                rads.push_back(v);
+            }
+            mPointMap[s] = rads;
             pointsCB->setCurrentText(s);
+            InfoBar::showInfoBar(FluShortInfoBarType::Suc, "保存" + s + "成功", this);
         });
-
 
         addFlyout->show();
     });
@@ -815,15 +1086,88 @@ void HomeWidget::slotUpdateCheckOpt(bool arg) {
     QCheckBox *cb = (QCheckBox *) sender();
     QString cbName = cb->objectName();
     auto key = cbName.split("CheckBox").at(0);
-    emit sigCheckOptChanged(key, arg);
+//    qDebug() << "key: " << key;
+//    emit sigCheckOptChanged(key, arg);
+    osgWidget->updateSceneDisplay(key.toStdString(), arg);
 }
 
 void HomeWidget::slotUpdateJVarsValue(int var) {
     QSlider *senderSlider = (QSlider *) sender();
     QString sliderName = senderSlider->objectName();
     QString idx = sliderName.at(1);
-//    auto label = this->findChildren<QLabel *>("j" + idx + "Label");
-//    label.at(0)->setText(QString::number(var));
-//    emit sigJointVar
-    emit sigJoinVarChanged(idx.toInt(), var);
+    emit sigJoinVarChanged(idx.toInt(), var / 100.0);
+}
+
+QWidget *HomeWidget::makeObservationWidget() {
+    QWidget *obsWidget = new QWidget(this);
+    obsWidget->setObjectName("obsWidget");
+    obsWidget->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
+
+    auto obsLayout = new QGridLayout(obsWidget);
+
+    obsLayout->setContentsMargins(10, 5, 10, 5);
+    auto initObsBtn = new FluPushButton(this);
+    auto frontObsBtn = new FluPushButton(this);
+    auto topObsBtn = new FluPushButton(this);
+    auto sideObsBtn = new FluPushButton(this);
+    initObsBtn->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
+    frontObsBtn->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
+    topObsBtn->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
+    sideObsBtn->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
+    initObsBtn->setText("初始视图");
+    frontObsBtn->setText("正视图");
+    topObsBtn->setText("俯视图");
+    sideObsBtn->setText("侧视图");
+    obsLayout->addWidget(initObsBtn, 0, 0);
+    obsLayout->addWidget(frontObsBtn, 0, 1);
+    obsLayout->addWidget(topObsBtn, 1, 0);
+    obsLayout->addWidget(sideObsBtn, 1, 1);
+    obsWidget->setLayout(obsLayout);
+    connect(initObsBtn, &QPushButton::clicked, [=] {
+        osgWidget->changeObservationSlot(OBSERVATION_ENUM::INIT);
+        InfoBar::showInfoBar(FluShortInfoBarType::Info, "已切换至初始视图", this);
+
+    });
+    connect(frontObsBtn, &QPushButton::clicked, [=] {
+        osgWidget->changeObservationSlot(OBSERVATION_ENUM::FONT);
+        InfoBar::showInfoBar(FluShortInfoBarType::Info, "已切换至正视图", this);
+
+    });
+    connect(topObsBtn, &QPushButton::clicked, [=] {
+        osgWidget->changeObservationSlot(OBSERVATION_ENUM::TOP);
+        InfoBar::showInfoBar(FluShortInfoBarType::Info, "已切换至俯视图", this);
+
+    });
+    connect(sideObsBtn, &QPushButton::clicked, [=] {
+        osgWidget->changeObservationSlot(OBSERVATION_ENUM::SIDE);
+        InfoBar::showInfoBar(FluShortInfoBarType::Info, "已切换至侧视图", this);
+    });
+
+    return obsWidget;
+}
+
+void HomeWidget::slotUpdateStepMove() {
+    QPushButton *btn = (QPushButton *) sender();
+    QString name = btn->objectName();
+    qDebug() << name;
+    auto key = name.split("_");
+    auto k1 = key[0];
+    auto k2 = key[1];
+    qDebug() << k1;
+    qDebug() << k2;
+    auto sp = robotControlWidget->findChildren<QWidget *>("endEleWidget")[0]->findChildren<FluDoubleSpinBox *>()[0];
+    auto v = sp->value();
+    qDebug() << v;
+}
+
+HomeWidget::~HomeWidget() {
+    m_pointSetting->clear();
+    for (auto p: mPointMap) {
+        QVariantList list;
+        for (double value: p.second) {
+            list.append(value);
+        }
+        m_pointSetting->setValue(p.first, list);
+    }
+    qDebug() << "save points...";
 }

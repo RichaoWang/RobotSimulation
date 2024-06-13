@@ -5,6 +5,24 @@ HomeWidget {
     margin-right: 5px;
     margin-bottom: 5px;
 }
+#endEleWidget {
+    background-color: rgb(39, 39, 39);
+    border-radius: 8px;
+    border: 1px solid rgb(29, 29, 29);
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+#obsWidget {
+    background-color: rgb(39, 39, 39);
+    border-radius: 8px;
+    border: 1px solid rgb(29, 29, 29);
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
 
 #controlWidget {
     background-color: rgb(39, 39, 39);

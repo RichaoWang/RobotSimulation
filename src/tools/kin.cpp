@@ -20,8 +20,28 @@ namespace ur_kinematics {
         }
 
         const double PI = M_PI;
+        //#define UR10_PARAMS
 
 #define UR10_PARAMS
+
+#ifdef ROBOT_PARAMS
+//        const double d1 = 0.1273;
+//
+//        const double a2 = -0.612;
+//        const double a3 = -0.5723;
+//
+//        const double d4 = 0.163941;
+//        const double d5 = 0.1157;
+//        const double d6 = 0.0922;
+const double a2 =  0.408;
+const double a3 =  0.376;
+const double d1 =  0.122;
+const double d2 =  0.1215;
+const double d5 =  0.1025;
+const double d6 =  0.094;
+#endif
+
+//#define UR10_PARAMS
 #ifdef UR10_PARAMS
         const double d1 = 0.1273;
 
