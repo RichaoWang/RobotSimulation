@@ -6,7 +6,7 @@
 The robot arm control software is implemented based on Qt Widget. This project is mainly used to learn the use of OpenGL and learn robot kinematics
 </p>
 <div align=center>
-  <img src="docs/shot.png" width="80%" height="80%">
+  <img src="docs/light.png" width="80%" height="80%">
 </div>
 
 
@@ -20,6 +20,7 @@ The robot arm control software is implemented based on Qt Widget. This project i
 ## Requirements
 
 + Qt5+
++ OpenSceneGraph
 
 ## Get started
 
